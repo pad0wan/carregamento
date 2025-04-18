@@ -1,0 +1,465 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Acompanhamento de Carregamento</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <meta charset="UTF-8">
+  <style>
+  
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9fafb;
+      color: #111827;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #1d4ed8;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+    form {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      transition: all 0.2s ease-in-out;
+    }
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #2563eb;
+      transform: scale(1.03);
+    }
+    .btn-adicionar { background-color: #10b981; }
+    .btn-adicionar:hover { background-color: #059669; }
+    .btn-remover { background-color: #ef4444; }
+    .btn-remover:hover { background-color: #dc2626; }
+    hr {
+      margin: 24px 0;
+      border: none;
+      border-top: 1px solid #e5e7eb;
+    }
+    .horarios label,
+    .lacres label,
+    .cargas label,
+    .rotas label {
+      font-weight: normal;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .checkbox-group label {
+      background: #e0f2fe;
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+    .cargas label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cargas input[type="number"] {
+      width: 60px;
+      text-align: center;
+    }
+    .cargas button {
+      width: 36px;
+      padding: 6px;
+      font-size: 1.2rem;
+    }
+    #rotasCheckboxes label {
+      flex: 1 1 20%;
+      min-width: 50px;
+      text-align: center;
+    }
+    .rotas input[type="checkbox"] {
+      margin-right: 6px;
+    }
+  </style>
+
+ 
+ 
+  <script>
+    // Dados dos motoristas
+    const motoristas = {
+      "João Silva": {
+        cpf: "123.456.789-00",
+        telefone: "(11) 98765-4321"
+      },
+      "Maria Oliveira": {
+        cpf: "987.654.321-00",
+        telefone: "(21) 91234-5678"
+      }
+    };
+
+    // Função que preenche os campos ao selecionar um motorista
+    function preencherDadosMotorista() {
+      const select = document.getElementById("motorista");
+      const nome = select.value;
+      const dados = motoristas[nome];
+
+      if (dados) {
+        document.getElementById("cpf").value = dados.cpf;
+        document.getElementById("telefone").value = dados.telefone;
+      } else {
+        document.getElementById("cpf").value = "";
+        document.getElementById("telefone").value = "";
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Acompanhamento de Carregamento</h1>
+  <form id="form-carregamento">
+    <label>Data:
+      <input type="date" id="data" name="data">
+      <button type="button" onclick="inserirData()">Inserir Data</button>
+    </label>
+
+    <label>Rota:
+      <input type="text" id="rota-select" placeholder="Digite a Rota">
+    </label>
+
+    <label>Doca:
+      <select id="doca" name="doca">
+        <option value="01">01</option><option value="02">02</option><option value="03">03</option>
+        <option value="04">04</option><option value="05">05</option><option value="06">06</option>
+      </select>
+    </label>
+
+    <label>Tipo do Veículo:
+      <select id="tipoVeiculo" name="tipoVeiculo" onchange="verificarTipoVeiculo()">
+        <option value="carreta">Carreta</option><option value="truck">Truck</option>
+        <option value="toco">Toco</option><option value="3/4">3/4</option>
+      </select>
+    </label>
+
+    <label>Placa Baú (Se Houver):
+      <input type="text" id="rota-select" placeholder="Digite a Rota">
+    </label>
+
+    <label>Placa Veículo:
+      <input type="text" id="rota-select" placeholder="Digite a Rota">
+    </label>
+
+    <label>Motorista:
+      <select id="motorista" onchange="preencherDadosMotorista()">
+        <option value="">Selecione um motorista</option>
+        <option>João Silva</option>
+        <option>Maria Oliveira</option>
+      </select>
+    </label>
+    
+    <label>CPF: <input type="text" id="cpf" readonly></label>
+    <br>
+    <label>Telefone: <input type="text" id="telefone" readonly></label>
+
+    <hr>
+    <div class="horarios">
+      <label>Chegada Unidade:
+        <input type="time" id="horaChegada">
+        <button type="button" onclick="registrarHora('horaChegada')">Registrar</button>
+      </label>
+      <label>Hora Doca:
+        <input type="time" id="horaDoca">
+        <button type="button" onclick="registrarHora('horaDoca')">Registrar</button>
+      </label>
+      <label>Início Carregamento:
+        <input type="time" id="horaInicio">
+        <button type="button" onclick="registrarHora('horaInicio')">Registrar</button>
+      </label>
+      <label>Término Carregamento:
+        <input type="time" id="horaTermino">
+        <button type="button" onclick="confirmarFotoBauAberto()">Registrar</button>
+      </label>
+      <label>Saída:
+        <input type="time" id="horaSaida">
+        <button type="button" onclick="registrarHora('horaSaida')">Registrar</button>
+      </label>
+      <label>Previsão de Destino:
+        <input type="text" id="previsaoDestino" placeholder="Ex: 14h, após 16h, etc.">
+      </label>
+    </div>
+
+    <hr>
+    <div class="lacres">
+      <label>Lacre Baú:
+        <input type="text" id="lacreBau">
+        <button type="button" onclick="scanQRCode('lacreBau')">Scanear QR</button>
+      </label>
+      <label>Lacre Lateral 1:
+        <input type="text" id="lacreLateral1">
+        <button type="button" onclick="scanQRCode('lacreLateral1')">Scanear Lacre</button>
+        <input type="checkbox" id="lateral1NaoUsa">Não utiliza
+      </label>
+      <label>Lacre Lateral :
+        <input type="text" id="lacreLateral2">
+        <button type="button" onclick="scanQRCode('lacreLateral2')">Scanear Lacre</button>
+        <input type="checkbox" id="lateral2NaoUsa">Não utiliza
+      </label>
+    </div>
+
+    <hr>
+    <div class="cargas">
+      <label>Volumoso:
+        <button type="button" onclick="alterarContagem('volumoso', -1)">-</button>
+        <input type="number" id="volumoso" value="0" min="0">
+        <button type="button" onclick="alterarContagem('volumoso', 1)">+</button>
+      </label>
+      <label>Gaiola:
+        <button type="button" onclick="alterarContagem('gaiola', -1)">-</button>
+        <input type="number" id="gaiola" value="0" min="0">
+        <button type="button" onclick="alterarContagem('gaiola', 1)">+</button>
+      </label>
+      <label>Manga Pallet:
+        <button type="button" onclick="alterarContagem('mangaPallet', -1)">-</button>
+        <input type="number" id="mangaPallet" value="0" min="0">
+        <button type="button" onclick="alterarContagem('mangaPallet', 1)">+</button>
+      </label>
+    </div>
+
+    <hr>
+    <div class="rotas">
+      <label><input type="checkbox" id="valioso"> Valioso</label>
+      <label><input type="checkbox" id="car"> Car</label>
+      <label><input type="checkbox" id="mot"> Mot</label>
+      <div class="rotas-checkboxes">
+        <p>Rotas (01-60):</p>
+        <div id="rotasCheckboxes" class="checkbox-group"></div>
+      </div>
+    </div>
+
+    <hr>
+    <button type="button" onclick="gerarReport()">Gerar Report</button>
+  </form>
+
+  <script>
+    function inserirData() {
+      const hoje = new Date().toISOString().split('T')[0];
+      document.querySelectorAll('input[type="date"]').forEach(input => input.value = hoje);
+    }
+
+    function verificarTipoVeiculo() {
+      const tipo = document.getElementById('tipoVeiculo').value;
+      const secLabel = document.getElementById('secundaria-label');
+      secLabel.style.display = (tipo === 'carreta') ? 'block' : 'none';
+    }
+
+    function preencherDadosMotorista() {
+      document.getElementById('cpf').value = '000.000.000-00';
+      document.getElementById('telefone').value = '(00) 90000-0000';
+    }
+
+    function registrarHora(id) {
+      const agora = new Date();
+      const hora = agora.toTimeString().split(':').slice(0, 2).join(':');
+      document.getElementById(id).value = hora;
+    }
+
+    function confirmarFotoBauAberto() {
+      if (confirm("Foto do baú aberto foi registrada?")) {
+        registrarHora('horaTermino');
+      }
+    }
+
+    function alterarContagem(id, delta) {
+      const input = document.getElementById(id);
+      let val = parseInt(input.value);
+      if (!isNaN(val)) {
+        val += delta;
+        if (val < 0) val = 0;
+        input.value = val;
+      }
+    }
+
+    function gerarCheckboxesRotas() {
+      const container = document.getElementById('rotasCheckboxes');
+      for (let i = 1; i <= 60; i++) {
+        const label = document.createElement('label');
+        label.innerHTML = `<input type="checkbox" value="${i.toString().padStart(2, '0')}"> ${i.toString().padStart(2, '0')}`;
+        container.appendChild(label);
+      }
+    }
+
+    function gerarReport() {
+      if (!confirm("Tem certeza que deseja gerar o relatório?")) return;
+
+      const data = document.getElementById('data')?.value;
+      const doca = document.getElementById('doca')?.value;
+      const rota = document.getElementById('rota-select')?.value;
+      const tipoVeiculo = document.getElementById('tipoVeiculo')?.value;
+      const placaPrimaria = document.getElementById('placaPrimaria')?.value;
+      const placaSecundaria = document.getElementById('placaSecundaria')?.value;
+      const motorista = document.getElementById('motorista')?.value;
+      const cpf = document.getElementById('cpf')?.value;
+      const telefone = document.getElementById('telefone')?.value;
+      const horaChegada = document.getElementById('horaChegada')?.value;
+      const horaDoca = document.getElementById('horaDoca')?.value;
+      const horaInicio = document.getElementById('horaInicio')?.value;
+      const horaTermino = document.getElementById('horaTermino')?.value;
+      const horaSaida = document.getElementById('horaSaida')?.value;
+      const previsaoDestino = document.getElementById('previsaoDestino')?.value;
+      const lacreBau = document.getElementById('lacreBau')?.value;
+      const lacreLateral1 = document.getElementById('lacreLateral1')?.value || (document.getElementById('lateral1NaoUsa')?.checked ? 'Não Utiliza' : '');
+      const lacreLateral2 = document.getElementById('lacreLateral2')?.value || (document.getElementById('lateral2NaoUsa')?.checked ? 'Não Utiliza' : '');
+      const volumoso = document.getElementById('volumoso')?.value;
+      const gaiola = document.getElementById('gaiola')?.value;
+      const mangaPallet = document.getElementById('mangaPallet')?.value;
+      const rotasSelecionadas = Array.from(document.querySelectorAll('.rotas input[type="checkbox"]:checked'))
+  .map(cb => cb.labels[0].innerText) // ou cb.value, se você usar "value" nos inputs
+  .join(', ');
+
+      const mensagem = `Data: ${data}
+Doca: ${doca}
+${tipoVeiculo}: ${rota}
+Placa: ${placaSecundaria}
+Placa Cavalo: ${placaPrimaria}
+Condutor: ${motorista}
+CPF: ${cpf}
+Tel: ${telefone}
+Chegada na unidade: ${horaChegada}
+Encostado na doca:${horaDoca}
+Início carregamento:${horaInicio}
+Término:${horaTermino}
+Saída Liberada:${horaSaida}
+Previsão do Destino:${previsaoDestino}
+Gaiolas:${gaiola}
+Rotas: ${rotasSelecionadas}
+Lacre Baú: ${lacreBau}
+Lacres Laterais:${lacreLateral1} || ${lacreLateral2}
+Manga Pallet com sacolas:${mangaPallet}
+Volumosos: ${volumoso}
+Yms saída ok.`;
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      const linhas = mensagem.split('\n');
+      let y = 10;
+      linhas.forEach(linha => {
+        doc.text(linha, 10, y);
+        y += 8;
+      });
+      doc.save(`carregamento-${data}.pdf`);
+    }
+
+    window.onload = gerarCheckboxesRotas;
+  </script>
+  <!-- Modal do Scanner QR -->
+<div id="qrScannerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000000aa; justify-content:center; align-items:center; z-index:9999;">
+  <div style="background:#fff; padding:20px; border-radius:12px; position:relative;">
+    <button onclick="fecharScanner()" style="position:absolute; top:10px; right:10px; background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:8px; cursor:pointer;">Fechar</button>
+    <div id="qr-reader" style="width: 300px;"></div>
+  </div>
+</div>
+<script>
+  let campoAtivo;
+  let html5QrCode;
+
+  function scanQRCode(campoId) {
+    campoAtivo = document.getElementById(campoId);
+    document.getElementById("qrScannerModal").style.display = "flex";
+
+    if (!html5QrCode) {
+      html5QrCode = new Html5Qrcode("qr-reader");
+    }
+
+    Html5Qrcode.getCameras().then(cameras => {
+      console.log("Câmeras detectadas:", cameras);
+      if (cameras && cameras.length) {
+        // Tenta encontrar uma câmera traseira (com base no nome)
+        let cameraId;
+        const backCamera = cameras.find(cam =>
+          cam.label.toLowerCase().includes("back") || cam.label.toLowerCase().includes("traseira")
+        );
+
+        if (backCamera) {
+          cameraId = backCamera.id;
+        } else {
+          // Se não encontrar, usa a primeira disponível
+          cameraId = cameras[0].id;
+        }
+
+        console.log("ID da câmera selecionada:", cameraId);
+
+        html5QrCode.start(
+          cameraId,
+          {
+            fps: 10,
+            qrbox: 250
+          },
+          (decodedText, decodedResult) => {
+            campoAtivo.value = decodedText;
+            html5QrCode.stop().then(() => {
+              fecharScanner();
+            }).catch(err => {
+              console.error("Erro ao parar o scanner:", err);
+              fecharScanner();
+            });
+          }
+        ).catch(err => {
+          alert("Erro ao iniciar a câmera: " + err);
+          fecharScanner();
+        });
+      } else {
+        alert("Nenhuma câmera encontrada.");
+        fecharScanner();
+      }
+    }).catch(err => {
+      alert("Erro ao acessar câmera: " + err);
+      fecharScanner();
+    });
+  }
+
+  function fecharScanner() {
+    document.getElementById("qrScannerModal").style.display = "none";
+    if (html5QrCode && html5QrCode._isScanning) {
+      html5QrCode.stop().then(() => {
+        html5QrCode.clear();
+      }).catch(err => {
+        console.warn("Erro ao parar scanner:", err);
+      });
+    } else {
+      document.getElementById("qr-reader").innerHTML = "";
+    }
+  }
+</script>
+
+
+</body>
+</html>
