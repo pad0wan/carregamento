@@ -13,67 +13,126 @@
   <style>
   
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f9fafb;
-      color: #111827;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-    }
-    h1 {
-      text-align: center;
-      color: #1d4ed8;
-      font-size: 1.8rem;
-      margin-bottom: 20px;
-    }
-    form {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block;
-      margin-bottom: 12px;
-      font-weight: 600;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 4px;
-      margin-bottom: 16px;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-      font-size: 1rem;
-      transition: all 0.2s ease-in-out;
-    }
-    button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background-color: #3b82f6;
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #2563eb;
-      transform: scale(1.03);
-    }
-    .btn-adicionar { background-color: #10b981; }
-    .btn-adicionar:hover { background-color: #059669; }
-    .btn-remover { background-color: #ef4444; }
-    .btn-remover:hover { background-color: #dc2626; }
-    hr {
-      margin: 24px 0;
-      border: none;
-      border-top: 1px solid #e5e7eb;
-    }
+        font-family: 'Inter', sans-serif;
+  background-color: #000; /* fundo preto */
+  color: #fff; /* texto branco */
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+  color: #fcf81a; /* pode manter esse verde vibrante */
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+form {
+  background: #1a1a1a; /* fundo escuro pro formulário */
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05); /* leve sombra branca */
+}
+
+label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  border: 1px solid #555; /* borda mais suave em modo escuro */
+  background-color: #111;
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+input::placeholder,
+select::placeholder {
+  color: #aaa; /* placeholder mais claro */
+}
+
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #2563eb;
+  transform: scale(1.03);
+}
+
+.btn-adicionar { background-color: #10b981; }
+.btn-adicionar:hover { background-color: #059669; }
+
+.btn-remover { background-color: #ef4444; }
+.btn-remover:hover { background-color: #dc2626; }
+
+hr {
+  margin: 24px 0;
+  border: none;
+  border-top: 1px solid #333;
+}
     .horarios label,
-    .lacres label,
-    .cargas label,
+
+
+    .lacres label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .lacres input[type="text"] {
+    min-width: 250px; /* 👈 aqui aumentamos o tamanho mínimo */
+    padding: 6px;
+    font-size: 14px;
+  }
+  .lacres button {
+    padding: 6px 10px;
+  }
+  .lacres input[type="checkbox"] {
+    transform: scale(1.2); /* deixa o checkbox um pouco maior também, se quiser */
+  }
+  .lacres input[type="text"] {
+    flex: 1; /* Para os campos de texto ocuparem espaço proporcional */
+  }
+
+
+
+  .cargas label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .cargas input[type="text"] {
+    min-width: 250px;
+    padding: 6px;
+    font-size: 14px;
+  }
+
+  .cargas input[type="checkbox"] {
+    transform: scale(1.2); /* deixa mais visível, opcional */
+  }
+
+
+
     .rotas label {
       font-weight: normal;
     }
@@ -111,36 +170,6 @@
     }
   </style>
 
- 
- 
-  <script>
-    // Dados dos motoristas
-    const motoristas = {
-      "João Silva": {
-        cpf: "123.456.789-00",
-        telefone: "(11) 98765-4321"
-      },
-      "Maria Oliveira": {
-        cpf: "987.654.321-00",
-        telefone: "(21) 91234-5678"
-      }
-    };
-
-    // Função que preenche os campos ao selecionar um motorista
-    function preencherDadosMotorista() {
-      const select = document.getElementById("motorista");
-      const nome = select.value;
-      const dados = motoristas[nome];
-
-      if (dados) {
-        document.getElementById("cpf").value = dados.cpf;
-        document.getElementById("telefone").value = dados.telefone;
-      } else {
-        document.getElementById("cpf").value = "";
-        document.getElementById("telefone").value = "";
-      }
-    }
-  </script>
 </head>
 <body>
   <h1>Acompanhamento de Carregamento</h1>
@@ -150,9 +179,15 @@
       <button type="button" onclick="inserirData()">Inserir Data</button>
     </label>
 
-    <label>Rota:
-      <input type="text" id="rota-select" placeholder="Digite a Rota">
-    </label>
+    <label for="rota-select">Rota:</label>
+    <select id="rota-select">
+      <option value="">Selecione uma rota</option>
+      <option value="Araguaína">Araguaína</option>
+      <option value="Gurupi">Gurupi</option>
+      <option value="Guaraí">Guaraí</option>
+      <option value="Luiz Eduardo Magalhães">Luiz Eduardo Magalhães</option>
+      <option value="Barreiras">Barreiras</option>
+    </select>
 
     <label>Doca:
       <select id="doca" name="doca">
@@ -163,44 +198,180 @@
 
     <label>Tipo do Veículo:
       <select id="tipoVeiculo" name="tipoVeiculo" onchange="verificarTipoVeiculo()">
-        <option value="carreta">Carreta</option><option value="truck">Truck</option>
-        <option value="toco">Toco</option><option value="3/4">3/4</option>
+        <option value="Carreta">Carreta</option><option value="Truck">Truck</option>
+        <option value="Toco">Toco</option><option value="3/4">3/4</option>
       </select>
     </label>
 
+    <script>
+      const placaMap = {
+        "MSR - KIA5I83": ["KIA5I83", ""],
+        "MSR - DRX8D24 / JAW3D30": ["DRX8D24", "JAW3D30"],
+        "MSR - MXB3387 (Dc 05) / MLO6F04": ["MXB3387 (Dc 05)", "MLO6F04"],
+        "MSR - RBL4J23 (Dc 06) / ONC3I65": ["RBL4J23 (Dc 06)", "ONC3I65"],
+        "MSR - NWE5A88 / ONG5H07": ["NWE5A88", "ONG5H07"],
+        "MSR - PRO5B99": ["PRO5B99", ""],
+        "RODACOP - TCK5H69 / HDE8J16": ["TCK5H69", "HDE8J16"],
+        "RODACOP - FOF5B57 / RUK2H11": ["FOF5B57", "RUK2H11"],
+        "RODACOP - FTB1F75 / RUKJ2J60": ["FTB1F75", "RUKJ2J60"],
+        "RODACOP - RVB2C09": ["RVB2C09", ""],
+        "RODACOP - OQG8012": ["OQG8012", ""],
+        "RODACOP - RFR7E89": ["RFR7E89", ""],
+        "RODACOP - OLM1I23": ["OLM1I23", ""],
+        "RODACOP - QKA6J98": ["QKA6J98", ""],
+        "RODACOP - RSE9F12": ["RSE9F12", ""],
+        "RODACOP - RIN8H85": ["RIN8H85", ""],
+        "RODACOP - RSB4A72": ["RSB4A72", ""],
+        "RODACOP - QWD6D03": ["QWD6D03", ""],
+        "RODACOP - OMU6A20": ["OMU6A20", ""],
+        "RODACOP - OLH2G94": ["OLH2G94", ""]
+      };
+    
+      function onSelectChange(select) {
+        const selected = select.value;
+        const manual = selected === "manual";
+    
+        document.getElementById("placaPrimaria").disabled = !manual;
+        document.getElementById("placaSecundaria").disabled = !manual;
+    
+        if (!manual && placaMap[selected]) {
+          const [primaria, secundaria] = placaMap[selected];
+          document.getElementById("placaPrimaria").value = primaria;
+          document.getElementById("placaSecundaria").value = secundaria;
+        } else {
+          document.getElementById("placaPrimaria").value = "";
+          document.getElementById("placaSecundaria").value = "";
+        }
+      }
+    </script>
+
+<hr>
+    <label>Selecione a placa do Veículo:
+      <select onchange="onSelectChange(this)">
+        <option value="">Selecione...</option>
+        <option value="manual">Inserir Manualmente</option>
+        <option value="KIA5I83">MSR - KIA5I83</option>
+        <option value="DRX8D24 / JAW3D30">MSR - DRX8D24 / JAW3D30</option>
+        <option value="MXB3387 / MLO6F04">MSR - MXB3387 (Dc 05) / MLO6F04</option>
+        <option value="RBL4J23 / ONC3I65">MSR - RBL4J23 (Dc 06) / ONC3I65</option>
+        <option value="NWE5A88 / ONG5H07">MSR - NWE5A88 / ONG5H07</option>
+        <option value="PRO5B99">MSR - PRO5B99</option>
+        <option value="TCK5H69 / HDE8J16">RODACOP - TCK5H69 / HDE8J16</option>
+        <option value="FOF5B57 / RUK2H11">RODACOP - FOF5B57 / RUK2H11</option>
+        <option value="FTB1F75 / RUKJ2J60">RODACOP - FTB1F75 / RUKJ2J60</option>
+        <option value="RVB2C09">RODACOP - RVB2C09</option>
+        <option value="OQG8012">RODACOP - OQG8012</option>
+        <option value="RFR7E89">RODACOP - RFR7E89</option>
+        <option value="OLM1I23">RODACOP - OLM1I23</option>
+        <option value="QKA6J98">RODACOP - QKA6J98</option>
+        <option value="RSE9F12">RODACOP - RSE9F12</option>
+        <option value="RIN8H85">RODACOP - RIN8H85</option>
+        <option value="RSB4A72">RODACOP - RSB4A72</option>
+        <option value="QWD6D03">RODACOP - QWD6D03</option>
+        <option value="OMU6A20">RODACOP - OMU6A20</option>
+        <option value="OLH2G94">RODACOP - OLH2G94</option>
+      </select>
+    </label>
+        
     <label>Placa Baú (Se Houver):
-      <input type="text" id="rota-select" placeholder="Digite a Rota">
+      <input type="text" id="placaPrimaria" placeholder="Placa Bau" disabled>
     </label>
-
+    
     <label>Placa Veículo:
-      <input type="text" id="rota-select" placeholder="Digite a Rota">
+      <input type="text" id="placaSecundaria" placeholder="Placa Cavalo" disabled>
     </label>
 
+    <hr>
     <label>Motorista:
       <select id="motorista" onchange="preencherDadosMotorista()">
         <option value="">Selecione um motorista</option>
-        <option>João Silva</option>
-        <option>Maria Oliveira</option>
+        <option value="Paulo Roberto">MSR - Paulo Roberto</option>
+        <option value="Flacilde Fagundes">MSR - Flacilde Fagundes</option>
+        <option value="Tallysson Magno dos Santos">MSR - Tallysson Magno dos Santos</option>
+        <option value="Wellington Pereira da Silva">MSR - Wellington Pereira da Silva</option>
+        <option value="Marcos Vinicius">MSR - Marcos Vinicius Souza de Moraes</option>
+        <option value="Evaldo de Queiroz">MSR - Evaldo de Queiroz</option>
+        <option value="Otávio Cândido Neto">MSR - Otávio Cândido Neto</option>
+        <option value="Welton Ramos">MSR - Welton Ramos</option>
+    
+        <option value="Idamilton Andrade Silva">RODACOP - Idamilton Andrade Silva</option>
+        <option value="Francis Aniszewski da Silva Gomes">RODACOP - Francis Aniszewski da Silva Gomes</option>
+        <option value="Savio de Souza Santos">RODACOP - Savio de Souza Santos</option>
+        <option value="Alessandro Noleto Gonçalves">RODACOP - Alessandro Noleto Gonçalves</option>
+        <option value="Marcos Vinicius Souza de Moraes">RODACOP - Marcos Vinicius Souza de Moraes</option>
+        <option value="Dalvan dos Santos">RODACOP - Dalvan dos Santos</option>
+        <option value="Mateus da Silva Morais">RODACOP - Mateus da Silva Morais</option>
+        <option value="Divino Alves Guida">RODACOP - Divino Alves Guida</option>
+        <option value="Railan Pereira Coelho dos Santos">RODACOP - Railan Pereira Coelho dos Santos</option>
+        <option value="Romario Aleixo Lima">RODACOP - Romario Aleixo Lima</option>
+        <option value="Raul Monteiro de Sousa">RODACOP - Raul Monteiro de Sousa</option>
+        <option value="Caio Vinicius Oliveira da Silva">RODACOP - Caio Vinicius Oliveira da Silva</option>
+        <option value="Juan de Souza Ribeiro">RODACOP - Juan de Souza Ribeiro</option>
+        <option value="Bismael Rodrigues de Sousa Oliveira">RODACOP - Bismael Rodrigues de Sousa Oliveira</option>
+        <option value="Wesley Gonçalves Rodrigues">RODACOP - Wesley Gonçalves Rodrigues</option>
+        <option value="Odair José de Sousa">RODACOP - Odair José de Sousa</option>
+        <option value="Alex Castro Magalhães">RODACOP - Alex Castro Magalhães</option>
+        <option value="Gabriel Lopes Soares">RODACOP - Gabriel Lopes Soares</option>
       </select>
     </label>
     
-    <label>CPF: <input type="text" id="cpf" readonly></label>
-    <br>
+    <label>CPF: <input type="text" id="cpf" readonly></label><br>
     <label>Telefone: <input type="text" id="telefone" readonly></label>
+    
+    <script>
+      const dadosMotoristas = {
+        "MSR|Paulo Roberto": { cpf: "", telefone: "63992164618" },
+        "MSR|Flacilde Fagundes": { cpf: "010.746.931-67", telefone: "62981881286" },
+        "MSR|Tallysson Magno dos Santos": { cpf: "", telefone: "63991169026" },
+        "MSR|Wellington Pereira da Silva": { cpf: "", telefone: "63991279809" },
+        "MSR|Marcos Vinicius": { cpf: "", telefone: "63991087213" },
+        "MSR|Evaldo de Queiroz": { cpf: "950.351.335-61", telefone: "63992640497" },
+        "MSR|Otávio Cândido Neto": { cpf: "", telefone: "63991500105" },
+        "MSR|Welton Ramos": { cpf: "", telefone: "63992731249" },
+    
+        "RODACOP|Idamilton Andrade Silva": { cpf: "023.474.221-62", telefone: "63981211457" },
+        "RODACOP|Francis Aniszewski da Silva Gomes": { cpf: "026.385.201-60", telefone: "63981013325" },
+        "RODACOP|Savio de Souza Santos": { cpf: "077.250.851-81", telefone: "63992735270" },
+        "RODACOP|Alessandro Noleto Gonçalves": { cpf: "022.174.181-06", telefone: "61981887661" },
+        "RODACOP|Marcos Vinicius Souza de Moraes": { cpf: "077.063.341-20", telefone: "63992976361" },
+        "RODACOP|Dalvan dos Santos": { cpf: "042.027.111-22", telefone: "63992363023" },
+        "RODACOP|Mateus da Silva Morais": { cpf: "046.498.831-48", telefone: "63992499550" },
+        "RODACOP|Divino Alves Guida": { cpf: "027.865.341-35", telefone: "63999456665" },
+        "RODACOP|Railan Pereira Coelho dos Santos": { cpf: "066.304.091-40", telefone: "63991223145" },
+        "RODACOP|Romario Aleixo Lima": { cpf: "040.701.101-35", telefone: "63992531915" },
+        "RODACOP|Raul Monteiro de Sousa": { cpf: "059.668.101-17", telefone: "63991091677" },
+        "RODACOP|Caio Vinicius Oliveira da Silva": { cpf: "603.210.033-22", telefone: "63992541607" },
+        "RODACOP|Juan de Souza Ribeiro": { cpf: "070.732.651-74", telefone: "63992817191" },
+        "RODACOP|Bismael Rodrigues de Sousa Oliveira": { cpf: "050.908.111-80", telefone: "63992446420" },
+        "RODACOP|Wesley Gonçalves Rodrigues": { cpf: "590.682.721-68", telefone: "63984014369" },
+        "RODACOP|Odair José de Sousa": { cpf: "989.477.611-68", telefone: "63984826152" },
+        "RODACOP|Alex Castro Magalhães": { cpf: "009.177.391-16", telefone: "63984135048" },
+        "RODACOP|Gabriel Lopes Soares": { cpf: "082.629.441-35", telefone: "63981588214" }
+      };
+    
+      function preencherDadosMotorista() {
+        const select = document.getElementById("motorista");
+        const chave = select.value;
+        const dados = dadosMotoristas[chave] || { cpf: "", telefone: "" };
+        document.getElementById("cpf").value = dados.cpf;
+        document.getElementById("telefone").value = dados.telefone;
+      }
+    </script>
+
 
     <hr>
     <div class="horarios">
       <label>Chegada Unidade:
         <input type="time" id="horaChegada">
-        <button type="button" onclick="registrarHora('horaChegada')">Registrar</button>
+        <button type="button" onclick="registrarHoraComConfirmacao('horaChegada')">Registrar</button>
       </label>
       <label>Hora Doca:
         <input type="time" id="horaDoca">
-        <button type="button" onclick="registrarHora('horaDoca')">Registrar</button>
+        <button type="button" onclick="registrarHoraComConfirmacao('horaDoca')">Registrar</button>
       </label>
       <label>Início Carregamento:
         <input type="time" id="horaInicio">
-        <button type="button" onclick="registrarHora('horaInicio')">Registrar</button>
+        <button type="button" onclick="registrarHoraComConfirmacao('horaInicio')">Registrar</button>
       </label>
       <label>Término Carregamento:
         <input type="time" id="horaTermino">
@@ -208,10 +379,10 @@
       </label>
       <label>Saída:
         <input type="time" id="horaSaida">
-        <button type="button" onclick="registrarHora('horaSaida')">Registrar</button>
+        <button type="button" onclick="registrarHoraComConfirmacao('horaSaida')">Registrar</button>
       </label>
       <label>Previsão de Destino:
-        <input type="text" id="previsaoDestino" placeholder="Ex: 14h, após 16h, etc.">
+        <input type="text" id="previsaoDestino" placeholder="Digite a previsão de destino.">
       </label>
     </div>
 
@@ -280,18 +451,39 @@
     }
 
     function preencherDadosMotorista() {
-      document.getElementById('cpf').value = '000.000.000-00';
-      document.getElementById('telefone').value = '(00) 90000-0000';
-    }
 
-    function registrarHora(id) {
-      const agora = new Date();
-      const hora = agora.toTimeString().split(':').slice(0, 2).join(':');
-      document.getElementById(id).value = hora;
+  const select = document.getElementById("motorista");
+  const chave = select.value;
+  const dados = dadosMotoristas[chave] || { cpf: "", telefone: "" };
+  document.getElementById("cpf").value = dados.cpf;
+  document.getElementById("telefone").value = dados.telefone;
+
+    if (dados) {
+      document.getElementById("cpf").value = dados.cpf;
+      document.getElementById("telefone").value = dados.telefone;
+    } else {
+      document.getElementById("cpf").value = "";
+      document.getElementById("telefone").value = "";
     }
+  }
+
+    function registrarHoraComConfirmacao(id) {
+    const input = document.getElementById(id);
+    if (input.value) {
+      const confirmar = confirm("Horário já registrado: \"" + input.value + "\". Deseja ajustar?");
+      if (!confirmar) return;
+    }
+    registrarHora(id);
+  }
+
+  function registrarHora(id) {
+    const agora = new Date();
+    const hora = agora.toTimeString().split(":").slice(0, 2).join(":");
+    document.getElementById(id).value = hora;
+  }
 
     function confirmarFotoBauAberto() {
-      if (confirm("Foto do baú aberto foi registrada?")) {
+      if (confirm("Tirar foto do baú aberto!")) {
         registrarHora('horaTermino');
       }
     }
@@ -308,7 +500,7 @@
 
     function gerarCheckboxesRotas() {
       const container = document.getElementById('rotasCheckboxes');
-      for (let i = 1; i <= 60; i++) {
+      for (let i = 1; i <= 80; i++) {
         const label = document.createElement('label');
         label.innerHTML = `<input type="checkbox" value="${i.toString().padStart(2, '0')}"> ${i.toString().padStart(2, '0')}`;
         container.appendChild(label);
@@ -318,7 +510,8 @@
     function gerarReport() {
       if (!confirm("Tem certeza que deseja gerar o relatório?")) return;
 
-      const data = document.getElementById('data')?.value;
+      const dataInput = document.getElementById('data')?.value;
+    const data = dataInput ? dataInput.split('-').reverse().join('/') : '';
       const doca = document.getElementById('doca')?.value;
       const rota = document.getElementById('rota-select')?.value;
       const tipoVeiculo = document.getElementById('tipoVeiculo')?.value;
@@ -335,47 +528,60 @@
       const previsaoDestino = document.getElementById('previsaoDestino')?.value;
       const lacreBau = document.getElementById('lacreBau')?.value;
       const lacreLateral1 = document.getElementById('lacreLateral1')?.value || (document.getElementById('lateral1NaoUsa')?.checked ? 'Não Utiliza' : '');
-      const lacreLateral2 = document.getElementById('lacreLateral2')?.value || (document.getElementById('lateral2NaoUsa')?.checked ? 'Não Utiliza' : '');
+      const lacreLateral2 = document.getElementById('lacreLateral2')?.value || (document.getElementById('lateral2NaoUsa')?.checked ? ' ' : '');
       const volumoso = document.getElementById('volumoso')?.value;
       const gaiola = document.getElementById('gaiola')?.value;
       const mangaPallet = document.getElementById('mangaPallet')?.value;
       const rotasSelecionadas = Array.from(document.querySelectorAll('.rotas input[type="checkbox"]:checked'))
-  .map(cb => cb.labels[0].innerText) // ou cb.value, se você usar "value" nos inputs
+  .map(cb => cb.labels[0].innerText)
   .join(', ');
 
       const mensagem = `Data: ${data}
-Doca: ${doca}
-${tipoVeiculo}: ${rota}
-Placa: ${placaSecundaria}
-Placa Cavalo: ${placaPrimaria}
-Condutor: ${motorista}
-CPF: ${cpf}
-Tel: ${telefone}
-Chegada na unidade: ${horaChegada}
-Encostado na doca:${horaDoca}
-Início carregamento:${horaInicio}
-Término:${horaTermino}
-Saída Liberada:${horaSaida}
-Previsão do Destino:${previsaoDestino}
-Gaiolas:${gaiola}
-Rotas: ${rotasSelecionadas}
-Lacre Baú: ${lacreBau}
-Lacres Laterais:${lacreLateral1} || ${lacreLateral2}
-Manga Pallet com sacolas:${mangaPallet}
-Volumosos: ${volumoso}
-Yms saída ok.`;
+                        Doca: ${doca}
+                        ${tipoVeiculo}: ${rota}
+                        Placa: ${placaSecundaria}
+                        Placa Cavalo: ${placaPrimaria}
+                        Condutor: ${motorista}
+                        CPF: ${cpf}
+                        Tel: ${telefone}
+                        Chegada na unidade: ${horaChegada}
+                        Encostado na doca: ${horaDoca}
+                        Início carregamento: ${horaInicio}
+                        Término: ${horaTermino}
+                        Saída Liberada: ${horaSaida}
+                        Previsão do Destino: ${previsaoDestino}
+                        Gaiolas: ${gaiola}
+                        Rotas: ${rotasSelecionadas}
+                        Lacre Baú: ${lacreBau}
+                        Lacres Laterais: ${lacreLateral1} || ${lacreLateral2}
+                        Manga Pallet com sacolas: ${mangaPallet}
+                        Volumosos: ${volumoso}
+                        Yms saída ok.   `;
 
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(12);
-      const linhas = mensagem.split('\n');
-      let y = 10;
-      linhas.forEach(linha => {
-        doc.text(linha, 10, y);
-        y += 8;
-      });
-      doc.save(`carregamento-${data}.pdf`);
+const { jsPDF } = window.jspdf;
+const doc = new jsPDF();
+doc.setFont("helvetica", "normal");
+doc.setFontSize(12);
+
+const margemEsquerda = 10;
+const larguraMaxima = 190; 
+let y = 10;
+
+const linhas = mensagem.split('\n');
+
+linhas.forEach(linha => {
+  const linhasQuebradas = doc.splitTextToSize(linha, larguraMaxima);
+    linhasQuebradas.forEach(subLinha => {
+    if (y > 280) { 
+      doc.addPage();
+      y = 10;
+    }
+    doc.text(subLinha, margemEsquerda, y);
+    y += 8;
+  });
+});
+
+doc.save(`carregamento-${data}.pdf`);
     }
 
     window.onload = gerarCheckboxesRotas;
