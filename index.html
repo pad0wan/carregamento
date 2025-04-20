@@ -91,26 +91,28 @@ hr {
 
 
     .lacres label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
-  }
+  display: flex;
+  flex-direction: column; /* 👈 isso força os elementos a ficarem um abaixo do outro */
+  align-items: flex-start; /* alinha os itens à esquerda */
+  gap: 8px;
+  margin-bottom: 10px;
+}
 
-  .lacres input[type="text"] {
-    min-width: 250px; /* 👈 aqui aumentamos o tamanho mínimo */
-    padding: 6px;
-    font-size: 14px;
-  }
-  .lacres button {
-    padding: 6px 10px;
-  }
-  .lacres input[type="checkbox"] {
-    transform: scale(1); /* deixa o checkbox um pouco maior também, se quiser */
-  }
-  .lacres input[type="text"] {
-    flex: 1; /* Para os campos de texto ocuparem espaço proporcional */
-  }
+.lacres input[type="text"] {
+  width: 100%; /* 👈 ocupa a largura total do contêiner */
+  max-width: 100%; /* garante que não estoure a largura da tela */
+  padding: 6px;
+  font-size: 14px;
+  box-sizing: border-box; /* inclui padding e border no cálculo da largura */
+}
+
+.lacres button {
+  padding: 6px 10px;
+}
+
+.lacres input[type="checkbox"] {
+  transform: scale(1);
+}
 
 
 
