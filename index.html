@@ -29,7 +29,7 @@ h1 {
 }
 
 form {
-  background: #1a1a1a; /* fundo escuro pro formulário */
+  background: #1a1a1a; 
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05); /* leve sombra branca */
@@ -106,7 +106,7 @@ hr {
     padding: 6px 10px;
   }
   .lacres input[type="checkbox"] {
-    transform: scale(1.2); /* deixa o checkbox um pouco maior também, se quiser */
+    transform: scale(1); /* deixa o checkbox um pouco maior também, se quiser */
   }
   .lacres input[type="text"] {
     flex: 1; /* Para os campos de texto ocuparem espaço proporcional */
@@ -128,7 +128,7 @@ hr {
   }
 
   .cargas input[type="checkbox"] {
-    transform: scale(1.2); /* deixa mais visível, opcional */
+    transform: scale(1); /* deixa mais visível, opcional */
   }
 
 
@@ -142,7 +142,7 @@ hr {
       gap: 8px;
     }
     .checkbox-group label {
-      background: #e0f2fe;
+      background: #3d3d3d;
       border-radius: 8px;
       padding: 8px 12px;
     }
@@ -207,8 +207,8 @@ hr {
       const placaMap = {
         "MSR - KIA5I83": ["KIA5I83", ""],
         "MSR - DRX8D24 / JAW3D30": ["DRX8D24", "JAW3D30"],
-        "MSR - MXB3387 (Dc 05) / MLO6F04": ["MXB3387 (Dc 05)", "MLO6F04"],
-        "MSR - RBL4J23 (Dc 06) / ONC3I65": ["RBL4J23 (Dc 06)", "ONC3I65"],
+        "MSR - MXB3387 / MLO6F04": ["MXB3387", "MLO6F04"],
+        "MSR - RBL4J23 / ONC3I65": ["RBL4J23", "ONC3I65"],
         "MSR - NWE5A88 / ONG5H07": ["NWE5A88", "ONG5H07"],
         "MSR - PRO5B99": ["PRO5B99", ""],
         "RODACOP - TCK5H69 / HDE8J16": ["TCK5H69", "HDE8J16"],
@@ -250,26 +250,26 @@ hr {
       <select onchange="onSelectChange(this)">
         <option value="">Selecione...</option>
         <option value="manual">Inserir Manualmente</option>
-        <option value="KIA5I83">MSR - KIA5I83</option>
-        <option value="DRX8D24 / JAW3D30">MSR - DRX8D24 / JAW3D30</option>
-        <option value="MXB3387 / MLO6F04">MSR - MXB3387 (Dc 05) / MLO6F04</option>
-        <option value="RBL4J23 / ONC3I65">MSR - RBL4J23 (Dc 06) / ONC3I65</option>
-        <option value="NWE5A88 / ONG5H07">MSR - NWE5A88 / ONG5H07</option>
-        <option value="PRO5B99">MSR - PRO5B99</option>
-        <option value="TCK5H69 / HDE8J16">RODACOP - TCK5H69 / HDE8J16</option>
-        <option value="FOF5B57 / RUK2H11">RODACOP - FOF5B57 / RUK2H11</option>
-        <option value="FTB1F75 / RUKJ2J60">RODACOP - FTB1F75 / RUKJ2J60</option>
-        <option value="RVB2C09">RODACOP - RVB2C09</option>
-        <option value="OQG8012">RODACOP - OQG8012</option>
-        <option value="RFR7E89">RODACOP - RFR7E89</option>
-        <option value="OLM1I23">RODACOP - OLM1I23</option>
-        <option value="QKA6J98">RODACOP - QKA6J98</option>
-        <option value="RSE9F12">RODACOP - RSE9F12</option>
-        <option value="RIN8H85">RODACOP - RIN8H85</option>
-        <option value="RSB4A72">RODACOP - RSB4A72</option>
-        <option value="QWD6D03">RODACOP - QWD6D03</option>
-        <option value="OMU6A20">RODACOP - OMU6A20</option>
-        <option value="OLH2G94">RODACOP - OLH2G94</option>
+        <option value="MSR - KIA5I83">MSR - KIA5I83</option>
+        <option value="MSR - DRX8D24 / JAW3D30">MSR - DRX8D24 / JAW3D30</option>
+        <option value="MSR - MXB3387 / MLO6F04">MSR - MXB3387 (Dc 05) / MLO6F04</option>
+        <option value="MSR - RBL4J23 / ONC3I65">MSR - RBL4J23 (Dc 06) / ONC3I65</option>
+        <option value="MSR - NWE5A88 / ONG5H07">MSR - NWE5A88 / ONG5H07</option>
+        <option value="MSR - PRO5B99">MSR - PRO5B99</option>
+        <option value="RODACOP - TCK5H69 / HDE8J16">RODACOP - TCK5H69 / HDE8J16</option>
+        <option value="RODACOP - FOF5B57 / RUK2H11">RODACOP - FOF5B57 / RUK2H11</option>
+        <option value="RODACOP - FTB1F75 / RUKJ2J60">RODACOP - FTB1F75 / RUKJ2J60</option>
+        <option value="RODACOP - RVB2C09">RODACOP - RVB2C09</option>
+        <option value="RODACOP - OQG8012">RODACOP - OQG8012</option>
+        <option value="RODACOP - RFR7E89">RODACOP - RFR7E89</option>
+        <option value="RODACOP - OLM1I23">RODACOP - OLM1I23</option>
+        <option value="RODACOP - QKA6J98">RODACOP - QKA6J98</option>
+        <option value="RODACOP - RSE9F12">RODACOP - RSE9F12</option>
+        <option value="RODACOP - RIN8H85">RODACOP - RIN8H85</option>
+        <option value="RODACOP - RSB4A72">RODACOP - RSB4A72</option>
+        <option value="RODACOP - QWD6D03">RODACOP - QWD6D03</option>
+        <option value="RODACOP - OMU6A20">RODACOP - OMU6A20</option>
+        <option value="RODACOP - OLH2G94">RODACOP - OLH2G94</option>
       </select>
     </label>
         
@@ -282,36 +282,17 @@ hr {
     </label>
 
     <hr>
+    <label>Empresa:
+      <select id="empresa" onchange="atualizarMotoristas()">
+        <option value="">Selecione a empresa</option>
+        <option value="MSR">MSR</option>
+        <option value="RODACOP">RODACOP</option>
+      </select>
+    </label>
+    
     <label>Motorista:
       <select id="motorista" onchange="preencherDadosMotorista()">
-        <option value="">Selecione um motorista</option>
-        <option value="Paulo Roberto">MSR - Paulo Roberto</option>
-        <option value="Flacilde Fagundes">MSR - Flacilde Fagundes</option>
-        <option value="Tallysson Magno dos Santos">MSR - Tallysson Magno dos Santos</option>
-        <option value="Wellington Pereira da Silva">MSR - Wellington Pereira da Silva</option>
-        <option value="Marcos Vinicius">MSR - Marcos Vinicius Souza de Moraes</option>
-        <option value="Evaldo de Queiroz">MSR - Evaldo de Queiroz</option>
-        <option value="Otávio Cândido Neto">MSR - Otávio Cândido Neto</option>
-        <option value="Welton Ramos">MSR - Welton Ramos</option>
-    
-        <option value="Idamilton Andrade Silva">RODACOP - Idamilton Andrade Silva</option>
-        <option value="Francis Aniszewski da Silva Gomes">RODACOP - Francis Aniszewski da Silva Gomes</option>
-        <option value="Savio de Souza Santos">RODACOP - Savio de Souza Santos</option>
-        <option value="Alessandro Noleto Gonçalves">RODACOP - Alessandro Noleto Gonçalves</option>
-        <option value="Marcos Vinicius Souza de Moraes">RODACOP - Marcos Vinicius Souza de Moraes</option>
-        <option value="Dalvan dos Santos">RODACOP - Dalvan dos Santos</option>
-        <option value="Mateus da Silva Morais">RODACOP - Mateus da Silva Morais</option>
-        <option value="Divino Alves Guida">RODACOP - Divino Alves Guida</option>
-        <option value="Railan Pereira Coelho dos Santos">RODACOP - Railan Pereira Coelho dos Santos</option>
-        <option value="Romario Aleixo Lima">RODACOP - Romario Aleixo Lima</option>
-        <option value="Raul Monteiro de Sousa">RODACOP - Raul Monteiro de Sousa</option>
-        <option value="Caio Vinicius Oliveira da Silva">RODACOP - Caio Vinicius Oliveira da Silva</option>
-        <option value="Juan de Souza Ribeiro">RODACOP - Juan de Souza Ribeiro</option>
-        <option value="Bismael Rodrigues de Sousa Oliveira">RODACOP - Bismael Rodrigues de Sousa Oliveira</option>
-        <option value="Wesley Gonçalves Rodrigues">RODACOP - Wesley Gonçalves Rodrigues</option>
-        <option value="Odair José de Sousa">RODACOP - Odair José de Sousa</option>
-        <option value="Alex Castro Magalhães">RODACOP - Alex Castro Magalhães</option>
-        <option value="Gabriel Lopes Soares">RODACOP - Gabriel Lopes Soares</option>
+        <option value="">Selecione o motorista</option>
       </select>
     </label>
     
@@ -319,43 +300,74 @@ hr {
     <label>Telefone: <input type="text" id="telefone" readonly></label>
     
     <script>
-      const dadosMotoristas = {
-        "MSR|Paulo Roberto": { cpf: "", telefone: "63992164618" },
-        "MSR|Flacilde Fagundes": { cpf: "010.746.931-67", telefone: "62981881286" },
-        "MSR|Tallysson Magno dos Santos": { cpf: "", telefone: "63991169026" },
-        "MSR|Wellington Pereira da Silva": { cpf: "", telefone: "63991279809" },
-        "MSR|Marcos Vinicius": { cpf: "", telefone: "63991087213" },
-        "MSR|Evaldo de Queiroz": { cpf: "950.351.335-61", telefone: "63992640497" },
-        "MSR|Otávio Cândido Neto": { cpf: "", telefone: "63991500105" },
-        "MSR|Welton Ramos": { cpf: "", telefone: "63992731249" },
+    const dadosMotoristas = {
+      "MSR": {
+        "Paulo Roberto": { cpf: "", telefone: "63992164618" },
+        "Flacilde Fagundes": { cpf: "010.746.931-67", telefone: "62981881286" },
+        "Tallysson Magno dos Santos": { cpf: "", telefone: "63991169026" },
+        "Wellington Pereira da Silva": { cpf: "", telefone: "63991279809" },
+        "Marcos Vinicius Souza de Moraes": { cpf: "", telefone: "63991087213" },
+        "Evaldo de Queiroz": { cpf: "950.351.335-61", telefone: "63992640497" },
+        "Otávio Cândido Neto": { cpf: "", telefone: "63991500105" },
+        "Welton Ramos": { cpf: "", telefone: "63992731249" }
+      },
+      "RODACOP": {
+        "Idamilton Andrade Silva": { cpf: "023.474.221-62", telefone: "63981211457" },
+        "Francis Aniszewski da Silva Gomes": { cpf: "026.385.201-60", telefone: "63981013325" },
+        "Savio de Souza Santos": { cpf: "077.250.851-81", telefone: "63992735270" },
+        "Alessandro Noleto Gonçalves": { cpf: "022.174.181-06", telefone: "61981887661" },
+        "Marcos Vinicius Souza de Moraes": { cpf: "077.063.341-20", telefone: "63992976361" },
+        "Dalvan dos Santos": { cpf: "042.027.111-22", telefone: "63992363023" },
+        "Mateus da Silva Morais": { cpf: "046.498.831-48", telefone: "63992499550" },
+        "Divino Alves Guida": { cpf: "027.865.341-35", telefone: "63999456665" },
+        "Railan Pereira Coelho dos Santos": { cpf: "066.304.091-40", telefone: "63991223145" },
+        "Romario Aleixo Lima": { cpf: "040.701.101-35", telefone: "63992531915" },
+        "Raul Monteiro de Sousa": { cpf: "059.668.101-17", telefone: "63991091677" },
+        "Caio Vinicius Oliveira da Silva": { cpf: "603.210.033-22", telefone: "63992541607" },
+        "Juan de Souza Ribeiro": { cpf: "070.732.651-74", telefone: "63992817191" },
+        "Bismael Rodrigues de Sousa Oliveira": { cpf: "050.908.111-80", telefone: "63992446420" },
+        "Wesley Gonçalves Rodrigues": { cpf: "590.682.721-68", telefone: "63984014369" },
+        "Odair José de Sousa": { cpf: "989.477.611-68", telefone: "63984826152" },
+        "Alex Castro Magalhães": { cpf: "009.177.391-16", telefone: "63984135048" },
+        "Gabriel Lopes Soares": { cpf: "082.629.441-35", telefone: "63981588214" }
+      }
+    };
     
-        "RODACOP|Idamilton Andrade Silva": { cpf: "023.474.221-62", telefone: "63981211457" },
-        "RODACOP|Francis Aniszewski da Silva Gomes": { cpf: "026.385.201-60", telefone: "63981013325" },
-        "RODACOP|Savio de Souza Santos": { cpf: "077.250.851-81", telefone: "63992735270" },
-        "RODACOP|Alessandro Noleto Gonçalves": { cpf: "022.174.181-06", telefone: "61981887661" },
-        "RODACOP|Marcos Vinicius Souza de Moraes": { cpf: "077.063.341-20", telefone: "63992976361" },
-        "RODACOP|Dalvan dos Santos": { cpf: "042.027.111-22", telefone: "63992363023" },
-        "RODACOP|Mateus da Silva Morais": { cpf: "046.498.831-48", telefone: "63992499550" },
-        "RODACOP|Divino Alves Guida": { cpf: "027.865.341-35", telefone: "63999456665" },
-        "RODACOP|Railan Pereira Coelho dos Santos": { cpf: "066.304.091-40", telefone: "63991223145" },
-        "RODACOP|Romario Aleixo Lima": { cpf: "040.701.101-35", telefone: "63992531915" },
-        "RODACOP|Raul Monteiro de Sousa": { cpf: "059.668.101-17", telefone: "63991091677" },
-        "RODACOP|Caio Vinicius Oliveira da Silva": { cpf: "603.210.033-22", telefone: "63992541607" },
-        "RODACOP|Juan de Souza Ribeiro": { cpf: "070.732.651-74", telefone: "63992817191" },
-        "RODACOP|Bismael Rodrigues de Sousa Oliveira": { cpf: "050.908.111-80", telefone: "63992446420" },
-        "RODACOP|Wesley Gonçalves Rodrigues": { cpf: "590.682.721-68", telefone: "63984014369" },
-        "RODACOP|Odair José de Sousa": { cpf: "989.477.611-68", telefone: "63984826152" },
-        "RODACOP|Alex Castro Magalhães": { cpf: "009.177.391-16", telefone: "63984135048" },
-        "RODACOP|Gabriel Lopes Soares": { cpf: "082.629.441-35", telefone: "63981588214" }
-      };
+    function atualizarMotoristas() {
+      const empresaSelecionada = document.getElementById("empresa").value;
+      const selectMotorista = document.getElementById("motorista");
     
-      function preencherDadosMotorista() {
-        const select = document.getElementById("motorista");
-        const chave = select.value;
-        const dados = dadosMotoristas[chave] || { cpf: "", telefone: "" };
+      // Limpar opções atuais
+      selectMotorista.innerHTML = '<option value="">Selecione o motorista</option>';
+    
+      if (empresaSelecionada && dadosMotoristas[empresaSelecionada]) {
+        const motoristas = Object.keys(dadosMotoristas[empresaSelecionada]);
+        motoristas.forEach(nome => {
+          const option = document.createElement("option");
+          option.value = nome;
+          option.textContent = nome;
+          selectMotorista.appendChild(option);
+        });
+      }
+    
+      // Limpa os campos
+      document.getElementById("cpf").value = "";
+      document.getElementById("telefone").value = "";
+    }
+    
+    function preencherDadosMotorista() {
+      const empresa = document.getElementById("empresa").value;
+      const motorista = document.getElementById("motorista").value;
+    
+      if (empresa && motorista && dadosMotoristas[empresa] && dadosMotoristas[empresa][motorista]) {
+        const dados = dadosMotoristas[empresa][motorista];
         document.getElementById("cpf").value = dados.cpf;
         document.getElementById("telefone").value = dados.telefone;
+      } else {
+        document.getElementById("cpf").value = "";
+        document.getElementById("telefone").value = "";
       }
+    }
     </script>
 
 
@@ -388,18 +400,18 @@ hr {
 
     <hr>
     <div class="lacres">
-      <label>Lacre Baú:
+      <label>Lacre Baú
         <input type="text" id="lacreBau">
-        <button type="button" onclick="scanQRCode('lacreBau')">Scanear QR</button>
+        <button type="button" onclick="scanQRCode('lacreBau')">Scanear QRCode</button>
       </label>
-      <label>Lacre Lateral 1:
+      <label>Lacre Lateral
         <input type="text" id="lacreLateral1">
-        <button type="button" onclick="scanQRCode('lacreLateral1')">Scanear Lacre</button>
+        <button type="button" onclick="scanQRCode('lacreLateral1')">Scanear QRCode</button>
         <input type="checkbox" id="lateral1NaoUsa">Não utiliza
       </label>
-      <label>Lacre Lateral :
+      <label>Lacre Lateral 2
         <input type="text" id="lacreLateral2">
-        <button type="button" onclick="scanQRCode('lacreLateral2')">Scanear Lacre</button>
+        <button type="button" onclick="scanQRCode('lacreLateral2')">Scanear QRCode</button>
         <input type="checkbox" id="lateral2NaoUsa">Não utiliza
       </label>
     </div>
@@ -429,7 +441,7 @@ hr {
       <label><input type="checkbox" id="car"> Car</label>
       <label><input type="checkbox" id="mot"> Mot</label>
       <div class="rotas-checkboxes">
-        <p>Rotas (01-60):</p>
+        <p>Rotas XPT:</p>
         <div id="rotasCheckboxes" class="checkbox-group"></div>
       </div>
     </div>
@@ -451,20 +463,15 @@ hr {
     }
 
     function preencherDadosMotorista() {
+  const empresa = document.getElementById("empresa").value;
+  const motorista = document.getElementById("motorista").value;
 
-  const select = document.getElementById("motorista");
-  const chave = select.value;
-  const dados = dadosMotoristas[chave] || { cpf: "", telefone: "" };
+  const dados = (dadosMotoristas[empresa] && dadosMotoristas[empresa][motorista]) || { cpf: "", telefone: "" };
+
   document.getElementById("cpf").value = dados.cpf;
   document.getElementById("telefone").value = dados.telefone;
 
-    if (dados) {
-      document.getElementById("cpf").value = dados.cpf;
-      document.getElementById("telefone").value = dados.telefone;
-    } else {
-      document.getElementById("cpf").value = "";
-      document.getElementById("telefone").value = "";
-    }
+  
   }
 
     function registrarHoraComConfirmacao(id) {
@@ -537,26 +544,26 @@ hr {
   .join(', ');
 
       const mensagem = `Data: ${data}
-                        Doca: ${doca}
-                        ${tipoVeiculo}: ${rota}
-                        Placa: ${placaSecundaria}
-                        Placa Cavalo: ${placaPrimaria}
-                        Condutor: ${motorista}
-                        CPF: ${cpf}
-                        Tel: ${telefone}
-                        Chegada na unidade: ${horaChegada}
-                        Encostado na doca: ${horaDoca}
-                        Início carregamento: ${horaInicio}
-                        Término: ${horaTermino}
-                        Saída Liberada: ${horaSaida}
-                        Previsão do Destino: ${previsaoDestino}
-                        Gaiolas: ${gaiola}
-                        Rotas: ${rotasSelecionadas}
-                        Lacre Baú: ${lacreBau}
-                        Lacres Laterais: ${lacreLateral1} || ${lacreLateral2}
-                        Manga Pallet com sacolas: ${mangaPallet}
-                        Volumosos: ${volumoso}
-                        Yms saída ok.   `;
+Doca: ${doca}
+${tipoVeiculo}: ${rota}
+Placa: ${placaSecundaria}
+Placa Cavalo: ${placaPrimaria}
+Condutor: ${motorista}
+CPF: ${cpf}
+Tel: ${telefone}
+Chegada na unidade: ${horaChegada}
+Encostado na doca: ${horaDoca}
+Início carregamento: ${horaInicio}
+Término: ${horaTermino}
+Saída Liberada: ${horaSaida}
+Previsão do Destino: ${previsaoDestino}
+Gaiolas: ${gaiola}
+Rotas: ${rotasSelecionadas}
+Lacre Baú: ${lacreBau}
+Lacres Laterais: ${lacreLateral1} || ${lacreLateral2}
+Manga Pallet com sacolas: ${mangaPallet}
+Volumosos: ${volumoso}
+Yms saída ok.   `;
 
 const { jsPDF } = window.jspdf;
 const doc = new jsPDF();
