@@ -733,7 +733,18 @@ doc.save(`carregamento-${data}.pdf`);
       }, 100);
     }
 
-    // Aguarda rotas serem geradas para
+   setTimeout(restaurarRotasCheckboxes, 200);
+  });
+
+  // Observador de mudanças nas rotas XPT
+  const observer = new MutationObserver(() => {
+    const checkboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
+    checkboxes.forEach(cb => cb.addEventListener("change", salvarRotasCheckboxes));
+  });
+
+  observer.observe(document.getElementById("rotasCheckboxes"), { childList: true });
+
+</script>
 
 </body>
 </html>
