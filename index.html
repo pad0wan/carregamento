@@ -305,13 +305,16 @@ hr {
     const dadosMotoristas = {
       "MSR": {
         "Paulo Roberto": { cpf: "", telefone: "63992164618" },
+        "Cleuton Macêdo": { cpf: "", telefone: "63981439951" },
         "Flacilde Fagundes": { cpf: "010.746.931-67", telefone: "62981881286" },
+        "Flavio Fagundes": { cpf: "", telefone: "62992749714" },
         "Tallysson Magno dos Santos": { cpf: "", telefone: "63991169026" },
         "Wellington Pereira da Silva": { cpf: "", telefone: "63991279809" },
         "Marcos Vinicius Souza de Moraes": { cpf: "", telefone: "63991087213" },
         "Evaldo de Queiroz": { cpf: "950.351.335-61", telefone: "63992640497" },
         "Otávio Cândido Neto": { cpf: "", telefone: "63991500105" },
-        "Welton Ramos": { cpf: "", telefone: "63992731249" }
+        "Welton Ramos": { cpf: "", telefone: "63992731249" },
+        "Air Otávio": { cpf: "", telefone: "63999150105" },
       },
       "RODACOP": {
         "Idamilton Andrade Silva": { cpf: "023.474.221-62", telefone: "63981211457" },
@@ -565,7 +568,7 @@ Lacre Baú: ${lacreBau}
 Lacres Laterais: ${lacreLateral1} || ${lacreLateral2}
 Manga Pallet com sacolas: ${mangaPallet}
 Volumosos: ${volumoso}
-Yms saída ok.   `;
+Yms saída ok...........   `;
 
 const { jsPDF } = window.jspdf;
 const doc = new jsPDF();
@@ -675,6 +678,62 @@ doc.save(`carregamento-${data}.pdf`);
   }
 </script>
 
+ <script>
+  // IDs dos campos que você quer salvar e restaurar
+  const camposParaSalvar = [
+    "data", "rota-select", "doca", "tipoVeiculo", "placaPrimaria", "placaSecundaria",
+    "empresa", "motorista", "cpf", "telefone", "horaChegada", "horaDoca", 
+    "horaInicio", "horaTermino", "horaSaida", "previsaoDestino", 
+    "lacreBau", "lacreLateral1", "lacreLateral2", 
+    "volumoso", "gaiola", "mangaPallet", "valioso", "car", "mot"
+  ];
+
+  // Salva campos simples (textos, selects, checkboxes principais)
+  camposParaSalvar.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("change", () => {
+        const tipo = el.type === "checkbox" ? "checked" : "value";
+        localStorage.setItem(id, el[tipo]);
+      });
+    }
+  });
+
+  // Salvar rotas dinâmicas (1 a 80)
+  function salvarRotasCheckboxes() {
+    const checkboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
+    const estados = Array.from(checkboxes).map(cb => cb.checked);
+    localStorage.setItem("rotasCheckboxes", JSON.stringify(estados));
+  }
+
+  function restaurarRotasCheckboxes() {
+    const estados = JSON.parse(localStorage.getItem("rotasCheckboxes") || "[]");
+    const checkboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
+    checkboxes.forEach((cb, i) => {
+      if (typeof estados[i] !== "undefined") cb.checked = estados[i];
+    });
+  }
+
+  // Restaura campos simples e rotas ao carregar a página
+  window.addEventListener("load", () => {
+    camposParaSalvar.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && localStorage.getItem(id) !== null) {
+        const tipo = el.type === "checkbox" ? "checked" : "value";
+        el[tipo] = el.type === "number" ? parseInt(localStorage.getItem(id)) : localStorage.getItem(id);
+      }
+    });
+
+    // Recarrega motoristas se empresa estiver selecionada
+    if (document.getElementById("empresa").value) {
+      atualizarMotoristas();
+      setTimeout(() => {
+        document.getElementById("motorista").value = localStorage.getItem("motorista") || "";
+        preencherDadosMotorista();
+      }, 100);
+    }
+
+    // Aguarda rotas serem geradas para
 
 </body>
 </html>
