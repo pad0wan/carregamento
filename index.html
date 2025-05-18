@@ -453,6 +453,9 @@ hr {
 
     <hr>
     <button type="button" onclick="gerarReport()">Gerar Report</button>
+
+    <button type="button" class="btn-remover" onclick="limparFormulario()">Limpar Tudo</button>
+
   </form>
 
   <script>
@@ -745,6 +748,50 @@ doc.save(`carregamento-${data}.pdf`);
   observer.observe(document.getElementById("rotasCheckboxes"), { childList: true });
 
 </script>
+
+  <script>
+  function limparFormulario() {
+    if (!confirm("Tem certeza que deseja limpar todos os dados?")) return;
+
+    // Limpar todos os campos do formulário
+    document.getElementById("form-carregamento").reset();
+
+    // Limpar valores manualmente onde necessário
+    ["placaPrimaria", "placaSecundaria", "cpf", "telefone", "previsaoDestino"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = "";
+    });
+
+    // Desmarcar checkboxes manuais
+    document.querySelectorAll("input[type='checkbox']").forEach(cb => cb.checked = false);
+
+    // Zerar contadores numéricos
+    ["volumoso", "gaiola", "mangaPallet"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = 0;
+    });
+
+    // Limpar campos armazenados no localStorage
+    const camposParaSalvar = [
+      "data", "rota-select", "doca", "tipoVeiculo", "placaPrimaria", "placaSecundaria",
+      "empresa", "motorista", "cpf", "telefone", "horaChegada", "horaDoca", 
+      "horaInicio", "horaTermino", "horaSaida", "previsaoDestino", 
+      "lacreBau", "lacreLateral1", "lacreLateral2", 
+      "volumoso", "gaiola", "mangaPallet", "valioso", "car", "mot"
+    ];
+    camposParaSalvar.forEach(id => localStorage.removeItem(id));
+    localStorage.removeItem("rotasCheckboxes");
+
+    // Atualizar campos que dependem de JavaScript (placas, motoristas)
+    atualizarMotoristas();
+    preencherDadosMotorista();
+    setTimeout(() => {
+      document.getElementById("motorista").value = "";
+      preencherDadosMotorista();
+    }, 100);
+  }
+</script>
+
 
 </body>
 </html>
