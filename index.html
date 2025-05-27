@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -693,51 +692,60 @@ doc.save(`carregamento-${data}.pdf`);
   ];
 
   // Salva campos simples (textos, selects, checkboxes principais)
-  camposParaSalvar.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener("change", () => {
-        const tipo = el.type === "checkbox" ? "checked" : "value";
-        localStorage.setItem(id, el[tipo]);
-      });
+   function salvarCampo(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const tipo = el.type === "checkbox" ? "checked" : "value";
+      const valor = tipo === "checked" ? el.checked : el.value;
+      localStorage.setItem(id, valor);
     }
-  });
 
-  // Salvar rotas dinâmicas (1 a 80)
-  function salvarRotasCheckboxes() {
-    const checkboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
-    const estados = Array.from(checkboxes).map(cb => cb.checked);
-    localStorage.setItem("rotasCheckboxes", JSON.stringify(estados));
-  }
-
-  function restaurarRotasCheckboxes() {
-    const estados = JSON.parse(localStorage.getItem("rotasCheckboxes") || "[]");
-    const checkboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
-    checkboxes.forEach((cb, i) => {
-      if (typeof estados[i] !== "undefined") cb.checked = estados[i];
+    camposParaSalvar.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const evento = el.tagName === "INPUT" || el.tagName === "TEXTAREA" ? "input" : "change";
+      el.addEventListener(evento, () => salvarCampo(id));
     });
+
+    function salvarRotasCheckboxes() {
+      const checkboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
+      const estados = Array.from(checkboxes).map(cb => cb.checked);
+      localStorage.setItem("rotasCheckboxes", JSON.stringify(estados));
+    }
+
+    function restaurarRotasCheckboxes() {
+      const estados = JSON.parse(localStorage.getItem("rotasCheckboxes") || "[]");
+      const checkboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
+      checkboxes.forEach((cb, i) => {
+        if (typeof estados[i] !== "undefined") cb.checked = estados[i];
+      });
   }
 
   // Restaura campos simples e rotas ao carregar a página
-  window.addEventListener("load", () => {
-    camposParaSalvar.forEach(id => {
-      const el = document.getElementById(id);
-      if (el && localStorage.getItem(id) !== null) {
-        const tipo = el.type === "checkbox" ? "checked" : "value";
-        el[tipo] = el.type === "number" ? parseInt(localStorage.getItem(id)) : localStorage.getItem(id);
-      }
-    });
+    window.addEventListener("load", () => {
+      camposParaSalvar.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (localStorage.getItem(id) !== null) {
+          const tipo = el.type === "checkbox" ? "checked" : "value";
+          if (tipo === "checked") {
+            el.checked = localStorage.getItem(id) === "true";
+          } else {
+            el.value = localStorage.getItem(id);
+          }
+        }
+      });
 
     // Recarrega motoristas se empresa estiver selecionada
-    if (document.getElementById("empresa").value) {
-      atualizarMotoristas();
-      setTimeout(() => {
-        document.getElementById("motorista").value = localStorage.getItem("motorista") || "";
-        preencherDadosMotorista();
-      }, 100);
-    }
+      if (document.getElementById("empresa").value) {
+        atualizarMotoristas();
+        setTimeout(() => {
+          document.getElementById("motorista").value = localStorage.getItem("motorista") || "";
+          preencherDadosMotorista();
+        }, 100);
+      }
 
-   setTimeout(restaurarRotasCheckboxes, 200);
+   setTimeout(restaurarRotasCheckboxes, 300);
   });
 
   // Observador de mudanças nas rotas XPT
@@ -793,6 +801,6 @@ doc.save(`carregamento-${data}.pdf`);
   }
 </script>
 
-
 </body>
 </html>
+
