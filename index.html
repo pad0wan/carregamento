@@ -291,12 +291,19 @@ hr {
       </select>
     </label>
     
-    <label>Motorista:
+    <label>Motorista (Para motoristas novos, digite manualmente os dados):
       <select id="motorista" onchange="preencherDadosMotorista()">
         <option value="">Selecione o motorista</option>
       </select>
     </label>
     
+<label>Nome do Motorista:
+  <input type="text" id="motoristaManual" placeholder="Digite o nome do motorista">
+</label>
+<label>Telefone:
+  <input type="text" id="telefoneManual" placeholder="Digite o telefone">
+</label>
+
     <label>CPF: <input type="text" id="cpf" readonly></label><br>
     <label>Telefone: <input type="text" id="telefone" readonly></label>
     
@@ -470,7 +477,7 @@ hr {
       secLabel.style.display = (tipo === 'carreta') ? 'block' : 'none';
     }
 
-    function preencherDadosMotorista() {
+function preencherDadosMotorista() {
   const empresa = document.getElementById("empresa").value;
   const motorista = document.getElementById("motorista").value;
 
@@ -479,8 +486,11 @@ hr {
   document.getElementById("cpf").value = dados.cpf;
   document.getElementById("telefone").value = dados.telefone;
 
-  
+  if (motorista) {
+    document.getElementById("motoristaManual").value = motorista;
+    document.getElementById("telefoneManual").value = dados.telefone;
   }
+}
 
     function registrarHoraComConfirmacao(id) {
     const input = document.getElementById(id);
@@ -532,9 +542,9 @@ hr {
       const tipoVeiculo = document.getElementById('tipoVeiculo')?.value;
       const placaPrimaria = document.getElementById('placaPrimaria')?.value;
       const placaSecundaria = document.getElementById('placaSecundaria')?.value;
-      const motorista = document.getElementById('motorista')?.value;
+      let motorista = document.getElementById('motorista')?.value || document.getElementById('motoristaManual')?.value;
       const cpf = document.getElementById('cpf')?.value;
-      const telefone = document.getElementById('telefone')?.value;
+      let telefone = document.getElementById('telefone')?.value || document.getElementById('telefoneManual')?.value;
       const horaChegada = document.getElementById('horaChegada')?.value;
       const horaDoca = document.getElementById('horaDoca')?.value;
       const horaInicio = document.getElementById('horaInicio')?.value;
@@ -683,13 +693,14 @@ doc.save(`carregamento-${data}.pdf`);
 
  <script>
   // IDs dos campos que você quer salvar e restaurar
-  const camposParaSalvar = [
-    "data", "rota-select", "doca", "tipoVeiculo", "placaPrimaria", "placaSecundaria",
-    "empresa", "motorista", "cpf", "telefone", "horaChegada", "horaDoca", 
-    "horaInicio", "horaTermino", "horaSaida", "previsaoDestino", 
-    "lacreBau", "lacreLateral1", "lacreLateral2", 
-    "volumoso", "gaiola", "mangaPallet", "valioso", "car", "mot"
-  ];
+const camposParaSalvar = [
+  "data", "rota-select", "doca", "tipoVeiculo", "placaPrimaria", "placaSecundaria",
+  "empresa", "motorista", "cpf", "telefone", "horaChegada", "horaDoca", 
+  "horaInicio", "horaTermino", "horaSaida", "previsaoDestino", 
+  "lacreBau", "lacreLateral1", "lacreLateral2", 
+  "volumoso", "gaiola", "mangaPallet", "valioso", "car", "mot",
+  "motoristaManual", "telefoneManual"
+];
 
   // Salva campos simples (textos, selects, checkboxes principais)
    function salvarCampo(id) {
@@ -781,13 +792,14 @@ doc.save(`carregamento-${data}.pdf`);
     });
 
     // Limpar campos armazenados no localStorage
-    const camposParaSalvar = [
-      "data", "rota-select", "doca", "tipoVeiculo", "placaPrimaria", "placaSecundaria",
-      "empresa", "motorista", "cpf", "telefone", "horaChegada", "horaDoca", 
-      "horaInicio", "horaTermino", "horaSaida", "previsaoDestino", 
-      "lacreBau", "lacreLateral1", "lacreLateral2", 
-      "volumoso", "gaiola", "mangaPallet", "valioso", "car", "mot"
-    ];
+const camposParaSalvar = [
+  "data", "rota-select", "doca", "tipoVeiculo", "placaPrimaria", "placaSecundaria",
+  "empresa", "motorista", "cpf", "telefone", "horaChegada", "horaDoca", 
+  "horaInicio", "horaTermino", "horaSaida", "previsaoDestino", 
+  "lacreBau", "lacreLateral1", "lacreLateral2", 
+  "volumoso", "gaiola", "mangaPallet", "valioso", "car", "mot",
+  "motoristaManual", "telefoneManual"
+];
     camposParaSalvar.forEach(id => localStorage.removeItem(id));
     localStorage.removeItem("rotasCheckboxes");
 
@@ -800,7 +812,6 @@ doc.save(`carregamento-${data}.pdf`);
     }, 100);
   }
 </script>
-
 </body>
 </html>
 
