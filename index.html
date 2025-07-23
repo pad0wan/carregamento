@@ -8,149 +8,85 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-  <meta charset="UTF-8">
   <style>
-  
+    * {
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
     body {
-        font-family: 'Inter', sans-serif;
-  background-color: #000; /* fundo preto */
-  color: #fff; /* texto branco */
-  padding: 20px;
-  max-width: 600px;
-  margin: auto;
-}
-
-h1 {
-  text-align: center;
-  color: #fcf81a; /* pode manter esse verde vibrante */
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-}
-
-form {
-  background: #1a1a1a; 
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05); /* leve sombra branca */
-}
-
-label {
-  display: block;
-  margin-bottom: 12px;
-  font-weight: 600;
-}
-
-input, select, button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 4px;
-  margin-bottom: 16px;
-  border-radius: 8px;
-  border: 1px solid #555; /* borda mais suave em modo escuro */
-  background-color: #111;
-  color: #fff;
-  font-size: 1rem;
-  transition: all 0.2s ease-in-out;
-}
-
-input::placeholder,
-select::placeholder {
-  color: #aaa; /* placeholder mais claro */
-}
-
-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #2563eb;
-  transform: scale(1.03);
-}
-
-.btn-adicionar { background-color: #10b981; }
-.btn-adicionar:hover { background-color: #059669; }
-
-.btn-remover { background-color: #ef4444; }
-.btn-remover:hover { background-color: #dc2626; }
-
-hr {
-  margin: 24px 0;
-  border: none;
-  border-top: 1px solid #333;
-}
-    .horarios label,
-
-
-    .lacres label {
-  display: flex;
-  flex-direction: column; /* 👈 isso força os elementos a ficarem um abaixo do outro */
-  align-items: flex-start; /* alinha os itens à esquerda */
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.lacres input[type="text"] {
-  width: 100%; /* 👈 ocupa a largura total do contêiner */
-  max-width: 100%; /* garante que não estoure a largura da tela */
-  padding: 6px;
-  font-size: 14px;
-  box-sizing: border-box; /* inclui padding e border no cálculo da largura */
-}
-
-.lacres button {
-  padding: 6px 10px;
-}
-
-.lacres input[type="checkbox"] {
-  transform: scale(1);
-}
-
-
-
-  .cargas label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-
-  .cargas input[type="text"] {
-    min-width: 250px;
-    padding: 6px;
-    font-size: 14px;
-  }
-
-  .cargas input[type="checkbox"] {
-    transform: scale(1); /* deixa mais visível, opcional */
-  }
-
-
-
-    .rotas label {
-      font-weight: normal;
+      font-family: 'Inter', sans-serif;
+      background-color: #0a0a0a;
+      color: #e5e7eb;
+      padding: 1rem;
+      margin: auto;
+      max-width: 100%;
     }
-    .checkbox-group {
+    h1 {
+      text-align: center;
+      color: #fcf81a;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      animation: fadeInDown 0.6s ease;
+    }
+    form {
+      background: #1a1a1a;
+      border-radius: 1rem;
+      padding: 1rem;
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+      flex-direction: column;
+      gap: 1rem;
+      animation: fadeInUp 0.6s ease;
     }
-    .checkbox-group label {
-      background: #3d3d3d;
-      border-radius: 8px;
-      padding: 8px 12px;
+    label {
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
     }
+    label i {
+      margin-right: 0.4rem;
+      color: #fcf81a;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid #333;
+      background-color: #111;
+      color: #fff;
+      font-size: 1rem;
+    }
+    input::placeholder {
+      color: #aaa;
+    }
+    button {
+      background-color: #3b82f6;
+      border: none;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2563eb;
+      transform: scale(1.03);
+    }
+    .btn-remover {
+      background-color: #ef4444;
+    }
+    .btn-remover:hover {
+      background-color: #dc2626;
+    }
+    .horarios label,
+    .lacres label,
     .cargas label {
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .cargas label {
+      flex-direction: row;
       justify-content: space-between;
+      align-items: center;
     }
     .cargas input[type="number"] {
       width: 60px;
@@ -161,20 +97,36 @@ hr {
       padding: 6px;
       font-size: 1.2rem;
     }
-    #rotasCheckboxes label {
-      flex: 1 1 20%;
-      min-width: 50px;
-      text-align: center;
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
-    .rotas input[type="checkbox"] {
-      margin-right: 6px;
+    .checkbox-group label {
+      background: #333;
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      text-align: center;
+      flex: 1 1 20%;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #333;
+      margin: 1.5rem 0;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
-
 </head>
 <body>
-  <h1>Acompanhamento de Carregamento</h1>
-  <form id="form-carregamento">
+  <h1><i class="bi bi-truck"></i> Acompanhamento de Carregamento</h1>
+   <form id="form-carregamento">
     <label>Data:
       <input type="date" id="data" name="data">
       <button type="button" onclick="inserirData()">Inserir Data</button>
@@ -183,11 +135,11 @@ hr {
     <label for="rota-select">Rota:</label>
     <select id="rota-select">
       <option value="">Selecione uma rota</option>
-      <option value="Araguaína">Araguaína</option>
-      <option value="Gurupi">Gurupi</option>
-      <option value="Guaraí">Guaraí</option>
-      <option value="Luiz Eduardo Magalhães">Luiz Eduardo Magalhães</option>
-      <option value="Barreiras">Barreiras</option>
+      <option value="Araguaína">Araguaína (A)</option>
+      <option value="Gurupi">Gurupi (B)</option>
+      <option value="Guaraí">Guaraí (C)</option>
+      <option value="Luiz Eduardo Magalhães">Luiz Eduardo Magalhães (H)</option>
+      <option value="Barreiras">Barreiras (I)</option>
     </select>
 
     <label>Doca:
@@ -206,12 +158,12 @@ hr {
 
     <script>
       const placaMap = {
-        "MSR - KIA5I83": ["KIA5I83", ""],
+
         "MSR - DRX8D24 / JAW3D30": ["DRX8D24", "JAW3D30"],
         "MSR - MXB3387 / MLO6F04": ["MXB3387", "MLO6F04"],
         "MSR - RBL4J23 / ONC3I65": ["RBL4J23", "ONC3I65"],
         "MSR - NWE5A88 / ONG5H07": ["NWE5A88", "ONG5H07"],
-        "MSR - PRO5B99": ["PRO5B99", ""],
+        "MSR - KIA5I83": ["KIA5I83", ""],
         "RODACOP - TCK5H69 / HDE8J16": ["TCK5H69", "HDE8J16"],
         "RODACOP - FOF5B57 / RUK2H11": ["FOF5B57", "RUK2H11"],
         "RODACOP - FTB1F75 / RUKJ2J60": ["FTB1F75", "RUKJ2J60"],
@@ -222,9 +174,6 @@ hr {
         "RODACOP - QKA6J98": ["QKA6J98", ""],
         "RODACOP - RSE9F12": ["RSE9F12", ""],
         "RODACOP - RIN8H85": ["RIN8H85", ""],
-        "RODACOP - RSB4A72": ["RSB4A72", ""],
-        "RODACOP - QWD6D03": ["QWD6D03", ""],
-        "RODACOP - OMU6A20": ["OMU6A20", ""],
         "RODACOP - OLH2G94": ["OLH2G94", ""]
       };
     
@@ -251,12 +200,12 @@ hr {
       <select onchange="onSelectChange(this)">
         <option value="">Selecione...</option>
         <option value="manual">Inserir Manualmente</option>
-        <option value="MSR - KIA5I83">MSR - KIA5I83</option>
+
         <option value="MSR - DRX8D24 / JAW3D30">MSR - DRX8D24 / JAW3D30</option>
         <option value="MSR - MXB3387 / MLO6F04">MSR - MXB3387 (Dc 05) / MLO6F04</option>
         <option value="MSR - RBL4J23 / ONC3I65">MSR - RBL4J23 / ONC3I65</option>
         <option value="MSR - NWE5A88 / ONG5H07">MSR - NWE5A88 (Dc 06) / ONG5H07</option>
-        <option value="MSR - PRO5B99">MSR - PRO5B99</option>
+        <option value="MSR - KIA5I83">MSR - KIA5I83</option>
         <option value="RODACOP - TCK5H69 / HDE8J16">RODACOP - TCK5H69 / HDE8J16</option>
         <option value="RODACOP - FOF5B57 / RUK2H11">RODACOP - FOF5B57 / RUK2H11</option>
         <option value="RODACOP - FTB1F75 / RUKJ2J60">RODACOP - FTB1F75 / RUKJ2J60</option>
@@ -267,9 +216,6 @@ hr {
         <option value="RODACOP - QKA6J98">RODACOP - QKA6J98</option>
         <option value="RODACOP - RSE9F12">RODACOP - RSE9F12</option>
         <option value="RODACOP - RIN8H85">RODACOP - RIN8H85</option>
-        <option value="RODACOP - RSB4A72">RODACOP - RSB4A72</option>
-        <option value="RODACOP - QWD6D03">RODACOP - QWD6D03</option>
-        <option value="RODACOP - OMU6A20">RODACOP - OMU6A20</option>
         <option value="RODACOP - OLH2G94">RODACOP - OLH2G94</option>
       </select>
     </label>
@@ -310,28 +256,27 @@ hr {
     <script>
     const dadosMotoristas = {
       "MSR": {
-        "Paulo Roberto": { cpf: "", telefone: "63992164618" },
-        "Cleuton Macêdo": { cpf: "", telefone: "63981439951" },
+        "Evaldo de Queiroz": { cpf: "950.351.335-61", telefone: "63992640497" },
+        "Cleuton Macêdo": { cpf: "813.243.161-87", telefone: "63981439951" },
+        "Tallysson Magno dos Santos": { cpf: "", telefone: "63991169026" },
+        "Marcos Vinicius Oliveira": { cpf: "", telefone: "63992500932" },
+        "Wanderson Oliveira Magalhães": { cpf: "062.133.781-11", telefone: "" },
+        "Lucas Nascimento Noleto": { cpf: "053.257.531-85", telefone: "63992200657" },        
         "Flacilde Fagundes": { cpf: "010.746.931-67", telefone: "62981881286" },
         "Flavio Fagundes": { cpf: "", telefone: "62992749714" },
-        "Tallysson Magno dos Santos": { cpf: "", telefone: "63991169026" },
         "Wellington Pereira da Silva": { cpf: "", telefone: "63991279809" },
-        "Marcos Vinicius Souza de Moraes": { cpf: "", telefone: "63991087213" },
-        "Marcos Vinicius": { cpf: "", telefone: "" },
-        "Evaldo de Queiroz": { cpf: "950.351.335-61", telefone: "63992640497" },
-        "Otávio Cândido Neto": { cpf: "", telefone: "63991500105" },
-        "Welton Ramos": { cpf: "", telefone: "63992731249" },
-        "Air Otávio": { cpf: "", telefone: "63999150105" },
+        "Gabriel Lopes Soares": { cpf: "082.629.441-35", telefone: "63981588214" },
+        "Air Otávio Cândido": { cpf: "", telefone: "63999150105" },
+        "Ronielton Alves de Oliveira": { cpf: "026.150.421-57", telefone: "63984208575" }
       },
       "RODACOP": {
         "Idamilton Andrade Silva": { cpf: "023.474.221-62", telefone: "63981211457" },
         "Francis Aniszewski da Silva Gomes": { cpf: "026.385.201-60", telefone: "63981013325" },
         "Savio de Souza Santos": { cpf: "077.250.851-81", telefone: "63992735270" },
-        "Alessandro Noleto Gonçalves": { cpf: "022.174.181-06", telefone: "61981887661" },
-        "Marcos Vinicius Souza de Moraes": { cpf: "077.063.341-20", telefone: "63992976361" },
         "Dalvan dos Santos": { cpf: "042.027.111-22", telefone: "63992363023" },
-        "Mateus da Silva Morais": { cpf: "046.498.831-48", telefone: "63992499550" },
+        "Geovanne Alex da Silva": { cpf: "057.442.151-31", telefone: "" },
         "Divino Alves Guida": { cpf: "027.865.341-35", telefone: "63999456665" },
+        "Diego Alexandre Padovan": { cpf: "", telefone: "11951442749" },
         "Railan Pereira Coelho dos Santos": { cpf: "066.304.091-40", telefone: "63991223145" },
         "Romario Aleixo Lima": { cpf: "040.701.101-35", telefone: "63992531915" },
         "Raul Monteiro de Sousa": { cpf: "059.668.101-17", telefone: "63991091677" },
@@ -340,7 +285,6 @@ hr {
         "Bismael Rodrigues de Sousa Oliveira": { cpf: "050.908.111-80", telefone: "63992446420" },
         "Wesley Gonçalves Rodrigues": { cpf: "590.682.721-68", telefone: "63984014369" },
         "Odair José de Sousa": { cpf: "989.477.611-68", telefone: "63984826152" },
-        "Alex Castro Magalhães": { cpf: "009.177.391-16", telefone: "63984135048" },
         "Gabriel Lopes Soares": { cpf: "082.629.441-35", telefone: "63981588214" }
       }
     };
@@ -349,7 +293,6 @@ hr {
       const empresaSelecionada = document.getElementById("empresa").value;
       const selectMotorista = document.getElementById("motorista");
     
-      // Limpar opções atuais
       selectMotorista.innerHTML = '<option value="">Selecione o motorista</option>';
     
       if (empresaSelecionada && dadosMotoristas[empresaSelecionada]) {
@@ -362,7 +305,6 @@ hr {
         });
       }
     
-      // Limpa os campos
       document.getElementById("cpf").value = "";
       document.getElementById("telefone").value = "";
     }
@@ -449,9 +391,6 @@ hr {
 
     <hr>
     <div class="rotas">
-      <label><input type="checkbox" id="valioso"> Valioso</label>
-      <label><input type="checkbox" id="car"> Car</label>
-      <label><input type="checkbox" id="mot"> Mot</label>
       <div class="rotas-checkboxes">
         <p>Rotas XPT:</p>
         <div id="rotasCheckboxes" class="checkbox-group"></div>
@@ -611,7 +550,6 @@ doc.save(`carregamento-${data}.pdf`);
 
     window.onload = gerarCheckboxesRotas;
   </script>
-  <!-- Modal do Scanner QR -->
 <div id="qrScannerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000000aa; justify-content:center; align-items:center; z-index:9999;">
   <div style="background:#fff; padding:20px; border-radius:12px; position:relative;">
     <button onclick="fecharScanner()" style="position:absolute; top:10px; right:10px; background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:8px; cursor:pointer;">Fechar</button>
@@ -633,7 +571,6 @@ doc.save(`carregamento-${data}.pdf`);
     Html5Qrcode.getCameras().then(cameras => {
       console.log("Câmeras detectadas:", cameras);
       if (cameras && cameras.length) {
-        // Tenta encontrar uma câmera traseira (com base no nome)
         let cameraId;
         const backCamera = cameras.find(cam =>
           cam.label.toLowerCase().includes("back") || cam.label.toLowerCase().includes("traseira")
@@ -642,7 +579,7 @@ doc.save(`carregamento-${data}.pdf`);
         if (backCamera) {
           cameraId = backCamera.id;
         } else {
-          // Se não encontrar, usa a primeira disponível
+
           cameraId = cameras[0].id;
         }
 
@@ -692,17 +629,16 @@ doc.save(`carregamento-${data}.pdf`);
 </script>
 
  <script>
-  // IDs dos campos que você quer salvar e restaurar
+
 const camposParaSalvar = [
   "data", "rota-select", "doca", "tipoVeiculo", "placaPrimaria", "placaSecundaria",
   "empresa", "motorista", "cpf", "telefone", "horaChegada", "horaDoca", 
   "horaInicio", "horaTermino", "horaSaida", "previsaoDestino", 
   "lacreBau", "lacreLateral1", "lacreLateral2", 
-  "volumoso", "gaiola", "mangaPallet", "valioso", "car", "mot",
+  "volumoso", "gaiola", "mangaPallet",
   "motoristaManual", "telefoneManual"
 ];
 
-  // Salva campos simples (textos, selects, checkboxes principais)
    function salvarCampo(id) {
       const el = document.getElementById(id);
       if (!el) return;
@@ -731,8 +667,6 @@ const camposParaSalvar = [
         if (typeof estados[i] !== "undefined") cb.checked = estados[i];
       });
   }
-
-  // Restaura campos simples e rotas ao carregar a página
     window.addEventListener("load", () => {
       camposParaSalvar.forEach(id => {
         const el = document.getElementById(id);
@@ -747,7 +681,6 @@ const camposParaSalvar = [
         }
       });
 
-    // Recarrega motoristas se empresa estiver selecionada
       if (document.getElementById("empresa").value) {
         atualizarMotoristas();
         setTimeout(() => {
@@ -773,37 +706,30 @@ const camposParaSalvar = [
   function limparFormulario() {
     if (!confirm("Tem certeza que deseja limpar todos os dados?")) return;
 
-    // Limpar todos os campos do formulário
     document.getElementById("form-carregamento").reset();
 
-    // Limpar valores manualmente onde necessário
     ["placaPrimaria", "placaSecundaria", "cpf", "telefone", "previsaoDestino"].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = "";
     });
 
-    // Desmarcar checkboxes manuais
     document.querySelectorAll("input[type='checkbox']").forEach(cb => cb.checked = false);
-
-    // Zerar contadores numéricos
     ["volumoso", "gaiola", "mangaPallet"].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = 0;
     });
 
-    // Limpar campos armazenados no localStorage
 const camposParaSalvar = [
   "data", "rota-select", "doca", "tipoVeiculo", "placaPrimaria", "placaSecundaria",
   "empresa", "motorista", "cpf", "telefone", "horaChegada", "horaDoca", 
   "horaInicio", "horaTermino", "horaSaida", "previsaoDestino", 
   "lacreBau", "lacreLateral1", "lacreLateral2", 
-  "volumoso", "gaiola", "mangaPallet", "valioso", "car", "mot",
+  "volumoso", "gaiola", "mangaPallet",
   "motoristaManual", "telefoneManual"
 ];
     camposParaSalvar.forEach(id => localStorage.removeItem(id));
     localStorage.removeItem("rotasCheckboxes");
 
-    // Atualizar campos que dependem de JavaScript (placas, motoristas)
     atualizarMotoristas();
     preencherDadosMotorista();
     setTimeout(() => {
@@ -814,4 +740,3 @@ const camposParaSalvar = [
 </script>
 </body>
 </html>
-
