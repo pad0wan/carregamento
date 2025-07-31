@@ -1956,17 +1956,42 @@ function gerarDadosReportConsolidado() {
     return null;
   }
   
-  // Filtra sessões por data e rota
+  console.log('Data selecionada:', data);
+  console.log('Rota selecionada:', rota);
+  console.log('Total de sessões no sistema:', Object.keys(sessionManager.sessions).length);
+  
+  // Filtra sessões por data e rota com debug
   const sessoesFiltradas = Object.values(sessionManager.sessions).filter(session => {
     const sessionData = session.data || {};
     const dataSession = sessionData.data;
     const rotaSession = sessionData['rota-select'];
     
+    // Debug para cada sessão
+    console.log('Verificando sessão:', session.id);
+    console.log('- Data da sessão:', dataSession);
+    console.log('- Rota da sessão:', rotaSession);
+    console.log('- Comparação data:', dataSession === data);
+    console.log('- Comparação rota:', rotaSession === rota);
+    
     return dataSession === data && rotaSession === rota;
   });
   
+  console.log('Sessões filtradas encontradas:', sessoesFiltradas.length);
+  
   if (sessoesFiltradas.length === 0) {
-    alert('Nenhuma sessão encontrada para a data e rota selecionadas!\n\nVerifique se:\n- A data está correta\n- A rota foi selecionada corretamente\n- Existem sessões salvas para esta combinação');
+    // Mostra informações de debug para ajudar o usuário
+    const todasSessoes = Object.values(sessionManager.sessions);
+    const datasEncontradas = [...new Set(todasSessoes.map(s => s.data?.data).filter(Boolean))];
+    const rotasEncontradas = [...new Set(todasSessoes.map(s => s.data?.['rota-select']).filter(Boolean))];
+    
+    let mensagemDebug = `Nenhuma sessão encontrada para a data e rota selecionadas!\n\n`;
+    mensagemDebug += `Data procurada: ${data}\n`;
+    mensagemDebug += `Rota procurada: ${rota}\n\n`;
+    mensagemDebug += `Datas disponíveis no sistema: ${datasEncontradas.join(', ') || 'Nenhuma'}\n`;
+    mensagemDebug += `Rotas disponíveis no sistema: ${rotasEncontradas.join(', ') || 'Nenhuma'}\n\n`;
+    mensagemDebug += `Total de sessões no sistema: ${todasSessoes.length}`;
+    
+    alert(mensagemDebug);
     return null;
   }
   
@@ -1975,18 +2000,30 @@ function gerarDadosReportConsolidado() {
   let totalGaiolaItens = 0;
   let totalMangaPalletItens = 0;
   
-  sessoesFiltradas.forEach(session => {
+  console.log('Processando sessões encontradas:');
+  
+  sessoesFiltradas.forEach((session, index) => {
     const sessionData = session.data || {};
     
     const volumoso = parseInt(sessionData.volumoso) || 0;
     const gaiola = parseInt(sessionData.gaiola) || 0;
     const mangaPallet = parseInt(sessionData.mangaPallet) || 0;
     
+    console.log(`Sessão ${index + 1} (${session.id}):`);
+    console.log('- Volumoso:', volumoso);
+    console.log('- Gaiola:', gaiola);
+    console.log('- Manga Pallet:', mangaPallet);
+    
     // Soma total de itens
     totalVolumosoItens += volumoso;
     totalGaiolaItens += gaiola;
     totalMangaPalletItens += mangaPallet;
   });
+  
+  console.log('Totais calculados:');
+  console.log('- Total Volumoso:', totalVolumosoItens);
+  console.log('- Total Gaiola:', totalGaiolaItens);
+  console.log('- Total Manga Pallet:', totalMangaPalletItens);
   
   const codigoXPT = codigosXPT[rota] || `XPT ${rota.substring(0, 3).toUpperCase()}8`;
   
@@ -1995,9 +2032,9 @@ function gerarDadosReportConsolidado() {
 ${codigoXPT} - ${rota}
 
 Quantidade de Carros: ${sessoesFiltradas.length.toString().padStart(2, '0')}
-Quantidade de Volumoso: ${totalVolumosoItens.toString().padStart(2, '0')}
+Quantidade de Volumosos: ${totalVolumosoItens.toString().padStart(2, '0')}
 Quantidade de Gaiolas: ${totalGaiolaItens.toString().padStart(2, '0')}
-Quantidade de manga de sacola: ${totalMangaPalletItens.toString().padStart(2, '0')}`;
+Quantidade de Manga Pallets: ${totalMangaPalletItens.toString().padStart(2, '0')}`;
   
   return reportText;
 }
