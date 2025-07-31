@@ -1,0 +1,2008 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Relatório de Carregamento MM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚛</text></svg>">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <style>
+    :root {
+      --primary-cyan: #00ffff;
+      --primary-blue: #0066ff;
+      --secondary-purple: #9900ff;
+      --accent-pink: #ff0066;
+      --dark-bg: #0a0a0f;
+      --card-bg: rgba(16, 16, 32, 0.8);
+      --border-glow: rgba(0, 255, 255, 0.3);
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3cc;
+      --gradient-primary: linear-gradient(135deg, var(--primary-cyan), var(--primary-blue));
+      --gradient-secondary: linear-gradient(135deg, var(--secondary-purple), var(--accent-pink));
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--dark-bg);
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(153, 0, 255, 0.1) 0%, transparent 50%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(45deg, transparent 49%, rgba(0, 255, 255, 0.03) 50%, transparent 51%),
+        linear-gradient(-45deg, transparent 49%, rgba(153, 0, 255, 0.03) 50%, transparent 51%);
+      background-size: 20px 20px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      animation: slideInUp 0.8s ease;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .header h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 900;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    .header .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    .session-info {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glow);
+      border-radius: 15px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .session-id {
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      color: var(--primary-cyan);
+      font-size: 1.1rem;
+    }
+
+    .session-controls {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .form-container {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glow);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-container::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: var(--gradient-primary);
+      border-radius: 20px;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .form-container:hover::before {
+      opacity: 0.1;
+    }
+
+    .section {
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary-cyan);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--primary-cyan), transparent);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(16, 16, 32, 0.6);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-family: 'Rajdhani', sans-serif;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--primary-cyan);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .form-input::placeholder {
+      color: rgba(179, 179, 204, 0.6);
+    }
+
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(0, 102, 255, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--gradient-secondary);
+      color: white;
+      box-shadow: 0 10px 30px rgba(153, 0, 255, 0.3);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(153, 0, 255, 0.4);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ff0066, #ff3366);
+      color: white;
+      box-shadow: 0 10px 30px rgba(255, 0, 102, 0.3);
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(255, 0, 102, 0.4);
+    }
+
+    .btn-info {
+      background: linear-gradient(135deg, #17a2b8, #20c997);
+      color: white;
+      box-shadow: 0 10px 30px rgba(23, 162, 184, 0.3);
+    }
+
+    .btn-info:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(23, 162, 184, 0.4);
+    }
+
+    .btn-small {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    .time-controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem;
+      align-items: end;
+    }
+
+    .counter-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(16, 16, 32, 0.6);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 0.5rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .counter-controls .form-input {
+      border: none;
+      background: transparent;
+      text-align: center;
+      width: 80px;
+      padding: 0.5rem;
+    }
+
+    .counter-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 8px;
+      background: var(--gradient-primary);
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .counter-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+    }
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .checkbox-item {
+      position: relative;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      display: none;
+    }
+
+    .checkbox-item label {
+      display: block;
+      padding: 0.7rem 0.5rem;
+      background: rgba(16, 16, 32, 0.6);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      backdrop-filter: blur(10px);
+    }
+
+    .checkbox-item input[type="checkbox"]:checked + label {
+      background: var(--gradient-primary);
+      border-color: var(--primary-cyan);
+      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .seal-controls {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 0.5rem;
+      align-items: end;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--border-glow);
+      border-radius: 20px;
+      padding: 2rem;
+      position: relative;
+      max-width: 500px;
+      width: 90%;
+      backdrop-filter: blur(20px);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--gradient-secondary);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      padding: 0.5rem;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .readonly-field {
+      background: rgba(16, 16, 32, 0.4) !important;
+      border-color: rgba(179, 179, 204, 0.2) !important;
+      color: var(--text-secondary) !important;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .autocomplete-container {
+      position: relative;
+    }
+
+    .autocomplete-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      backdrop-filter: blur(20px);
+      display: none;
+    }
+
+    .autocomplete-suggestion {
+      padding: 0.8rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+    }
+
+    .autocomplete-suggestion:hover,
+    .autocomplete-suggestion.selected {
+      background: rgba(0, 255, 255, 0.1);
+    }
+
+    .autocomplete-suggestion:last-child {
+      border-bottom: none;
+    }
+
+    .session-list {
+      display: grid;
+      gap: 0.5rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .session-item {
+      background: rgba(16, 16, 32, 0.6);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .session-item:hover {
+      background: rgba(0, 255, 255, 0.1);
+      border-color: var(--primary-cyan);
+    }
+
+    .session-item.active {
+      background: var(--gradient-primary);
+      border-color: var(--primary-cyan);
+    }
+
+    .session-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .session-item-id {
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .session-item-actions {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .session-item-info {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+
+    .status-new {
+      background: #ffc107;
+    }
+
+    .status-progress {
+      background: #17a2b8;
+    }
+
+    .status-completed {
+      background: #28a745;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      }
+      to {
+        text-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+      }
+    }
+
+    .scanning {
+      animation: pulse 1s infinite;
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        grid-template-columns: 1fr;
+      }
+
+      .checkbox-grid {
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+      }
+
+      .session-controls {
+        justify-content: center;
+        width: 100%;
+      }
+
+      .session-info {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><i class="bi bi-truck"></i> CARREGAMENTO MM</h1>
+    
+    </div>
+
+    <!-- Informações da Sessão Atual -->
+    <div class="session-info">
+      <div class="session-id">
+        <i class="bi bi-layers"></i>
+        <span id="current-session">Sessão: Carregando...</span>
+      </div>
+      <div class="session-controls">
+        <button type="button" onclick="novaInstancia()" class="btn btn-info btn-small">
+          <i class="bi bi-plus-circle"></i> Nova sessão
+        </button>
+        <button type="button" onclick="gerenciarInstancias()" class="btn btn-secondary btn-small">
+          <i class="bi bi-list"></i> Gerenciar Sessões
+        </button>
+      </div>
+    </div>
+
+<div id="reportConsolidadoModal" class="modal">
+  <div class="modal-content">
+    <button onclick="fecharReportConsolidado()" class="modal-close">
+      <i class="bi bi-x-lg"></i>
+    </button>
+    <div class="section-title" style="margin-bottom: 1rem;">
+      <i class="bi bi-bar-chart"></i>
+      Report Consolidado por Rota
+    </div>
+    
+    <div class="form-group" style="margin-bottom: 1rem;">
+      <label class="form-label">Selecione a Data</label>
+      <input type="date" id="dataReportConsolidado" class="form-input">
+    </div>
+    
+    <div class="form-group" style="margin-bottom: 1rem;">
+      <label class="form-label">Selecione a Rota</label>
+      <select id="rotaReportConsolidado" class="form-select">
+        <option value="">Selecione uma rota</option>
+        <option value="Araguaína">Araguaína (A)</option>
+        <option value="Gurupi">Gurupi (B)</option>
+        <option value="Guaraí">Guaraí (C)</option>
+        <option value="Luiz Eduardo Magalhães">Luiz Eduardo Magalhães (H)</option>
+        <option value="Barreiras">Barreiras (I)</option>
+      </select>
+    </div>
+    
+    <div style="display: flex; gap: 1rem; justify-content: center;">
+      <button type="button" onclick="processarReportConsolidado()" class="btn btn-primary">
+        <i class="bi bi-file-earmark-text"></i> Gerar Report
+      </button>
+      <button type="button" onclick="processarReportConsolidadoPDF()" class="btn btn-secondary">
+        <i class="bi bi-file-earmark-pdf"></i> Gerar PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+    <div class="form-container">
+      <form id="form-carregamento">
+        <!-- Seção de Informações Básicas -->
+        <div class="section">
+          <div class="section-title">
+            <i class="bi bi-calendar-event"></i>
+            Informações Básicas
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Data</label>
+              <div class="time-controls">
+                <input type="date" id="data" name="data" class="form-input">
+                <button type="button" onclick="inserirData()" class="btn btn-primary btn-small">Hoje</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Rota</label>
+              <select id="rota-select" class="form-select">
+                <option value="">Selecione uma rota</option>
+                <option value="Araguaína">Araguaína (A)</option>
+                <option value="Gurupi">Gurupi (B)</option>
+                <option value="Guaraí">Guaraí (C)</option>
+                <option value="Luiz Eduardo Magalhães">Luiz Eduardo Magalhães (H)</option>
+                <option value="Barreiras">Barreiras (I)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Doca</label>
+              <select id="doca" name="doca" class="form-select">
+                <option value="01">01</option><option value="02">02</option><option value="03">03</option>
+                <option value="04">04</option><option value="05">05</option><option value="06">06</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tipo do Veículo</label>
+              <select id="tipoVeiculo" name="tipoVeiculo" onchange="verificarTipoVeiculo()" class="form-select">
+                <option value="Carreta">Carreta</option><option value="Truck">Truck</option>
+                <option value="Toco">Toco</option><option value="3/4">3/4</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Veículo -->
+        <div class="section">
+          <div class="section-title">
+            <i class="bi bi-truck-front"></i>
+            Dados do Veículo
+          </div>
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label">Selecione a placa do Veículo</label>
+              <select onchange="onSelectChange(this)" class="form-select">
+                <option value="">Selecione...</option>
+                <option value="manual">Inserir Manualmente</option>
+                <option value="MSR - DRX8D24 / JAW3D30">MSR - DRX8D24 / JAW3D30</option>
+                <option value="MSR - MXB3387 / MLO6F04">MSR - MXB3387 (Dc 05) / MLO6F04</option>
+                <option value="MSR - RBL4J23 / ONC3I65">MSR - RBL4J23 / ONC3I65</option>
+                <option value="MSR - NWE5A88 / ONG5H07">MSR - NWE5A88 (Dc 06) / ONG5H07</option>
+                <option value="MSR - KIA5I83">MSR - KIA5I83</option>
+                <option value="RODACOP - TCK5H69 / HDE8J16">RODACOP - TCK5H69 / HDE8J16</option>
+                <option value="RODACOP - FOF5B57 / RUK2H11">RODACOP - FOF5B57 / RUK2H11</option>
+                <option value="RODACOP - FTB1F75 / RUKJ2J60">RODACOP - FTB1F75 / RUKJ2J60</option>
+                <option value="RODACOP - RVB2C09">RODACOP - RVB2C09</option>
+                <option value="RODACOP - OQG8012">RODACOP - OQG8012</option>
+                <option value="RODACOP - RFR7E89">RODACOP - RFR7E89</option>
+                <option value="RODACOP - OLM1I23">RODACOP - OLM1I23</option>
+                <option value="RODACOP - QKA6J98">RODACOP - QKA6J98</option>
+                <option value="RODACOP - RSE9F12">RODACOP - RSE9F12</option>
+                <option value="RODACOP - RIN8H85">RODACOP - RIN8H85</option>
+                <option value="RODACOP - OLH2G94">RODACOP - OLH2G94</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Placa Baú</label>
+              <input type="text" id="placaPrimaria" placeholder="Placa Baú" class="form-input" disabled>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Placa Veículo</label>
+              <input type="text" id="placaSecundaria" placeholder="Placa Veículo ou Cavalo" class="form-input" disabled>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Motorista -->
+        <div class="section">
+          <div class="section-title">
+            <i class="bi bi-person-badge"></i>
+            Dados do Motorista
+          </div>
+          <div class="form-grid">
+            <div class="form-group autocomplete-container">
+              <label class="form-label">Nome do Motorista</label>
+              <input type="text" id="nomeMotorista" placeholder="Digite o nome do motorista" class="form-input" autocomplete="off">
+              <div id="suggestions" class="autocomplete-suggestions"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Telefone</label>
+              <input type="text" id="telefoneMotorista" placeholder="Digite o telefone" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label">CPF</label>
+              <input type="text" id="cpfMotorista" placeholder="Digite o CPF" class="form-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Horários -->
+        <div class="section">
+          <div class="section-title">
+            <i class="bi bi-clock"></i>
+            Controle de Horários
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Chegada Unidade</label>
+              <div class="time-controls">
+                <input type="time" id="horaChegada" class="form-input">
+                <button type="button" onclick="registrarHoraComConfirmacao('horaChegada')" class="btn btn-primary btn-small">Registrar</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hora Doca</label>
+              <div class="time-controls">
+                <input type="time" id="horaDoca" class="form-input">
+                <button type="button" onclick="registrarHoraComConfirmacao('horaDoca')" class="btn btn-primary btn-small">Registrar</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Início Carregamento</label>
+              <div class="time-controls">
+                <input type="time" id="horaInicio" class="form-input">
+                <button type="button" onclick="registrarHoraComConfirmacao('horaInicio')" class="btn btn-primary btn-small">Registrar</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Término Carregamento</label>
+              <div class="time-controls">
+                <input type="time" id="horaTermino" class="form-input">
+                <button type="button" onclick="confirmarFotoBauAberto()" class="btn btn-secondary btn-small">Registrar</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Saída</label>
+              <div class="time-controls">
+                <input type="time" id="horaSaida" class="form-input">
+                <button type="button" onclick="registrarHoraComConfirmacao('horaSaida')" class="btn btn-primary btn-small">Registrar</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Previsão de Destino</label>
+              <input type="time" id="previsaoDestino" placeholder="Digite a previsão de destino" class="form-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Lacres -->
+        <div class="section">
+          <div class="section-title">
+            <i class="bi bi-shield-lock"></i>
+            Controle de Lacres
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Lacre Baú</label>
+              <div class="seal-controls">
+                <input type="text" id="lacreBau" class="form-input" inputmode="numeric">
+                <button type="button" onclick="scanQRCode('lacreBau')" class="btn btn-secondary btn-small">
+                  <i class="bi bi-qr-code-scan"></i>
+                </button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lacre Lateral 1</label>
+              <div class="seal-controls">
+                <input type="text" id="lacreLateral1" class="form-input" inputmode="numeric">
+                <button type="button" onclick="scanQRCode('lacreLateral1')" class="btn btn-secondary btn-small">
+                  <i class="bi bi-qr-code-scan"></i>
+                </button>
+                <label style="display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; margin: 0;">
+                  <input type="checkbox" id="lateral1NaoUsa"> Não utiliza
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lacre Lateral 2</label>
+              <div class="seal-controls">
+                <input type="text" id="lacreLateral2" class="form-input" inputmode="numeric">
+                <button type="button" onclick="scanQRCode('lacreLateral2')" class="btn btn-secondary btn-small">
+                  <i class="bi bi-qr-code-scan"></i>
+                </button>
+                <label style="display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; margin: 0;">
+                  <input type="checkbox" id="lateral2NaoUsa"> 
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Cargas -->
+        <div class="section">
+          <div class="section-title">
+            <i class="bi bi-boxes"></i>
+            Controle de Cargas
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Volumosos</label>
+              <div class="counter-controls">
+                <button type="button" onclick="alterarContagem('volumoso', -1)" class="counter-btn">-</button>
+                <input type="number" id="volumoso" value="0" min="0" class="form-input">
+                <button type="button" onclick="alterarContagem('volumoso', 1)" class="counter-btn">+</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Gaiolas</label>
+              <div class="counter-controls">
+                <button type="button" onclick="alterarContagem('gaiola', -1)" class="counter-btn">-</button>
+                <input type="number" id="gaiola" value="0" min="0" class="form-input">
+                <button type="button" onclick="alterarContagem('gaiola', 1)" class="counter-btn">+</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Manga Pallets</label>
+              <div class="counter-controls">
+                <button type="button" onclick="alterarContagem('mangaPallet', -1)" class="counter-btn">-</button>
+                <input type="number" id="mangaPallet" value="0" min="0" class="form-input">
+                <button type="button" onclick="alterarContagem('mangaPallet', 1)" class="counter-btn">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Rotas XPT -->
+        <div class="section">
+          <div class="section-title">
+            <i class="bi bi-geo-alt"></i>
+            Rotas XPT
+          </div>
+          <div class="checkbox-grid" id="rotasCheckboxes"></div>
+        </div>
+
+        <!-- Ações -->
+        <div class="actions">
+          <button type="button" onclick="gerarReport()" class="btn btn-primary">
+            <i class="bi bi-file-earmark-pdf"></i> Gerar Relatório
+          </button>
+          <button type="button" onclick="salvarInstancia()" class="btn btn-info">
+            <i class="bi bi-save"></i> Salvar Sessão
+          </button>
+          <button type="button" onclick="limparFormulario()" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Limpar Tudo
+          </button>
+          <button type="button" onclick="gerarReportConsolidado()" class="btn btn-info">
+           <i class="bi bi-bar-chart"></i> Gerar Report Consolidado
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para Scanner QR -->
+  <div id="qrScannerModal" class="modal">
+    <div class="modal-content">
+      <button onclick="fecharScanner()" class="modal-close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+      <div class="section-title" style="margin-bottom: 1rem;">
+        <i class="bi bi-qr-code-scan"></i>
+        Scanner QR Code
+      </div>
+      <div id="qr-reader" style="width: 100%; max-width: 300px;"></div>
+    </div>
+  </div>
+
+  <!-- Modal para Gerenciar Instâncias -->
+  <div id="gerenciarModal" class="modal">
+    <div class="modal-content">
+      <button onclick="fecharGerenciar()" class="modal-close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+      <div class="section-title" style="margin-bottom: 1rem;">
+        <i class="bi bi-list"></i>
+        Gerenciar Instâncias
+      </div>
+      <div id="session-list" class="session-list"></div>
+      <div style="margin-top: 1rem; text-align: center;">
+        <button type="button" onclick="exportarTodas()" class="btn btn-info btn-small">
+          <i class="bi bi-download"></i> Exportar Todas
+        </button>
+        <button type="button" onclick="importarSessoes()" class="btn btn-secondary btn-small">
+          <i class="bi bi-upload"></i> Importar
+        </button>
+      </div>
+      <input type="file" id="fileImport" accept=".json" style="display: none;" onchange="processarImportacao(this)">
+    </div>
+  </div>
+
+
+  <script>
+    // Sistema de Gerenciamento de Múltiplas Instâncias
+    class SessionManager {
+      constructor() {
+        this.currentSessionId = null;
+        this.sessions = this.loadSessions();
+        this.initializeSession();
+      }
+
+      generateSessionId() {
+        const timestamp = Date.now();
+        const random = Math.random().toString(36).substr(2, 5);
+        return `CARR_${timestamp}_${random}`.toUpperCase();
+      }
+
+      initializeSession() {
+        // Verifica se há uma sessão ativa no sessionStorage
+        const activeSession = sessionStorage.getItem('activeSessionId');
+        
+        if (activeSession && this.sessions[activeSession]) {
+          this.currentSessionId = activeSession;
+        } else {
+          // Cria nova sessão
+          this.currentSessionId = this.generateSessionId();
+          this.sessions[this.currentSessionId] = {
+            id: this.currentSessionId,
+            created: new Date().toISOString(),
+            updated: new Date().toISOString(),
+            status: 'new',
+            data: {}
+          };
+          sessionStorage.setItem('activeSessionId', this.currentSessionId);
+          this.saveSessions();
+        }
+        
+        this.updateSessionDisplay();
+        this.loadSessionData();
+      }
+
+      createNewSession() {
+        const newId = this.generateSessionId();
+        this.sessions[newId] = {
+          id: newId,
+          created: new Date().toISOString(),
+          updated: new Date().toISOString(),
+          status: 'new',
+          data: {}
+        };
+        
+        this.switchToSession(newId);
+        return newId;
+      }
+
+      duplicateSession() {
+        const currentData = this.getCurrentSessionData();
+        const newId = this.generateSessionId();
+        
+        this.sessions[newId] = {
+          id: newId,
+          created: new Date().toISOString(),
+          updated: new Date().toISOString(),
+          status: 'new',
+          data: { ...currentData }
+        };
+        
+        this.switchToSession(newId);
+        this.loadSessionData();
+        return newId;
+      }
+
+      switchToSession(sessionId) {
+        if (!this.sessions[sessionId]) return false;
+        
+        // Salva dados da sessão atual antes de trocar
+        this.saveCurrentSession();
+        
+        this.currentSessionId = sessionId;
+        sessionStorage.setItem('activeSessionId', sessionId);
+        this.updateSessionDisplay();
+        this.loadSessionData();
+        return true;
+      }
+
+      saveCurrentSession() {
+        if (!this.currentSessionId) return;
+        
+        const data = this.getCurrentSessionData();
+        const status = this.determineStatus(data);
+        
+        this.sessions[this.currentSessionId] = {
+          ...this.sessions[this.currentSessionId],
+          updated: new Date().toISOString(),
+          status: status,
+          data: data
+        };
+        
+        this.saveSessions();
+      }
+
+      getCurrentSessionData() {
+        const data = {};
+        
+        // Coleta todos os dados do formulário
+        camposParaSalvar.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            if (el.type === 'checkbox') {
+              data[id] = el.checked;
+            } else {
+              data[id] = el.value;
+            }
+          }
+        });
+
+        // Coleta dados dos checkboxes especiais
+        data.lateral1NaoUsa = document.getElementById('lateral1NaoUsa')?.checked || false;
+        data.lateral2NaoUsa = document.getElementById('lateral2NaoUsa')?.checked || false;
+
+        // Coleta rotas selecionadas
+        const rotasCheckboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
+        data.rotasCheckboxes = Array.from(rotasCheckboxes).map(cb => cb.checked);
+
+        return data;
+      }
+
+      loadSessionData() {
+        if (!this.currentSessionId || !this.sessions[this.currentSessionId]) return;
+        
+        const sessionData = this.sessions[this.currentSessionId].data;
+        
+        // Carrega dados básicos
+        camposParaSalvar.forEach(id => {
+          const el = document.getElementById(id);
+          if (el && sessionData[id] !== undefined) {
+            if (el.type === 'checkbox') {
+              el.checked = sessionData[id];
+            } else {
+              el.value = sessionData[id];
+            }
+          }
+        });
+
+        // Carrega checkboxes especiais
+        if (sessionData.lateral1NaoUsa !== undefined) {
+          document.getElementById('lateral1NaoUsa').checked = sessionData.lateral1NaoUsa;
+        }
+        if (sessionData.lateral2NaoUsa !== undefined) {
+          document.getElementById('lateral2NaoUsa').checked = sessionData.lateral2NaoUsa;
+        }
+
+        // Carrega rotas
+        if (sessionData.rotasCheckboxes) {
+          const rotasCheckboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
+          rotasCheckboxes.forEach((cb, index) => {
+            if (sessionData.rotasCheckboxes[index] !== undefined) {
+              cb.checked = sessionData.rotasCheckboxes[index];
+            }
+          });
+        }
+      }
+
+      determineStatus(data) {
+        const hasBasicData = data.data || data.doca || data.nomeMotorista;
+        const hasTimeData = data.horaChegada || data.horaInicio;
+        const isComplete = data.horaSaida && data.lacreBau;
+        
+        if (isComplete) return 'completed';
+        if (hasTimeData) return 'progress';
+        if (hasBasicData) return 'new';
+        return 'new';
+      }
+
+      deleteSession(sessionId) {
+        if (sessionId === this.currentSessionId) {
+          // Se está deletando a sessão atual, cria uma nova
+          delete this.sessions[sessionId];
+          this.createNewSession();
+        } else {
+          delete this.sessions[sessionId];
+        }
+        this.saveSessions();
+      }
+
+      loadSessions() {
+        try {
+          const saved = localStorage.getItem('carregamento_sessions');
+          return saved ? JSON.parse(saved) : {};
+        } catch (e) {
+          console.error('Erro ao carregar sessões:', e);
+          return {};
+        }
+      }
+
+      saveSessions() {
+        try {
+          localStorage.setItem('carregamento_sessions', JSON.stringify(this.sessions));
+        } catch (e) {
+          console.error('Erro ao salvar sessões:', e);
+        }
+      }
+
+      updateSessionDisplay() {
+        const display = document.getElementById('current-session');
+        if (display && this.currentSessionId) {
+          const session = this.sessions[this.currentSessionId];
+          const shortId = this.currentSessionId.split('_')[2] || this.currentSessionId.substr(-5);
+          display.textContent = `Sessão: ${shortId}`;
+          
+          // Atualiza título da página
+          document.title = `Carregamento MM - ${shortId}`;
+        }
+      }
+
+      exportAllSessions() {
+        const exportData = {
+          exported: new Date().toISOString(),
+          sessions: this.sessions
+        };
+        
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `carregamento_sessions_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      importSessions(data) {
+        try {
+          if (data.sessions) {
+            // Mescla com sessões existentes
+            Object.assign(this.sessions, data.sessions);
+            this.saveSessions();
+            return true;
+          }
+        } catch (e) {
+          console.error('Erro ao importar:', e);
+        }
+        return false;
+      }
+
+      getAllSessions() {
+        return Object.values(this.sessions).sort((a, b) => 
+          new Date(b.updated) - new Date(a.updated)
+        );
+      }
+    }
+
+    // Instância global do gerenciador
+    let sessionManager;
+
+    // Dados dos veículos (mantidos iguais)
+    const placaMap = {
+      "MSR - DRX8D24 / JAW3D30": ["DRX8D24", "JAW3D30"],
+      "MSR - MXB3387 / MLO6F04": ["MXB3387", "MLO6F04"],
+      "MSR - RBL4J23 / ONC3I65": ["RBL4J23", "ONC3I65"],
+      "MSR - NWE5A88 / ONG5H07": ["NWE5A88", "ONG5H07"],
+      "MSR - KIA5I83": ["KIA5I83", ""],
+      "RODACOP - TCK5H69 / HDE8J16": ["TCK5H69", "HDE8J16"],
+      "RODACOP - FOF5B57 / RUK2H11": ["FOF5B57", "RUK2H11"],
+      "RODACOP - FTB1F75 / RUKJ2J60": ["FTB1F75", "RUKJ2J60"],
+      "RODACOP - RVB2C09": ["RVB2C09", ""],
+      "RODACOP - OQG8012": ["OQG8012", ""],
+      "RODACOP - RFR7E89": ["RFR7E89", ""],
+      "RODACOP - OLM1I23": ["OLM1I23", ""],
+      "RODACOP - QKA6J98": ["QKA6J98", ""],
+      "RODACOP - RSE9F12": ["RSE9F12", ""],
+      "RODACOP - RIN8H85": ["RIN8H85", ""],
+      "RODACOP - OLH2G94": ["OLH2G94", ""]
+    };
+
+    // Dados dos motoristas (mantidos iguais)
+    const motoristas = [
+      { nome: "Evaldo de Queiroz", cpf: "950.351.335-61", telefone: "63992640497" },
+      { nome: "Cleuton Macêdo", cpf: "813.243.161-87", telefone: "63981439951" },
+      { nome: "Tallysson Magno dos Santos", cpf: "", telefone: "63991169026" },
+      { nome: "Marcos Vinicius Oliveira", cpf: "", telefone: "63992500932" },
+      { nome: "Wanderson Oliveira Magalhães", cpf: "062.133.781-11", telefone: "" },
+      { nome: "Lucas Nascimento Noleto", cpf: "053.257.531-85", telefone: "63992200657" },
+      { nome: "Flacilde Fagundes", cpf: "010.746.931-67", telefone: "62981881286" },
+      { nome: "Flavio Fagundes", cpf: "", telefone: "62992749714" },
+      { nome: "Wellington Pereira da Silva", cpf: "", telefone: "63991279809" },
+      { nome: "Gabriel Lopes Soares", cpf: "082.629.441-35", telefone: "63981588214" },
+      { nome: "Air Otávio Cândido", cpf: "", telefone: "63999150105" },
+      { nome: "Ronielton Alves de Oliveira", cpf: "026.150.421-57", telefone: "63984208575" },
+      { nome: "Idamilton Andrade Silva", cpf: "023.474.221-62", telefone: "63981211457" },
+      { nome: "Francis Aniszewski da Silva Gomes", cpf: "026.385.201-60", telefone: "63981013325" },
+      { nome: "Savio de Souza Santos", cpf: "077.250.851-81", telefone: "63992735270" },
+      { nome: "Dalvan dos Santos", cpf: "042.027.111-22", telefone: "63992363023" },
+      { nome: "Geovanne Alex da Silva", cpf: "057.442.151-31", telefone: "" },
+      { nome: "Divino Alves Guida", cpf: "027.865.341-35", telefone: "63999456665" },
+      { nome: "Diego Alexandre Padovan", cpf: "", telefone: "11951442749" },
+      { nome: "Railan Pereira Coelho dos Santos", cpf: "066.304.091-40", telefone: "63991223145" },
+      { nome: "Romario Aleixo Lima", cpf: "040.701.101-35", telefone: "63992531915" },
+      { nome: "Raul Monteiro de Sousa", cpf: "059.668.101-17", telefone: "63991091677" },
+      { nome: "Caio Vinicius Oliveira da Silva", cpf: "603.210.033-22", telefone: "63992541607" },
+      { nome: "Juan de Souza Ribeiro", cpf: "070.732.651-74", telefone: "63992817191" },
+      { nome: "Bismael Rodrigues de Sousa Oliveira", cpf: "050.908.111-80", telefone: "63992446420" },
+      { nome: "Wesley Gonçalves Rodrigues", cpf: "590.682.721-68", telefone: "63984014369" },
+      { nome: "Odair José de Sousa", cpf: "989.477.611-68", telefone: "63984826152" }
+    ];
+
+    // Campos para gerenciar
+    const camposParaSalvar = [
+      "data", "rota-select", "doca", "tipoVeiculo", "placaPrimaria", "placaSecundaria",
+      "nomeMotorista", "telefoneMotorista", "cpfMotorista", "horaChegada", "horaDoca", 
+      "horaInicio", "horaTermino", "horaSaida", "previsaoDestino", 
+      "lacreBau", "lacreLateral1", "lacreLateral2", 
+      "volumoso", "gaiola", "mangaPallet"
+    ];
+
+    // Variáveis globais para scanner
+    let campoAtivo;
+    let html5QrCode;
+    let selectedSuggestionIndex = -1;
+
+    // Funções de gerenciamento de instâncias
+    function novaInstancia() {
+      if (confirm('Criar nova instância de carregamento?')) {
+        sessionManager.createNewSession();
+        limparFormularioSemConfirmacao();
+        alert('Nova instância criada com sucesso!');
+      }
+    }
+
+    function duplicarInstancia() {
+      if (confirm('Duplicar a instância atual com todos os dados?')) {
+        sessionManager.duplicateSession();
+        alert('Instância duplicada com sucesso!');
+      }
+    }
+
+    function gerenciarInstancias() {
+      sessionManager.saveCurrentSession();
+      mostrarGerenciador();
+    }
+
+    function salvarInstancia() {
+      sessionManager.saveCurrentSession();
+      
+      // Feedback visual
+      const btn = event.target;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="bi bi-check-circle"></i> Salvo!';
+      btn.disabled = true;
+      
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }, 2000);
+    }
+
+    function mostrarGerenciador() {
+      const modal = document.getElementById('gerenciarModal');
+      const sessionList = document.getElementById('session-list');
+      
+      sessionList.innerHTML = '';
+      
+      const sessions = sessionManager.getAllSessions();
+      
+      sessions.forEach(session => {
+        const div = document.createElement('div');
+        div.className = `session-item ${session.id === sessionManager.currentSessionId ? 'active' : ''}`;
+        
+        const shortId = session.id.split('_')[2] || session.id.substr(-5);
+        const createdDate = new Date(session.created).toLocaleString('pt-BR');
+        const updatedDate = new Date(session.updated).toLocaleString('pt-BR');
+        
+        // Determina informações da sessão
+        const info = [];
+        if (session.data['rota-select']) info.push(`Rota: ${session.data['rota-select']}`);
+        if (session.data.nomeMotorista) info.push(`Motorista: ${session.data.nomeMotorista}`);
+        if (session.data.doca) info.push(`Doca: ${session.data.doca}`);
+        if (session.data.placaPrimaria) info.push(`Placa: ${session.data.placaPrimaria}`);
+        
+        const statusClass = {
+          'new': 'status-new',
+          'progress': 'status-progress', 
+          'completed': 'status-completed'
+        }[session.status] || 'status-new';
+        
+        div.innerHTML = `
+          <div class="session-item-header">
+            <div class="session-item-id">
+              <span class="status-indicator ${statusClass}"></span>
+              ${shortId}
+            </div>
+            <div class="session-item-actions">
+              <button onclick="alternarSessao('${session.id}')" class="btn btn-primary btn-small">
+                ${session.id === sessionManager.currentSessionId ? 'Atual' : 'Abrir'}
+              </button>
+              ${session.id !== sessionManager.currentSessionId ? 
+                `<button onclick="excluirSessao('${session.id}')" class="btn btn-danger btn-small">
+                  <i class="bi bi-trash"></i>
+                </button>` : ''
+              }
+            </div>
+          </div>
+          <div class="session-item-info">
+            <div>Criado: ${createdDate}</div>
+            <div>Atualizado: ${updatedDate}</div>
+            ${info.length > 0 ? `<div>${info.join(' • ')}</div>` : ''}
+          </div>
+        `;
+        
+        sessionList.appendChild(div);
+      });
+      
+      modal.style.display = 'flex';
+    }
+
+    function alternarSessao(sessionId) {
+      if (sessionManager.switchToSession(sessionId)) {
+        fecharGerenciar();
+        alert('Sessão alterada com sucesso!');
+      }
+    }
+
+    function excluirSessao(sessionId) {
+      const session = sessionManager.sessions[sessionId];
+      const shortId = session.id.split('_')[2] || session.id.substr(-5);
+      
+      if (confirm(`Excluir permanentemente a sessão ${shortId}?`)) {
+        sessionManager.deleteSession(sessionId);
+        mostrarGerenciador(); // Atualiza a lista
+      }
+    }
+
+    function fecharGerenciar() {
+      document.getElementById('gerenciarModal').style.display = 'none';
+    }
+
+    function exportarTodas() {
+      sessionManager.exportAllSessions();
+    }
+
+    function importarSessoes() {
+      document.getElementById('fileImport').click();
+    }
+
+    function processarImportacao(input) {
+      const file = input.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (sessionManager.importSessions(data)) {
+            alert('Sessões importadas com sucesso!');
+            mostrarGerenciador();
+          } else {
+            alert('Erro ao importar arquivo. Verifique o formato.');
+          }
+        } catch (error) {
+          alert('Arquivo inválido.');
+        }
+      };
+      reader.readAsText(file);
+      input.value = ''; // Limpa o input
+    }
+
+    // Funções originais adaptadas
+    function inserirData() {
+      const hoje = new Date().toISOString().split('T')[0];
+      document.getElementById('data').value = hoje;
+      sessionManager.saveCurrentSession();
+    }
+
+    function verificarTipoVeiculo() {
+      const tipo = document.getElementById('tipoVeiculo').value;
+      sessionManager.saveCurrentSession();
+    }
+
+    function onSelectChange(select) {
+      const selected = select.value;
+      const manual = selected === "manual";
+
+      document.getElementById("placaPrimaria").disabled = !manual;
+      document.getElementById("placaSecundaria").disabled = !manual;
+
+      if (!manual && placaMap[selected]) {
+        const [primaria, secundaria] = placaMap[selected];
+        document.getElementById("placaPrimaria").value = primaria;
+        document.getElementById("placaSecundaria").value = secundaria;
+      } else {
+        document.getElementById("placaPrimaria").value = "";
+        document.getElementById("placaSecundaria").value = "";
+      }
+      
+      sessionManager.saveCurrentSession();
+    }
+
+    // Função de autocomplete adaptada
+    function setupAutocomplete() {
+      const input = document.getElementById('nomeMotorista');
+      const suggestionsDiv = document.getElementById('suggestions');
+      
+      input.addEventListener('input', function() {
+        const value = this.value.toLowerCase();
+        const filteredMotoristas = motoristas.filter(motorista => 
+          motorista.nome.toLowerCase().includes(value)
+        );
+        
+        if (value === '' || filteredMotoristas.length === 0) {
+          suggestionsDiv.style.display = 'none';
+          selectedSuggestionIndex = -1;
+          return;
+        }
+        
+        suggestionsDiv.innerHTML = '';
+        filteredMotoristas.forEach((motorista, index) => {
+          const div = document.createElement('div');
+          div.className = 'autocomplete-suggestion';
+          div.textContent = motorista.nome;
+          div.addEventListener('click', () => selectMotorista(motorista));
+          suggestionsDiv.appendChild(div);
+        });
+        
+        suggestionsDiv.style.display = 'block';
+        selectedSuggestionIndex = -1;
+      });
+      
+      input.addEventListener('keydown', function(e) {
+        const suggestions = suggestionsDiv.querySelectorAll('.autocomplete-suggestion');
+        
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          selectedSuggestionIndex = Math.min(selectedSuggestionIndex + 1, suggestions.length - 1);
+          updateSelectedSuggestion(suggestions);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          selectedSuggestionIndex = Math.max(selectedSuggestionIndex - 1, -1);
+          updateSelectedSuggestion(suggestions);
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (selectedSuggestionIndex >= 0 && suggestions[selectedSuggestionIndex]) {
+            const motoristaNome = suggestions[selectedSuggestionIndex].textContent;
+            const motorista = motoristas.find(m => m.nome === motoristaNome);
+            if (motorista) selectMotorista(motorista);
+          }
+        } else if (e.key === 'Escape') {
+          suggestionsDiv.style.display = 'none';
+          selectedSuggestionIndex = -1;
+        }
+      });
+      
+      document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+          suggestionsDiv.style.display = 'none';
+          selectedSuggestionIndex = -1;
+        }
+      });
+    }
+    
+    function updateSelectedSuggestion(suggestions) {
+      suggestions.forEach((suggestion, index) => {
+        suggestion.classList.toggle('selected', index === selectedSuggestionIndex);
+      });
+    }
+    
+    function selectMotorista(motorista) {
+      document.getElementById('nomeMotorista').value = motorista.nome;
+      document.getElementById('telefoneMotorista').value = motorista.telefone;
+      document.getElementById('cpfMotorista').value = motorista.cpf;
+      document.getElementById('suggestions').style.display = 'none';
+      selectedSuggestionIndex = -1;
+      
+      sessionManager.saveCurrentSession();
+    }
+
+    function registrarHoraComConfirmacao(id) {
+      const input = document.getElementById(id);
+      if (input.value) {
+        const confirmar = confirm("Horário já registrado: \"" + input.value + "\". Deseja ajustar?");
+        if (!confirmar) return;
+      }
+      registrarHora(id);
+    }
+
+    function registrarHora(id) {
+      const agora = new Date();
+      const hora = agora.toTimeString().split(":").slice(0, 2).join(":");
+      document.getElementById(id).value = hora;
+      
+      const input = document.getElementById(id);
+      input.classList.add('scanning');
+      setTimeout(() => input.classList.remove('scanning'), 1000);
+      
+      sessionManager.saveCurrentSession();
+    }
+
+    function confirmarFotoBauAberto() {
+      if (confirm("Tirar foto do baú aberto!")) {
+        registrarHora('horaTermino');
+      }
+    }
+
+    function alterarContagem(id, delta) {
+      const input = document.getElementById(id);
+      let val = parseInt(input.value);
+      if (!isNaN(val)) {
+        val += delta;
+        if (val < 0) val = 0;
+        input.value = val;
+        sessionManager.saveCurrentSession();
+      }
+    }
+
+    function gerarCheckboxesRotas() {
+      const container = document.getElementById('rotasCheckboxes');
+      for (let i = 1; i <= 80; i++) {
+        const div = document.createElement('div');
+        div.className = 'checkbox-item';
+        div.innerHTML = `
+          <input type="checkbox" id="rota${i}" value="${i.toString().padStart(2, '0')}">
+          <label for="rota${i}">${i.toString().padStart(2, '0')}</label>
+        `;
+        container.appendChild(div);
+      }
+      
+      // Adiciona eventos de mudança para salvar automaticamente
+      setTimeout(() => {
+        const checkboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
+        checkboxes.forEach(cb => {
+          cb.addEventListener('change', () => sessionManager.saveCurrentSession());
+        });
+      }, 100);
+    }
+
+    function scanQRCode(campoId) {
+      campoAtivo = document.getElementById(campoId);
+      document.getElementById("qrScannerModal").style.display = "flex";
+
+      if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode("qr-reader");
+      }
+
+      Html5Qrcode.getCameras().then(cameras => {
+        if (cameras && cameras.length) {
+          let cameraId;
+          const backCamera = cameras.find(cam =>
+            cam.label.toLowerCase().includes("back") || cam.label.toLowerCase().includes("traseira")
+          );
+
+          if (backCamera) {
+            cameraId = backCamera.id;
+          } else {
+            cameraId = cameras[0].id;
+          }
+
+          html5QrCode.start(
+            cameraId,
+            {
+              fps: 10,
+              qrbox: 250
+            },
+            (decodedText, decodedResult) => {
+              campoAtivo.value = decodedText;
+              sessionManager.saveCurrentSession();
+              html5QrCode.stop().then(() => {
+                fecharScanner();
+              }).catch(err => {
+                console.error("Erro ao parar o scanner:", err);
+                fecharScanner();
+              });
+            }
+          ).catch(err => {
+            alert("Erro ao iniciar a câmera: " + err);
+            fecharScanner();
+          });
+        } else {
+          alert("Nenhuma câmera encontrada.");
+          fecharScanner();
+        }
+      }).catch(err => {
+        alert("Erro ao acessar câmera: " + err);
+        fecharScanner();
+      });
+    }
+
+    function fecharScanner() {
+      document.getElementById("qrScannerModal").style.display = "none";
+      if (html5QrCode && html5QrCode._isScanning) {
+        html5QrCode.stop().then(() => {
+          html5QrCode.clear();
+        }).catch(err => {
+          console.warn("Erro ao parar scanner:", err);
+        });
+      } else {
+        document.getElementById("qr-reader").innerHTML = "";
+      }
+    }
+
+    function gerarReport() {
+      if (!confirm("Tem certeza que deseja gerar o relatório?")) return;
+
+      // Salva antes de gerar o relatório
+      sessionManager.saveCurrentSession();
+
+      const dataInput = document.getElementById('data')?.value;
+      const data = dataInput ? dataInput.split('-').reverse().join('/') : '';
+      const doca = document.getElementById('doca')?.value;
+      const rota = document.getElementById('rota-select')?.value;
+      const tipoVeiculo = document.getElementById('tipoVeiculo')?.value;
+      const placaPrimaria = document.getElementById('placaPrimaria')?.value;
+      const placaSecundaria = document.getElementById('placaSecundaria')?.value;
+      const motorista = document.getElementById('nomeMotorista')?.value;
+      const cpf = document.getElementById('cpfMotorista')?.value;
+      const telefone = document.getElementById('telefoneMotorista')?.value;
+      const horaChegada = document.getElementById('horaChegada')?.value;
+      const horaDoca = document.getElementById('horaDoca')?.value;
+      const horaInicio = document.getElementById('horaInicio')?.value;
+      const horaTermino = document.getElementById('horaTermino')?.value;
+      const horaSaida = document.getElementById('horaSaida')?.value;
+      const previsaoDestino = document.getElementById('previsaoDestino')?.value;
+      const lacreBau = document.getElementById('lacreBau')?.value;
+      const lacreLateral1 = document.getElementById('lacreLateral1')?.value || (document.getElementById('lateral1NaoUsa')?.checked ? 'Não Utiliza' : '');
+      const lacreLateral2 = document.getElementById('lacreLateral2')?.value || (document.getElementById('lateral2NaoUsa')?.checked ? 'Não Utiliza' : '');
+      const volumoso = document.getElementById('volumoso')?.value;
+      const gaiola = document.getElementById('gaiola')?.value;
+      const mangaPallet = document.getElementById('mangaPallet')?.value;
+      const rotasSelecionadas = Array.from(document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]:checked'))
+        .map(cb => cb.value)
+        .join(', ');
+
+      const shortId = sessionManager.currentSessionId.split('_')[2] || sessionManager.currentSessionId.substr(-5);
+
+      const mensagem = `RELATÓRIO DE CARREGAMENTO MM
+Sessão: ${shortId}
+
+Data: ${data}
+Doca: ${doca}
+${tipoVeiculo}: ${rota}
+Placa: ${placaSecundaria}
+Placa Cavalo: ${placaPrimaria}
+Condutor: ${motorista}
+CPF: ${cpf}
+Tel: ${telefone}
+Chegada na unidade: ${horaChegada}
+Encostado na doca: ${horaDoca}
+Início carregamento: ${horaInicio}
+Término: ${horaTermino}
+Saída Liberada: ${horaSaida}
+Previsão do Destino: ${previsaoDestino}
+Gaiolas: ${gaiola}
+Rotas: ${rotasSelecionadas}
+Lacre Baú: ${lacreBau}
+Lacres Laterais: ${lacreLateral1} || ${lacreLateral2}
+Manga Pallet com sacolas: ${mangaPallet}
+Volumosos: ${volumoso}
+Yms saída ok...........`;
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+
+      const margemEsquerda = 10;
+      const larguraMaxima = 190; 
+      let y = 10;
+
+      const linhas = mensagem.split('\n');
+
+      linhas.forEach(linha => {
+        const linhasQuebradas = doc.splitTextToSize(linha, larguraMaxima);
+        linhasQuebradas.forEach(subLinha => {
+          if (y > 280) { 
+            doc.addPage();
+            y = 10;
+          }
+          doc.text(subLinha, margemEsquerda, y);
+          y += 8;
+        });
+      });
+
+      doc.save(`carregamento-${shortId}-${data.replace(/\//g, '-')}.pdf`);
+    }
+
+    function limparFormulario() {
+      if (!confirm("Tem certeza que deseja limpar todos os dados da sessão atual?")) return;
+      limparFormularioSemConfirmacao();
+    }
+
+    function limparFormularioSemConfirmacao() {
+      document.getElementById("form-carregamento").reset();
+
+      ["placaPrimaria", "placaSecundaria", "nomeMotorista", "telefoneMotorista", "cpfMotorista", "previsaoDestino"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
+
+      document.querySelectorAll("input[type='checkbox']").forEach(cb => cb.checked = false);
+      ["volumoso", "gaiola", "mangaPallet"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = 0;
+      });
+
+      // Limpa dados da sessão atual
+      sessionManager.sessions[sessionManager.currentSessionId].data = {};
+      sessionManager.saveCurrentSession();
+    }
+
+    // Auto-save em mudanças
+    function setupAutoSave() {
+      // Eventos para campos de input
+      camposParaSalvar.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        
+        const evento = el.tagName === "INPUT" || el.tagName === "TEXTAREA" ? "input" : "change";
+        el.addEventListener(evento, () => {
+          // Pequeno delay para evitar muitas gravações
+          clearTimeout(window.autoSaveTimeout);
+          window.autoSaveTimeout = setTimeout(() => {
+            sessionManager.saveCurrentSession();
+          }, 500);
+        });
+      });
+
+      // Eventos para checkboxes especiais
+      ['lateral1NaoUsa', 'lateral2NaoUsa'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('change', () => sessionManager.saveCurrentSession());
+        }
+      });
+    }
+
+    // Auto-save antes de sair da página
+    window.addEventListener('beforeunload', (e) => {
+      if (sessionManager) {
+        sessionManager.saveCurrentSession();
+      }
+    });
+
+    // Inicialização
+    window.addEventListener("load", () => {
+      // Inicializa o gerenciador de sessões
+      sessionManager = new SessionManager();
+      
+      // Configura a interface
+      gerarCheckboxesRotas();
+      setupAutocomplete();
+      setupAutoSave();
+
+      // Observador para rotas checkboxes
+      const observer = new MutationObserver(() => {
+        const checkboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
+        checkboxes.forEach(cb => {
+          cb.addEventListener("change", () => sessionManager.saveCurrentSession());
+        });
+      });
+
+      observer.observe(document.getElementById("rotasCheckboxes"), { childList: true });
+    });
+
+    // Teclas de atalho
+    document.addEventListener('keydown', (e) => {
+      // Ctrl + N: Nova instância
+      if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        novaInstancia();
+      }
+      
+      // Ctrl + S: Salvar
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        salvarInstancia();
+      }
+      
+      // Ctrl + G: Gerenciar
+      if (e.ctrlKey && e.key === 'g') {
+        e.preventDefault();
+        gerenciarInstancias();
+      }
+    });
+
+ function gerarReportConsolidado() {
+      const modal = document.getElementById('reportConsolidadoModal');
+      if (modal) {
+        modal.style.display = 'flex';
+      }
+    }
+
+    function fecharReportConsolidado() {
+      const modal = document.getElementById('reportConsolidadoModal');
+      if (modal) {
+        modal.style.display = 'none';
+      }
+    }
+// ADICIONE ESTAS FUNÇÕES NO FINAL DO SCRIPT, ANTES DO FECHAMENTO DA TAG SCRIPT
+// Mapeamento dos códigos XPT por rota
+const codigosXPT = {
+  "Araguaína": "XPT ETO2",
+  "Gurupi": "XPT ETO1", 
+  "Guaraí": "XPT ETO3",
+  "Luiz Eduardo Magalhães": "XPT EBA24",
+  "Barreiras": "XPT EBA8"
+};
+
+function gerarReportConsolidado() {
+  // Define a data de hoje como padrão
+  const hoje = new Date().toISOString().split('T')[0];
+  document.getElementById('dataReportConsolidado').value = hoje;
+  
+  // Mostra o modal
+  document.getElementById('reportConsolidadoModal').style.display = 'flex';
+}
+
+function fecharReportConsolidado() {
+  document.getElementById('reportConsolidadoModal').style.display = 'none';
+}
+
+function processarReportConsolidado() {
+  const reportText = gerarDadosReportConsolidado();
+  if (reportText) {
+    // Cria um textarea temporário para copiar o texto
+    const textarea = document.createElement('textarea');
+    textarea.value = reportText;
+    document.body.appendChild(textarea);
+    textarea.select();
+    
+    try {
+      document.execCommand('copy');
+      alert('Report copiado para a área de transferência!');
+    } catch (err) {
+      // Fallback para navegadores mais novos
+      navigator.clipboard.writeText(reportText).then(() => {
+        alert('Report copiado para a área de transferência!');
+      }).catch(() => {
+        alert('Erro ao copiar. Dados gerados:\n\n' + reportText);
+      });
+    }
+    
+    document.body.removeChild(textarea);
+    fecharReportConsolidado();
+  }
+}
+
+function processarReportConsolidadoPDF() {
+  const reportText = gerarDadosReportConsolidado();
+  if (reportText) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+    
+    const margemEsquerda = 10;
+    const larguraMaxima = 190;
+    let y = 10;
+    
+    const linhas = reportText.split('\n');
+    
+    linhas.forEach(linha => {
+      const linhasQuebradas = doc.splitTextToSize(linha, larguraMaxima);
+      linhasQuebradas.forEach(subLinha => {
+        if (y > 280) {
+          doc.addPage();
+          y = 10;
+        }
+        doc.text(subLinha, margemEsquerda, y);
+        y += 8;
+      });
+    });
+    
+    const data = document.getElementById('dataReportConsolidado').value;
+    const rota = document.getElementById('rotaReportConsolidado').value;
+    const dataFormatada = data.split('-').reverse().join('-');
+    const rotaLimpa = rota.replace(/\s+/g, '-').replace(/[()]/g, '');
+    const nomeArquivo = `report-consolidado-${rotaLimpa}-${dataFormatada}.pdf`;
+    
+    doc.save(nomeArquivo);
+    fecharReportConsolidado();
+  }
+}
+
+function gerarDadosReportConsolidado() {
+  const data = document.getElementById('dataReportConsolidado').value;
+  const rota = document.getElementById('rotaReportConsolidado').value;
+  
+  if (!data || !rota) {
+    alert('Por favor, selecione a data e a rota!');
+    return null;
+  }
+  
+  // Verifica se o sessionManager existe
+  if (!sessionManager || !sessionManager.sessions) {
+    alert('Nenhuma sessão encontrada no sistema!');
+    return null;
+  }
+  
+  // Filtra sessões por data e rota
+  const sessoesFiltradas = Object.values(sessionManager.sessions).filter(session => {
+    const sessionData = session.data || {};
+    const dataSession = sessionData.data;
+    const rotaSession = sessionData['rota-select'];
+    
+    return dataSession === data && rotaSession === rota;
+  });
+  
+  if (sessoesFiltradas.length === 0) {
+    alert('Nenhuma sessão encontrada para a data e rota selecionadas!\n\nVerifique se:\n- A data está correta\n- A rota foi selecionada corretamente\n- Existem sessões salvas para esta combinação');
+    return null;
+  }
+  
+  // Calcula totais - APENAS SOMA DOS ITENS
+  let totalVolumosoItens = 0;
+  let totalGaiolaItens = 0;
+  let totalMangaPalletItens = 0;
+  
+  sessoesFiltradas.forEach(session => {
+    const sessionData = session.data || {};
+    
+    const volumoso = parseInt(sessionData.volumoso) || 0;
+    const gaiola = parseInt(sessionData.gaiola) || 0;
+    const mangaPallet = parseInt(sessionData.mangaPallet) || 0;
+    
+    // Soma total de itens
+    totalVolumosoItens += volumoso;
+    totalGaiolaItens += gaiola;
+    totalMangaPalletItens += mangaPallet;
+  });
+  
+  const codigoXPT = codigosXPT[rota] || `XPT ${rota.substring(0, 3).toUpperCase()}8`;
+  
+  // FORMATO SIMPLIFICADO DO RELATÓRIO
+  const reportText = `REPORT DE CARREGAMENTO 🚚🚛📦
+${codigoXPT} - ${rota}
+
+Quantidade de Carros: ${sessoesFiltradas.length.toString().padStart(2, '0')}
+Quantidade de Volumoso: ${totalVolumosoItens.toString().padStart(2, '0')}
+Quantidade de Gaiolas: ${totalGaiolaItens.toString().padStart(2, '0')}
+Quantidade de manga de sacola: ${totalMangaPalletItens.toString().padStart(2, '0')}`;
+  
+  return reportText;
+}
+  </script>
+
+
+</body>
+</html>
