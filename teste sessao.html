@@ -604,8 +604,8 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1><i class="bi bi-truck"></i>CARREGAMENTO MM</h1>
-      <div class="subtitle">Sistema de Múltiplas Instâncias</div>
+      <h1><i class="bi bi-truck"></i> CARREGAMENTO MM</h1>
+    
     </div>
 
     <!-- Informações da Sessão Atual -->
@@ -616,13 +616,10 @@
       </div>
       <div class="session-controls">
         <button type="button" onclick="novaInstancia()" class="btn btn-info btn-small">
-          <i class="bi bi-plus-circle"></i> Novo Formulário
+          <i class="bi bi-plus-circle"></i> Nova sessão
         </button>
         <button type="button" onclick="gerenciarInstancias()" class="btn btn-secondary btn-small">
-          <i class="bi bi-list"></i> Gerenciar Formulários
-        </button>
-        <button type="button" onclick="duplicarInstancia()" class="btn btn-primary btn-small">
-          <i class="bi bi-files"></i> Duplicar Formulário
+          <i class="bi bi-list"></i> Gerenciar Sessões
         </button>
       </div>
     </div>
@@ -667,10 +664,6 @@
                 <option value="Carreta">Carreta</option><option value="Truck">Truck</option>
                 <option value="Toco">Toco</option><option value="3/4">3/4</option>
               </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Previsão de Destino</label>
-              <input type="text" id="previsaoDestino" placeholder="Digite a previsão de destino" class="form-input">
             </div>
           </div>
         </div>
@@ -781,6 +774,10 @@
                 <button type="button" onclick="registrarHoraComConfirmacao('horaSaida')" class="btn btn-primary btn-small">Registrar</button>
               </div>
             </div>
+            <div class="form-group">
+              <label class="form-label">Previsão de Destino</label>
+              <input type="time" id="previsaoDestino" placeholder="Digite a previsão de destino" class="form-input">
+            </div>
           </div>
         </div>
 
@@ -820,7 +817,7 @@
                   <i class="bi bi-qr-code-scan"></i>
                 </button>
                 <label style="display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; margin: 0;">
-                  <input type="checkbox" id="lateral2NaoUsa"> Não utiliza
+                  <input type="checkbox" id="lateral2NaoUsa"> 
                 </label>
               </div>
             </div>
@@ -835,7 +832,7 @@
           </div>
           <div class="form-grid">
             <div class="form-group">
-              <label class="form-label">Volumoso</label>
+              <label class="form-label">Volumosos</label>
               <div class="counter-controls">
                 <button type="button" onclick="alterarContagem('volumoso', -1)" class="counter-btn">-</button>
                 <input type="number" id="volumoso" value="0" min="0" class="form-input">
@@ -843,7 +840,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label class="form-label">Gaiola</label>
+              <label class="form-label">Gaiolas</label>
               <div class="counter-controls">
                 <button type="button" onclick="alterarContagem('gaiola', -1)" class="counter-btn">-</button>
                 <input type="number" id="gaiola" value="0" min="0" class="form-input">
@@ -851,7 +848,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label class="form-label">Manga Pallet</label>
+              <label class="form-label">Manga Pallets</label>
               <div class="counter-controls">
                 <button type="button" onclick="alterarContagem('mangaPallet', -1)" class="counter-btn">-</button>
                 <input type="number" id="mangaPallet" value="0" min="0" class="form-input">
@@ -1792,12 +1789,6 @@ Yms saída ok...........`;
       if (e.ctrlKey && e.key === 's') {
         e.preventDefault();
         salvarInstancia();
-      }
-      
-      // Ctrl + D: Duplicar
-      if (e.ctrlKey && e.key === 'd') {
-        e.preventDefault();
-        duplicarInstancia();
       }
       
       // Ctrl + G: Gerenciar
