@@ -718,9 +718,10 @@
               <select onchange="onSelectChange(this)" class="form-select">
                 <option value="">Selecione...</option>
                 <option value="manual">Inserir Manualmente</option>
+                <option value="MSR - PQA8867 / JAE3D30">MSR - PQA8867 / JAE3D30</option>
                 <option value="MSR - DRX8D24 / JAW3D30">MSR - DRX8D24 / JAW3D30</option>
-                <option value="MSR - MXB3387 / MLO6F04">MSR - MXB3387 (Dc 05) / MLO6F04</option>
                 <option value="MSR - RBL4J23 / ONC3I65">MSR - RBL4J23 / ONC3I65</option>
+                <option value="MSR - MXB3387 / MLO6F04">MSR - MXB3387 (Dc 05) / MLO6F04</option>
                 <option value="MSR - NWE5A88 / ONG5H07">MSR - NWE5A88 (Dc 06) / ONG5H07</option>
                 <option value="MSR - KIA5I83">MSR - KIA5I83</option>
                 <option value="RODACOP - TCK5H69 / HDE8J16">RODACOP - TCK5H69 / HDE8J16</option>
@@ -1237,6 +1238,8 @@
     // Dados dos motoristas (mantidos iguais)
     const motoristas = [
       { nome: "Evaldo de Queiroz", cpf: "950.351.335-61", telefone: "63992640497" },
+      { nome: "Raimundo Nonato", cpf: "", telefone: "63992754794" },
+      { nome: "Jales Soares", cpf: "", telefone: "63993043424" },
       { nome: "Cleuton Macêdo", cpf: "813.243.161-87", telefone: "63981439951" },
       { nome: "Tallysson Magno dos Santos", cpf: "", telefone: "63991169026" },
       { nome: "Marcos Vinicius Oliveira", cpf: "", telefone: "63992500932" },
@@ -1860,8 +1863,8 @@ const codigosXPT = {
   "Araguaína": "XPT ETO2",
   "Gurupi": "XPT ETO1", 
   "Guaraí": "XPT ETO3",
-  "Luiz Eduardo Magalhães": "XPT EBA24",
-  "Barreiras": "XPT EBA8"
+  "Luiz Eduardo Magalhães": "XPT EBA8",
+  "Barreiras": "XPT EBA24"
 };
 
 function gerarReportConsolidado() {
