@@ -623,7 +623,6 @@
         </button>
       </div>
     </div>
-
 <div id="reportConsolidadoModal" class="modal">
   <div class="modal-content">
     <button onclick="fecharReportConsolidado()" class="modal-close">
@@ -655,12 +654,36 @@
       <button type="button" onclick="processarReportConsolidado()" class="btn btn-primary">
         <i class="bi bi-file-earmark-text"></i> Gerar Report
       </button>
-      <button type="button" onclick="processarReportConsolidadoPDF()" class="btn btn-secondary">
-        <i class="bi bi-file-earmark-pdf"></i> Gerar PDF
-      </button>
     </div>
   </div>
 </div>
+
+<!-- Modal para Gerenciar Instâncias -->
+<div id="gerenciarModal" class="modal">
+  <div class="modal-content">
+    <button onclick="fecharGerenciar()" class="modal-close">
+      <i class="bi bi-x-lg"></i>
+    </button>
+    <div class="section-title" style="margin-bottom: 1rem;">
+      <i class="bi bi-list"></i>
+      Gerenciar Instâncias
+    </div>
+    <div id="session-list" class="session-list"></div>
+    <div style="margin-top: 1rem; text-align: center; display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+      <button type="button" onclick="exportarTodas()" class="btn btn-info btn-small">
+        <i class="bi bi-download"></i> Exportar Todas
+      </button>
+      <button type="button" onclick="importarSessoes()" class="btn btn-secondary btn-small">
+        <i class="bi bi-upload"></i> Importar
+      </button>
+      <button type="button" onclick="excluirTodasSessoes()" class="btn btn-danger btn-small">
+        <i class="bi bi-trash"></i> Excluir Todas
+      </button>
+    </div>
+    <input type="file" id="fileImport" accept=".json" style="display: none;" onchange="processarImportacao(this)">
+  </div>
+</div>
+
 
     <div class="form-container">
       <form id="form-carregamento">
@@ -939,30 +962,7 @@
     </div>
   </div>
 
-  <!-- Modal para Gerenciar Instâncias -->
-  <div id="gerenciarModal" class="modal">
-    <div class="modal-content">
-      <button onclick="fecharGerenciar()" class="modal-close">
-        <i class="bi bi-x-lg"></i>
-      </button>
-      <div class="section-title" style="margin-bottom: 1rem;">
-        <i class="bi bi-list"></i>
-        Gerenciar Instâncias
-      </div>
-      <div id="session-list" class="session-list"></div>
-      <div style="margin-top: 1rem; text-align: center;">
-        <button type="button" onclick="exportarTodas()" class="btn btn-info btn-small">
-          <i class="bi bi-download"></i> Exportar Todas
-        </button>
-        <button type="button" onclick="importarSessoes()" class="btn btn-secondary btn-small">
-          <i class="bi bi-upload"></i> Importar
-        </button>
-      </div>
-      <input type="file" id="fileImport" accept=".json" style="display: none;" onchange="processarImportacao(this)">
-    </div>
-  </div>
-
-
+  
   <script>
     // Sistema de Gerenciamento de Múltiplas Instâncias
     class SessionManager {
@@ -1063,66 +1063,92 @@
       }
 
       getCurrentSessionData() {
-        const data = {};
-        
-        // Coleta todos os dados do formulário
-        camposParaSalvar.forEach(id => {
-          const el = document.getElementById(id);
-          if (el) {
-            if (el.type === 'checkbox') {
-              data[id] = el.checked;
-            } else {
-              data[id] = el.value;
-            }
-          }
-        });
-
-        // Coleta dados dos checkboxes especiais
-        data.lateral1NaoUsa = document.getElementById('lateral1NaoUsa')?.checked || false;
-        data.lateral2NaoUsa = document.getElementById('lateral2NaoUsa')?.checked || false;
-
-        // Coleta rotas selecionadas
-        const rotasCheckboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
-        data.rotasCheckboxes = Array.from(rotasCheckboxes).map(cb => cb.checked);
-
-        return data;
+  const data = {};
+  
+  // Coleta todos os dados do formulário
+  camposParaSalvar.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      if (el.type === 'checkbox') {
+        data[id] = el.checked;
+      } else {
+        data[id] = el.value;
       }
+    }
+  });
+
+  // Coleta dados dos checkboxes especiais
+  data.lateral1NaoUsa = document.getElementById('lateral1NaoUsa')?.checked || false;
+  data.lateral2NaoUsa = document.getElementById('lateral2NaoUsa')?.checked || false;
+
+  // CORRIGIDO: Coleta rotas selecionadas com mais detalhes
+  const rotasCheckboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
+  data.rotasCheckboxes = {};
+  rotasCheckboxes.forEach(cb => {
+    data.rotasCheckboxes[cb.id] = cb.checked;
+  });
+  
+  // ADICIONADO: Debug para verificar o que está sendo salvo
+  console.log('Dados sendo salvos:', {
+    nomeMotorista: data.nomeMotorista,
+    rotasCount: Object.keys(data.rotasCheckboxes).length,
+    rotasSelecionadas: Object.entries(data.rotasCheckboxes).filter(([id, checked]) => checked)
+  });
+
+  return data;
+}
 
       loadSessionData() {
-        if (!this.currentSessionId || !this.sessions[this.currentSessionId]) return;
-        
-        const sessionData = this.sessions[this.currentSessionId].data;
-        
-        // Carrega dados básicos
-        camposParaSalvar.forEach(id => {
-          const el = document.getElementById(id);
-          if (el && sessionData[id] !== undefined) {
-            if (el.type === 'checkbox') {
-              el.checked = sessionData[id];
-            } else {
-              el.value = sessionData[id];
-            }
-          }
-        });
-
-        // Carrega checkboxes especiais
-        if (sessionData.lateral1NaoUsa !== undefined) {
-          document.getElementById('lateral1NaoUsa').checked = sessionData.lateral1NaoUsa;
-        }
-        if (sessionData.lateral2NaoUsa !== undefined) {
-          document.getElementById('lateral2NaoUsa').checked = sessionData.lateral2NaoUsa;
-        }
-
-        // Carrega rotas
-        if (sessionData.rotasCheckboxes) {
-          const rotasCheckboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
-          rotasCheckboxes.forEach((cb, index) => {
-            if (sessionData.rotasCheckboxes[index] !== undefined) {
-              cb.checked = sessionData.rotasCheckboxes[index];
-            }
-          });
-        }
+  if (!this.currentSessionId || !this.sessions[this.currentSessionId]) return;
+  
+  const sessionData = this.sessions[this.currentSessionId].data;
+  
+  console.log('Carregando dados da sessão:', sessionData); // Debug
+  
+  // Carrega dados básicos
+  camposParaSalvar.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && sessionData[id] !== undefined) {
+      if (el.type === 'checkbox') {
+        el.checked = sessionData[id];
+      } else {
+        el.value = sessionData[id];
       }
+    }
+  });
+
+  // Carrega checkboxes especiais
+  if (sessionData.lateral1NaoUsa !== undefined) {
+    document.getElementById('lateral1NaoUsa').checked = sessionData.lateral1NaoUsa;
+  }
+  if (sessionData.lateral2NaoUsa !== undefined) {
+    document.getElementById('lateral2NaoUsa').checked = sessionData.lateral2NaoUsa;
+  }
+
+  // CORRIGIDO: Carrega rotas com verificação mais robusta
+  if (sessionData.rotasCheckboxes) {
+    console.log('Carregando rotas:', sessionData.rotasCheckboxes); // Debug
+    
+    // Se é um objeto (novo formato)
+    if (typeof sessionData.rotasCheckboxes === 'object' && !Array.isArray(sessionData.rotasCheckboxes)) {
+      Object.entries(sessionData.rotasCheckboxes).forEach(([checkboxId, checked]) => {
+        const checkbox = document.getElementById(checkboxId);
+        if (checkbox) {
+          checkbox.checked = checked;
+        }
+      });
+    }
+    // Se é um array (formato antigo - compatibilidade)
+    else if (Array.isArray(sessionData.rotasCheckboxes)) {
+      const rotasCheckboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
+      rotasCheckboxes.forEach((cb, index) => {
+        if (sessionData.rotasCheckboxes[index] !== undefined) {
+          cb.checked = sessionData.rotasCheckboxes[index];
+        }
+      });
+    }
+  }
+}
 
       determineStatus(data) {
         const hasBasicData = data.data || data.doca || data.nomeMotorista;
@@ -1299,9 +1325,13 @@
     }
 
     function gerenciarInstancias() {
-      sessionManager.saveCurrentSession();
-      mostrarGerenciador();
-    }
+  sessionManager.saveCurrentSession();
+  
+  // ADICIONADO: Limpa sessões inválidas antes de mostrar
+  limparSessoesInvalidas();
+  
+  mostrarGerenciador();
+}
 
     function salvarInstancia() {
       sessionManager.saveCurrentSession();
@@ -1319,63 +1349,83 @@
     }
 
     function mostrarGerenciador() {
-      const modal = document.getElementById('gerenciarModal');
-      const sessionList = document.getElementById('session-list');
-      
-      sessionList.innerHTML = '';
-      
-      const sessions = sessionManager.getAllSessions();
-      
-      sessions.forEach(session => {
-        const div = document.createElement('div');
-        div.className = `session-item ${session.id === sessionManager.currentSessionId ? 'active' : ''}`;
-        
-        const shortId = session.id.split('_')[2] || session.id.substr(-5);
-        const createdDate = new Date(session.created).toLocaleString('pt-BR');
-        const updatedDate = new Date(session.updated).toLocaleString('pt-BR');
-        
-        // Determina informações da sessão
-        const info = [];
-        if (session.data['rota-select']) info.push(`Rota: ${session.data['rota-select']}`);
-        if (session.data.nomeMotorista) info.push(`Motorista: ${session.data.nomeMotorista}`);
-        if (session.data.doca) info.push(`Doca: ${session.data.doca}`);
-        if (session.data.placaPrimaria) info.push(`Placa: ${session.data.placaPrimaria}`);
-        
-        const statusClass = {
-          'new': 'status-new',
-          'progress': 'status-progress', 
-          'completed': 'status-completed'
-        }[session.status] || 'status-new';
-        
-        div.innerHTML = `
-          <div class="session-item-header">
-            <div class="session-item-id">
-              <span class="status-indicator ${statusClass}"></span>
-              ${shortId}
-            </div>
-            <div class="session-item-actions">
-              <button onclick="alternarSessao('${session.id}')" class="btn btn-primary btn-small">
-                ${session.id === sessionManager.currentSessionId ? 'Atual' : 'Abrir'}
-              </button>
-              ${session.id !== sessionManager.currentSessionId ? 
-                `<button onclick="excluirSessao('${session.id}')" class="btn btn-danger btn-small">
-                  <i class="bi bi-trash"></i>
-                </button>` : ''
-              }
-            </div>
-          </div>
-          <div class="session-item-info">
-            <div>Criado: ${createdDate}</div>
-            <div>Atualizado: ${updatedDate}</div>
-            ${info.length > 0 ? `<div>${info.join(' • ')}</div>` : ''}
-          </div>
-        `;
-        
-        sessionList.appendChild(div);
-      });
-      
-      modal.style.display = 'flex';
+  const modal = document.getElementById('gerenciarModal');
+  const sessionList = document.getElementById('session-list');
+  
+  sessionList.innerHTML = '';
+  
+  const sessions = sessionManager.getAllSessions();
+  
+  sessions.forEach(session => {
+    // CORREÇÃO: Verifica se a sessão e o ID existem
+    if (!session || !session.id) {
+      console.warn('Sessão inválida encontrada:', session);
+      return; // Pula esta sessão
     }
+    
+    const div = document.createElement('div');
+    div.className = `session-item ${session.id === sessionManager.currentSessionId ? 'active' : ''}`;
+    
+    // CORREÇÃO: Tratamento mais seguro para extrair ID curto
+    let shortId;
+    try {
+      const parts = session.id.split('_');
+      shortId = parts.length > 2 ? parts[2] : session.id.substr(-5);
+    } catch (error) {
+      console.error('Erro ao processar ID da sessão:', session.id, error);
+      shortId = 'ID-ERRO';
+    }
+    
+    // CORREÇÃO: Verifica se as datas existem antes de processar
+    const createdDate = session.created ? new Date(session.created).toLocaleString('pt-BR') : 'Data não disponível';
+    const updatedDate = session.updated ? new Date(session.updated).toLocaleString('pt-BR') : 'Data não disponível';
+    
+    // CORREÇÃO: Verifica se session.data existe antes de acessar propriedades
+    const sessionData = session.data || {};
+    const info = [];
+    if (sessionData['rota-select']) info.push(`Rota: ${sessionData['rota-select']}`);
+    if (sessionData.nomeMotorista) info.push(`Motorista: ${sessionData.nomeMotorista}`);
+    if (sessionData.placaPrimaria) info.push(`Placa: ${sessionData.placaPrimaria}`);
+    if (sessionData.data) {
+      const dataFormatada = sessionData.data.split('-').reverse().join('/');
+      info.push(`Data: ${dataFormatada}`);
+    }
+    
+    const statusClass = {
+      'new': 'status-new',
+      'progress': 'status-progress', 
+      'completed': 'status-completed'
+    }[session.status] || 'status-new';
+    
+    div.innerHTML = `
+      <div class="session-item-header">
+        <div class="session-item-id">
+          <span class="status-indicator ${statusClass}"></span>
+          ${shortId}
+        </div>
+        <div class="session-item-actions">
+          <button onclick="alternarSessao('${session.id}')" class="btn btn-primary btn-small">
+            ${session.id === sessionManager.currentSessionId ? 'Atual' : 'Abrir'}
+          </button>
+          ${session.id !== sessionManager.currentSessionId ? 
+            `<button onclick="excluirSessao('${session.id}')" class="btn btn-danger btn-small">
+              <i class="bi bi-trash"></i>
+            </button>` : ''
+          }
+        </div>
+      </div>
+      <div class="session-item-info">
+        <div>Criado: ${createdDate}</div>
+        <div>Atualizado: ${updatedDate}</div>
+        ${info.length > 0 ? `<div>${info.join(' • ')}</div>` : ''}
+      </div>
+    `;
+    
+    sessionList.appendChild(div);
+  });
+  
+  modal.style.display = 'flex';
+}
 
     function alternarSessao(sessionId) {
       if (sessionManager.switchToSession(sessionId)) {
@@ -1405,6 +1455,80 @@
     function importarSessoes() {
       document.getElementById('fileImport').click();
     }
+
+    function excluirTodasSessoes() {
+  const totalSessoes = Object.keys(sessionManager.sessions).length;
+  
+  if (totalSessoes === 0) {
+    alert('Não há sessões para excluir.');
+    return;
+  }
+  
+  const confirmacao = confirm(
+    `⚠️ ATENÇÃO: Esta ação irá excluir TODAS as ${totalSessoes} sessões permanentemente!\n\n` +
+    `Esta ação NÃO pode ser desfeita.\n\n` +
+    `Tem certeza que deseja continuar?`
+  );
+  
+  if (!confirmacao) return;
+  
+  // Confirmação adicional
+  const confirmacaoFinal = confirm(
+    `🚨 ÚLTIMA CONFIRMAÇÃO!\n\n` +
+    `Você está prestes a excluir todas as sessões.\n` +
+    `Clique OK para CONFIRMAR a exclusão definitiva.`
+  );
+  
+  if (!confirmacaoFinal) return;
+  
+  try {
+    // Limpa todas as sessões
+    sessionManager.sessions = {};
+    sessionManager.saveSessions();
+    
+    // Remove a sessão ativa do sessionStorage
+    sessionStorage.removeItem('activeSessionId');
+    
+    // Cria uma nova sessão
+    sessionManager.createNewSession();
+    
+    // Limpa o formulário
+    limparFormularioSemConfirmacao();
+    
+    // Fecha o modal e mostra confirmação
+    fecharGerenciar();
+    alert('✅ Todas as sessões foram excluídas com sucesso!\nUma nova sessão foi criada.');
+    
+  } catch (error) {
+    console.error('Erro ao excluir sessões:', error);
+    alert('❌ Erro ao excluir sessões. Tente novamente.');
+  }
+}
+
+  // NOVA FUNÇÃO: Limpa sessões corrompidas
+function limparSessoesInvalidas() {
+  let sessoesLimpas = false;
+  const sessoesValidas = {};
+  
+  Object.entries(sessionManager.sessions).forEach(([id, session]) => {
+    // Verifica se a sessão tem estrutura mínima válida
+    if (session && session.id && typeof session.id === 'string') {
+      sessoesValidas[id] = session;
+    } else {
+      console.warn('Sessão inválida removida:', id, session);
+      sessoesLimpas = true;
+    }
+  });
+  
+  if (sessoesLimpas) {
+    sessionManager.sessions = sessoesValidas;
+    sessionManager.saveSessions();
+    console.log('Sessões inválidas foram removidas');
+    return true;
+  }
+  
+  return false;
+}
 
     function processarImportacao(input) {
       const file = input.files[0];
@@ -1461,65 +1585,75 @@
 
     // Função de autocomplete adaptada
     function setupAutocomplete() {
-      const input = document.getElementById('nomeMotorista');
-      const suggestionsDiv = document.getElementById('suggestions');
-      
-      input.addEventListener('input', function() {
-        const value = this.value.toLowerCase();
-        const filteredMotoristas = motoristas.filter(motorista => 
-          motorista.nome.toLowerCase().includes(value)
-        );
-        
-        if (value === '' || filteredMotoristas.length === 0) {
-          suggestionsDiv.style.display = 'none';
-          selectedSuggestionIndex = -1;
-          return;
-        }
-        
-        suggestionsDiv.innerHTML = '';
-        filteredMotoristas.forEach((motorista, index) => {
-          const div = document.createElement('div');
-          div.className = 'autocomplete-suggestion';
-          div.textContent = motorista.nome;
-          div.addEventListener('click', () => selectMotorista(motorista));
-          suggestionsDiv.appendChild(div);
-        });
-        
-        suggestionsDiv.style.display = 'block';
-        selectedSuggestionIndex = -1;
-      });
-      
-      input.addEventListener('keydown', function(e) {
-        const suggestions = suggestionsDiv.querySelectorAll('.autocomplete-suggestion');
-        
-        if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          selectedSuggestionIndex = Math.min(selectedSuggestionIndex + 1, suggestions.length - 1);
-          updateSelectedSuggestion(suggestions);
-        } else if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          selectedSuggestionIndex = Math.max(selectedSuggestionIndex - 1, -1);
-          updateSelectedSuggestion(suggestions);
-        } else if (e.key === 'Enter') {
-          e.preventDefault();
-          if (selectedSuggestionIndex >= 0 && suggestions[selectedSuggestionIndex]) {
-            const motoristaNome = suggestions[selectedSuggestionIndex].textContent;
-            const motorista = motoristas.find(m => m.nome === motoristaNome);
-            if (motorista) selectMotorista(motorista);
-          }
-        } else if (e.key === 'Escape') {
-          suggestionsDiv.style.display = 'none';
-          selectedSuggestionIndex = -1;
-        }
-      });
-      
-      document.addEventListener('click', function(e) {
-        if (!input.contains(e.target) && !suggestionsDiv.contains(e.target)) {
-          suggestionsDiv.style.display = 'none';
-          selectedSuggestionIndex = -1;
-        }
-      });
+  const input = document.getElementById('nomeMotorista');
+  const suggestionsDiv = document.getElementById('suggestions');
+  
+  input.addEventListener('input', function() {
+    const value = this.value.toLowerCase();
+    const filteredMotoristas = motoristas.filter(motorista => 
+      motorista.nome.toLowerCase().includes(value)
+    );
+    
+    // ADICIONADO: Auto-save quando o usuário digita
+    sessionManager.saveCurrentSession();
+    
+    if (value === '' || filteredMotoristas.length === 0) {
+      suggestionsDiv.style.display = 'none';
+      selectedSuggestionIndex = -1;
+      return;
     }
+    
+    suggestionsDiv.innerHTML = '';
+    filteredMotoristas.forEach((motorista, index) => {
+      const div = document.createElement('div');
+      div.className = 'autocomplete-suggestion';
+      div.textContent = motorista.nome;
+      div.addEventListener('click', () => selectMotorista(motorista));
+      suggestionsDiv.appendChild(div);
+    });
+    
+    suggestionsDiv.style.display = 'block';
+    selectedSuggestionIndex = -1;
+  });
+  
+  // ADICIONADO: Salva quando o campo perde o foco
+  input.addEventListener('blur', function() {
+    setTimeout(() => {
+      sessionManager.saveCurrentSession();
+    }, 300); // Delay para permitir clique nas sugestões
+  });
+  
+  input.addEventListener('keydown', function(e) {
+    const suggestions = suggestionsDiv.querySelectorAll('.autocomplete-suggestion');
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      selectedSuggestionIndex = Math.min(selectedSuggestionIndex + 1, suggestions.length - 1);
+      updateSelectedSuggestion(suggestions);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      selectedSuggestionIndex = Math.max(selectedSuggestionIndex - 1, -1);
+      updateSelectedSuggestion(suggestions);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (selectedSuggestionIndex >= 0 && suggestions[selectedSuggestionIndex]) {
+        const motoristaNome = suggestions[selectedSuggestionIndex].textContent;
+        const motorista = motoristas.find(m => m.nome === motoristaNome);
+        if (motorista) selectMotorista(motorista);
+      }
+    } else if (e.key === 'Escape') {
+      suggestionsDiv.style.display = 'none';
+      selectedSuggestionIndex = -1;
+    }
+  });
+  
+  document.addEventListener('click', function(e) {
+    if (!input.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+      suggestionsDiv.style.display = 'none';
+      selectedSuggestionIndex = -1;
+    }
+  });
+}
     
     function updateSelectedSuggestion(suggestions) {
       suggestions.forEach((suggestion, index) => {
@@ -1576,25 +1710,26 @@
     }
 
     function gerarCheckboxesRotas() {
-      const container = document.getElementById('rotasCheckboxes');
-      for (let i = 1; i <= 80; i++) {
-        const div = document.createElement('div');
-        div.className = 'checkbox-item';
-        div.innerHTML = `
-          <input type="checkbox" id="rota${i}" value="${i.toString().padStart(2, '0')}">
-          <label for="rota${i}">${i.toString().padStart(2, '0')}</label>
-        `;
-        container.appendChild(div);
-      }
-      
-      // Adiciona eventos de mudança para salvar automaticamente
-      setTimeout(() => {
-        const checkboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
-        checkboxes.forEach(cb => {
-          cb.addEventListener('change', () => sessionManager.saveCurrentSession());
-        });
-      }, 100);
-    }
+  const container = document.getElementById('rotasCheckboxes');
+  for (let i = 1; i <= 80; i++) {
+    const div = document.createElement('div');
+    div.className = 'checkbox-item';
+    div.innerHTML = `
+      <input type="checkbox" id="rota${i}" value="${i.toString().padStart(2, '0')}">
+      <label for="rota${i}">${i.toString().padStart(2, '0')}</label>
+    `;
+    container.appendChild(div);
+  }
+  
+  // CORRIGIDO: Adiciona eventos imediatamente após criar os checkboxes
+  const checkboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
+  checkboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      console.log('Checkbox rota alterado:', cb.id, cb.checked); // Debug
+      sessionManager.saveCurrentSession();
+    });
+  });
+}
 
     function scanQRCode(campoId) {
       campoAtivo = document.getElementById(campoId);
@@ -1804,24 +1939,16 @@ Yms saída ok...........`;
 
     // Inicialização
     window.addEventListener("load", () => {
-      // Inicializa o gerenciador de sessões
-      sessionManager = new SessionManager();
-      
-      // Configura a interface
-      gerarCheckboxesRotas();
-      setupAutocomplete();
-      setupAutoSave();
-
-      // Observador para rotas checkboxes
-      const observer = new MutationObserver(() => {
-        const checkboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
-        checkboxes.forEach(cb => {
-          cb.addEventListener("change", () => sessionManager.saveCurrentSession());
-        });
-      });
-
-      observer.observe(document.getElementById("rotasCheckboxes"), { childList: true });
-    });
+  // Inicializa o gerenciador de sessões
+  sessionManager = new SessionManager();
+  
+  // Configura a interface
+  gerarCheckboxesRotas(); // Gera os checkboxes PRIMEIRO
+  setupAutocomplete();
+  setupAutoSave();
+  
+  console.log('Sistema inicializado. Sessão atual:', sessionManager.currentSessionId);
+});
 
     // Teclas de atalho
     document.addEventListener('keydown', (e) => {
@@ -1857,8 +1984,8 @@ Yms saída ok...........`;
         modal.style.display = 'none';
       }
     }
-// ADICIONE ESTAS FUNÇÕES NO FINAL DO SCRIPT, ANTES DO FECHAMENTO DA TAG SCRIPT
-// Mapeamento dos códigos XPT por rota
+// FUNÇÃO DE GERAR O REPORT CONSOLIDADO DO DIA
+
 const codigosXPT = {
   "Araguaína": "XPT ETO2",
   "Gurupi": "XPT ETO1", 
@@ -1868,178 +1995,296 @@ const codigosXPT = {
 };
 
 function gerarReportConsolidado() {
-  // Define a data de hoje como padrão
-  const hoje = new Date().toISOString().split('T')[0];
-  document.getElementById('dataReportConsolidado').value = hoje;
-  
-  // Mostra o modal
-  document.getElementById('reportConsolidadoModal').style.display = 'flex';
+  const modal = document.getElementById('reportConsolidadoModal');
+  if (modal) {
+    // Define data atual como padrão
+    const hoje = new Date().toISOString().split('T')[0];
+    document.getElementById('dataReportConsolidado').value = hoje;
+    modal.style.display = 'flex';
+  }
 }
 
 function fecharReportConsolidado() {
-  document.getElementById('reportConsolidadoModal').style.display = 'none';
+  const modal = document.getElementById('reportConsolidadoModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
 }
 
 function processarReportConsolidado() {
-  const reportText = gerarDadosReportConsolidado();
-  if (reportText) {
-    // Cria um textarea temporário para copiar o texto
-    const textarea = document.createElement('textarea');
-    textarea.value = reportText;
-    document.body.appendChild(textarea);
-    textarea.select();
-    
-    try {
-      document.execCommand('copy');
-      alert('Report copiado para a área de transferência!');
-    } catch (err) {
-      // Fallback para navegadores mais novos
-      navigator.clipboard.writeText(reportText).then(() => {
-        alert('Report copiado para a área de transferência!');
-      }).catch(() => {
-        alert('Erro ao copiar. Dados gerados:\n\n' + reportText);
-      });
-    }
-    
-    document.body.removeChild(textarea);
-    fecharReportConsolidado();
-  }
-}
-
-function processarReportConsolidadoPDF() {
-  const reportText = gerarDadosReportConsolidado();
-  if (reportText) {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(12);
-    
-    const margemEsquerda = 10;
-    const larguraMaxima = 190;
-    let y = 10;
-    
-    const linhas = reportText.split('\n');
-    
-    linhas.forEach(linha => {
-      const linhasQuebradas = doc.splitTextToSize(linha, larguraMaxima);
-      linhasQuebradas.forEach(subLinha => {
-        if (y > 280) {
-          doc.addPage();
-          y = 10;
-        }
-        doc.text(subLinha, margemEsquerda, y);
-        y += 8;
-      });
-    });
-    
-    const data = document.getElementById('dataReportConsolidado').value;
-    const rota = document.getElementById('rotaReportConsolidado').value;
-    const dataFormatada = data.split('-').reverse().join('-');
-    const rotaLimpa = rota.replace(/\s+/g, '-').replace(/[()]/g, '');
-    const nomeArquivo = `report-consolidado-${rotaLimpa}-${dataFormatada}.pdf`;
-    
-    doc.save(nomeArquivo);
-    fecharReportConsolidado();
-  }
-}
-
-function gerarDadosReportConsolidado() {
+  console.log('🔄 Iniciando processamento do report consolidado...');
+  
   const data = document.getElementById('dataReportConsolidado').value;
   const rota = document.getElementById('rotaReportConsolidado').value;
   
+  // Validação básica
   if (!data || !rota) {
-    alert('Por favor, selecione a data e a rota!');
-    return null;
+    alert('⚠️ Por favor, selecione a data e a rota!');
+    return;
   }
   
-  // Verifica se o sessionManager existe
-  if (!sessionManager || !sessionManager.sessions) {
-    alert('Nenhuma sessão encontrada no sistema!');
-    return null;
+  console.log('📅 Data selecionada:', data);
+  console.log('🚛 Rota selecionada:', rota);
+  
+  // Busca as sessões
+  const resultado = gerarDadosReportConsolidado(data, rota);
+  
+  if (resultado.sucesso) {
+    // Copia para área de transferência e mostra o resultado
+    copiarParaAreaTransferencia(resultado.texto)
+      .then(() => {
+        alert(`✅ Report consolidado copiado para área de transferência!\n\n${resultado.resumo}`);
+        fecharReportConsolidado();
+      })
+      .catch(() => {
+        // Fallback: mostra em alert se não conseguir copiar
+        alert(`📋 Report Consolidado:\n\n${resultado.texto}\n\n${resultado.resumo}`);
+        fecharReportConsolidado();
+      });
+  }
+}
+
+function gerarDadosReportConsolidado(data, rota) {
+  console.log('🔍 Buscando sessões no sistema...');
+  
+  // Busca todas as sessões salvas
+  let todasSessoes = {};
+  
+  try {
+    // Primeiro tenta carregar do localStorage
+    const dadosSalvos = localStorage.getItem('carregamento_sessions');
+    if (dadosSalvos) {
+      todasSessoes = JSON.parse(dadosSalvos);
+      console.log('💾 Sessões encontradas no localStorage:', Object.keys(todasSessoes).length);
+    }
+    
+    // Se não encontrou ou está vazio, tenta usar o sessionManager
+    if (Object.keys(todasSessoes).length === 0 && window.sessionManager && sessionManager.sessions) {
+      // Força salvamento das sessões atuais
+      sessionManager.saveSessions();
+      todasSessoes = sessionManager.sessions;
+      console.log('💾 Usando sessões do sessionManager:', Object.keys(todasSessoes).length);
+    }
+    
+  } catch (error) {
+    console.error('❌ Erro ao ler dados:', error);
   }
   
-  console.log('Data selecionada:', data);
-  console.log('Rota selecionada:', rota);
-  console.log('Total de sessões no sistema:', Object.keys(sessionManager.sessions).length);
+  // Verifica se encontrou sessões
+  if (Object.keys(todasSessoes).length === 0) {
+    alert('❌ Nenhuma sessão encontrada no sistema!\n\nCertifique-se de que você salvou algumas sessões primeiro usando o botão "Salvar Sessão".');
+    return { sucesso: false };
+  }
   
-  // Filtra sessões por data e rota com debug
-  const sessoesFiltradas = Object.values(sessionManager.sessions).filter(session => {
-    const sessionData = session.data || {};
-    const dataSession = sessionData.data;
-    const rotaSession = sessionData['rota-select'];
+  console.log('🔍 Total de sessões no sistema:', Object.keys(todasSessoes).length);
+  
+  // Filtra as sessões que coincidem com data e rota
+  const sessoesEncontradas = [];
+  const dataFormatada = data; // Formato YYYY-MM-DD
+  
+  console.log('🎯 Filtrando por data:', dataFormatada, 'e rota:', rota);
+  
+  Object.values(todasSessoes).forEach((sessao, index) => {
+    if (!sessao || !sessao.data) {
+      console.log(`⚠️ Sessão ${index} sem dados válidos`);
+      return;
+    }
     
-    // Debug para cada sessão
-    console.log('Verificando sessão:', session.id);
-    console.log('- Data da sessão:', dataSession);
-    console.log('- Rota da sessão:', rotaSession);
-    console.log('- Comparação data:', dataSession === data);
-    console.log('- Comparação rota:', rotaSession === rota);
+    const dados = sessao.data;
+    const dataSession = dados.data ? dados.data.trim() : '';
+    const rotaSession = dados['rota-select'] ? dados['rota-select'].trim() : '';
     
-    return dataSession === data && rotaSession === rota;
+    console.log(`🔍 Sessão ${sessao.id ? sessao.id.substr(-8) : index}:`, {
+      data: dataSession,
+      rota: rotaSession,
+      match: dataSession === dataFormatada && rotaSession === rota
+    });
+    
+    if (dataSession === dataFormatada && rotaSession === rota) {
+      sessoesEncontradas.push(sessao);
+      console.log(`✅ Sessão adicionada: ${sessao.id ? sessao.id.substr(-8) : index}`);
+    }
   });
   
-  console.log('Sessões filtradas encontradas:', sessoesFiltradas.length);
+  console.log(`📊 Sessões encontradas para o filtro: ${sessoesEncontradas.length}`);
   
-  if (sessoesFiltradas.length === 0) {
-    // Mostra informações de debug para ajudar o usuário
-    const todasSessoes = Object.values(sessionManager.sessions);
-    const datasEncontradas = [...new Set(todasSessoes.map(s => s.data?.data).filter(Boolean))];
-    const rotasEncontradas = [...new Set(todasSessoes.map(s => s.data?.['rota-select']).filter(Boolean))];
+  // Se não encontrou nenhuma sessão
+  if (sessoesEncontradas.length === 0) {
+    // Mostra dados disponíveis para debug
+    const datasDisponiveis = [...new Set(
+      Object.values(todasSessoes)
+        .map(s => s.data?.data)
+        .filter(d => d)
+    )].sort();
     
-    let mensagemDebug = `Nenhuma sessão encontrada para a data e rota selecionadas!\n\n`;
-    mensagemDebug += `Data procurada: ${data}\n`;
-    mensagemDebug += `Rota procurada: ${rota}\n\n`;
-    mensagemDebug += `Datas disponíveis no sistema: ${datasEncontradas.join(', ') || 'Nenhuma'}\n`;
-    mensagemDebug += `Rotas disponíveis no sistema: ${rotasEncontradas.join(', ') || 'Nenhuma'}\n\n`;
-    mensagemDebug += `Total de sessões no sistema: ${todasSessoes.length}`;
+    const rotasDisponiveis = [...new Set(
+      Object.values(todasSessoes)
+        .map(s => s.data?.['rota-select'])
+        .filter(r => r)
+    )].sort();
     
-    alert(mensagemDebug);
-    return null;
+    let mensagem = `❌ Nenhuma sessão encontrada para:\n`;
+    mensagem += `📅 Data: ${data}\n`;
+    mensagem += `🚛 Rota: ${rota}\n\n`;
+    mensagem += `📊 Dados disponíveis no sistema:\n`;
+    mensagem += `📅 Datas: ${datasDisponiveis.join(', ') || 'Nenhuma'}\n`;
+    mensagem += `🚛 Rotas: ${rotasDisponiveis.join(', ') || 'Nenhuma'}\n`;
+    mensagem += `💾 Total de sessões: ${Object.keys(todasSessoes).length}`;
+    
+    alert(mensagem);
+    return { sucesso: false };
   }
   
-  // Calcula totais - APENAS SOMA DOS ITENS
+  // Calcula os totais
+  let totalCarros = sessoesEncontradas.length;
   let totalVolumosoItens = 0;
   let totalGaiolaItens = 0;
   let totalMangaPalletItens = 0;
   
-  console.log('Processando sessões encontradas:');
+  console.log('🧮 Calculando totais para', sessoesEncontradas.length, 'sessões:');
   
-  sessoesFiltradas.forEach((session, index) => {
-    const sessionData = session.data || {};
+  sessoesEncontradas.forEach((sessao, index) => {
+    const dados = sessao.data || {};
     
-    const volumoso = parseInt(sessionData.volumoso) || 0;
-    const gaiola = parseInt(sessionData.gaiola) || 0;
-    const mangaPallet = parseInt(sessionData.mangaPallet) || 0;
+    const volumoso = parseInt(dados.volumoso) || 0;
+    const gaiola = parseInt(dados.gaiola) || 0;
+    const mangaPallet = parseInt(dados.mangaPallet) || 0;
     
-    console.log(`Sessão ${index + 1} (${session.id}):`);
-    console.log('- Volumoso:', volumoso);
-    console.log('- Gaiola:', gaiola);
-    console.log('- Manga Pallet:', mangaPallet);
+    console.log(`  📦 Sessão ${index + 1}:`, {
+      volumoso: volumoso,
+      gaiola: gaiola,
+      mangaPallet: mangaPallet,
+      motorista: dados.nomeMotorista || 'N/I'
+    });
     
-    // Soma total de itens
     totalVolumosoItens += volumoso;
     totalGaiolaItens += gaiola;
     totalMangaPalletItens += mangaPallet;
   });
   
-  console.log('Totais calculados:');
-  console.log('- Total Volumoso:', totalVolumosoItens);
-  console.log('- Total Gaiola:', totalGaiolaItens);
-  console.log('- Total Manga Pallet:', totalMangaPalletItens);
+  console.log('📈 Totais finais:', {
+    carros: totalCarros,
+    volumosos: totalVolumosoItens,
+    gaiolas: totalGaiolaItens,
+    mangaPallet: totalMangaPalletItens
+  });
   
-  const codigoXPT = codigosXPT[rota] || `XPT ${rota.substring(0, 3).toUpperCase()}8`;
+  // Gera o código XPT
+  const codigoXPT = codigosXPT[rota] || `XPT ${rota.substring(0, 3).toUpperCase()}`;
   
-  // FORMATO SIMPLIFICADO DO RELATÓRIO
-  const reportText = `REPORT DE CARREGAMENTO 🚚🚛📦
-${codigoXPT} - ${rota}
+  // Formata a data para exibição (DD/MM/YYYY)
+  const dataExibicao = data.split('-').reverse().join('/');
+  
+  // Monta o texto do relatório
+  const textoReport = `REPORT DE CARREGAMENTO 🚚🚛📦
+${codigoXPT} ${rota} - ${dataExibicao}
 
-Quantidade de Carros: ${sessoesFiltradas.length.toString().padStart(2, '0')}
-Quantidade de Volumosos: ${totalVolumosoItens.toString().padStart(2, '0')}
+Quantidade de Carros: ${totalCarros.toString().padStart(2, '0')}
+Quantidade de Volumoso: ${totalVolumosoItens.toString().padStart(2, '0')}
 Quantidade de Gaiolas: ${totalGaiolaItens.toString().padStart(2, '0')}
-Quantidade de Manga Pallets: ${totalMangaPalletItens.toString().padStart(2, '0')}`;
+Quantidade de manga de sacola: ${totalMangaPalletItens.toString().padStart(2, '0')}`;
   
-  return reportText;
+  const resumo = `📊 Resumo: ${totalCarros} carros processados para ${rota} em ${dataExibicao}`;
+  
+  console.log('✅ Report consolidado gerado com sucesso!');
+  
+  return {
+    sucesso: true,
+    texto: textoReport,
+    resumo: resumo,
+    data: data,
+    rota: rota,
+    totalCarros: totalCarros,
+    totalVolumosoItens: totalVolumosoItens,
+    totalGaiolaItens: totalGaiolaItens,
+    totalMangaPalletItens: totalMangaPalletItens
+  };
+}
+
+// Função auxiliar para copiar texto para área de transferência
+async function copiarParaAreaTransferencia(texto) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      // Usa a API moderna de clipboard
+      await navigator.clipboard.writeText(texto);
+      console.log('✅ Texto copiado usando Clipboard API');
+      return true;
+    } else {
+      // Fallback para navegadores mais antigos
+      const textArea = document.createElement('textarea');
+      textArea.value = texto;
+      textArea.style.position = 'fixed';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.select();
+      
+      const sucesso = document.execCommand('copy');
+      document.body.removeChild(textArea);
+      
+      if (sucesso) {
+        console.log('✅ Texto copiado usando execCommand');
+        return true;
+      } else {
+        throw new Error('execCommand falhou');
+      }
+    }
+  } catch (error) {
+    console.error('❌ Erro ao copiar:', error);
+    throw error;
+  }
+}
+
+// Função para debug - testar o report
+function testarReportConsolidado() {
+  console.log('🧪 Testando geração de report...');
+  
+  // Define valores de teste
+  const hoje = new Date().toISOString().split('T')[0];
+  document.getElementById('dataReportConsolidado').value = hoje;
+  document.getElementById('rotaReportConsolidado').value = 'Araguaína';
+  
+  // Força salvamento da sessão atual para teste
+  if (window.sessionManager) {
+    sessionManager.saveCurrentSession();
+  }
+  
+  // Executa o processamento
+  processarReportConsolidado();
+}
+
+// Função para listar todas as sessões (debug)
+function listarTodasSessoes() {
+  console.log('📋 === LISTAGEM DE TODAS AS SESSÕES ===');
+  
+  let todasSessoes = {};
+  
+  try {
+    const dadosSalvos = localStorage.getItem('carregamento_sessions');
+    if (dadosSalvos) {
+      todasSessoes = JSON.parse(dadosSalvos);
+    }
+    
+    if (Object.keys(todasSessoes).length === 0 && window.sessionManager) {
+      todasSessoes = sessionManager.sessions;
+    }
+    
+    console.log(`📊 Total: ${Object.keys(todasSessoes).length} sessões`);
+    
+    Object.values(todasSessoes).forEach((sessao, index) => {
+      const dados = sessao.data || {};
+      console.log(`📝 ${index + 1}. ${sessao.id ? sessao.id.substr(-8) : 'ID-N/A'}:`, {
+        data: dados.data || 'N/I',
+        rota: dados['rota-select'] || 'N/I',
+        motorista: dados.nomeMotorista || 'N/I',
+        status: sessao.status || 'N/I'
+      });
+    });
+    
+  } catch (error) {
+    console.error('❌ Erro ao listar sessões:', error);
+  }
+  
+  console.log('📋 === FIM DA LISTAGEM ===');
 }
   </script>
 
