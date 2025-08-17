@@ -30,6 +30,280 @@
       padding: 0;
     }
 
+      /* Estilos para tela de login */
+#loginOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--dark-bg);
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(0, 255, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(153, 0, 255, 0.15) 0%, transparent 50%);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(20px);
+}
+
+.login-container {
+  background: var(--card-bg);
+  backdrop-filter: blur(30px);
+  border: 2px solid var(--border-glow);
+  border-radius: 25px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  max-width: 400px;
+  width: 90%;
+  animation: loginSlideIn 0.8s ease;
+}
+
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: var(--gradient-primary);
+  border-radius: 25px;
+  z-index: -1;
+  opacity: 0.2;
+  animation: loginGlow 2s ease-in-out infinite alternate;
+}
+
+.login-header {
+  margin-bottom: 2rem;
+}
+
+.login-header h1 {
+  font-family: 'Orbitron', monospace;
+  font-size: 2rem;
+  font-weight: 900;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+.login-header .subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+.login-icon {
+  font-size: 4rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  animation: pulse 2s infinite;
+}
+
+.pin-container {
+  margin: 2rem 0;
+}
+
+.pin-label {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.pin-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.pin-digit {
+  width: 60px;
+  height: 60px;
+  background: rgba(16, 16, 32, 0.8);
+  border: 2px solid rgba(0, 255, 255, 0.3);
+  border-radius: 15px;
+  color: var(--text-primary);
+  font-size: 1.8rem;
+  font-weight: 700;
+  font-family: 'Orbitron', monospace;
+  text-align: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.pin-digit:focus {
+  outline: none;
+  border-color: var(--primary-cyan);
+  box-shadow: 
+    0 0 20px rgba(0, 255, 255, 0.4),
+    inset 0 0 10px rgba(0, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+.pin-digit.filled {
+  border-color: var(--primary-cyan);
+  background: rgba(0, 255, 255, 0.1);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.pin-digit.error {
+  border-color: var(--accent-pink);
+  background: rgba(255, 0, 102, 0.1);
+  box-shadow: 0 0 15px rgba(255, 0, 102, 0.3);
+  animation: shake 0.5s ease;
+}
+
+.login-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.btn-login {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 15px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.btn-login::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-login:hover::before {
+  left: 100%;
+}
+
+.btn-entrar {
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
+}
+
+.btn-entrar:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(0, 102, 255, 0.4);
+}
+
+.btn-entrar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-limpar {
+  background: var(--gradient-secondary);
+  color: white;
+  box-shadow: 0 10px 30px rgba(153, 0, 255, 0.3);
+}
+
+.btn-limpar:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(153, 0, 255, 0.4);
+}
+
+.error-message {
+  color: var(--accent-pink);
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.error-message.show {
+  opacity: 1;
+  animation: errorPulse 0.5s ease;
+}
+
+.security-info {
+  margin-top: 2rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+@keyframes loginSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes loginGlow {
+  from {
+    opacity: 0.1;
+  }
+  to {
+    opacity: 0.3;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes errorPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 2rem 1.5rem;
+  }
+  
+  .pin-inputs {
+    gap: 0.5rem;
+  }
+  
+  .pin-digit {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+}
+
     body {
       font-family: 'Rajdhani', sans-serif;
       background: var(--dark-bg);
@@ -602,6 +876,48 @@
   </style>
 </head>
 <body>
+
+<div id="loginOverlay">
+  <div class="login-container">
+    <div class="login-header">
+      <div class="login-icon">🔐</div>
+      <h1>Acesso Restrito</h1>
+      <div class="subtitle">Formulário de Carregamento MM</div>
+    </div>
+    
+    <div class="pin-container">
+      <div class="pin-label">Digite o PIN:</div>
+      <div class="pin-inputs">
+        <input type="password" class="pin-digit" maxlength="1" id="pin1" inputmode="numeric">
+        <input type="password" class="pin-digit" maxlength="1" id="pin2" inputmode="numeric">
+        <input type="password" class="pin-digit" maxlength="1" id="pin3" inputmode="numeric">
+        <input type="password" class="pin-digit" maxlength="1" id="pin4" inputmode="numeric">
+      </div>
+      
+      <div class="login-buttons">
+        <button type="button" id="btnEntrar" class="btn-login btn-entrar" disabled>
+          🚀 Entrar no Sistema
+        </button>
+        <button type="button" id="btnLimpar" class="btn-login btn-limpar">
+          🗑️ Limpar PIN
+        </button>
+      </div>
+      
+      <div id="errorMessage" class="error-message">
+        ❌ PIN incorreto! Tente novamente.
+      </div>
+    </div>
+    
+    <div class="security-info">
+      🛡️ Sistema protegido com autenticação PIN <br>
+      Proibido o compartilhamento do PIN e uso não autorizado desse sistema. <br>
+      Criação e desenvolvimento: Igor Alexandre Padovan <br>
+      Uso pessoal.<br>
+      v 2.52
+    </div>
+  </div>
+</div>
+
   <div class="container">
     <div class="header">
       <h1><i class="bi bi-truck"></i> CARREGAMENTO MM</h1>
@@ -746,11 +1062,17 @@
                 <option value="MSR - RBL4J23 / ONC3I65">MSR - RBL4J23 / ONC3I65</option>
                 <option value="MSR - MXB3387 / MLO6F04">MSR - MXB3387 (Dc 05) / MLO6F04</option>
                 <option value="MSR - NWE5A88 / ONG5H07">MSR - NWE5A88 (Dc 06) / ONG5H07</option>
-                <option value="MSR - KIA5I83">MSR - KIA5I83</option>
+
                 <option value="RODACOP - TCK5H69 / HDE8J16">RODACOP - TCK5H69 / HDE8J16</option>
                 <option value="RODACOP - FOF5B57 / RUK2H11">RODACOP - FOF5B57 / RUK2H11</option>
                 <option value="RODACOP - FTB1F75 / RUKJ2J60">RODACOP - FTB1F75 / RUKJ2J60</option>
                 <option value="RODACOP - RVB2C09">RODACOP - RVB2C09</option>
+
+                <option value="RODACOP - RVB1J25">RODACOP - RVB1J25</option>
+                <option value="RODACOP - OFC7H98">RODACOP - OFC7H98</option>
+                <option value="RODACOP - PVB0G08">RODACOP - PVB0G08</option>
+                <option value="RODACOP - RUK9J07">RODACOP - RUK9J07</option>
+
                 <option value="RODACOP - OQG8012">RODACOP - OQG8012</option>
                 <option value="RODACOP - RFR7E89">RODACOP - RFR7E89</option>
                 <option value="RODACOP - OLM1I23">RODACOP - OLM1I23</option>
@@ -758,6 +1080,13 @@
                 <option value="RODACOP - RSE9F12">RODACOP - RSE9F12</option>
                 <option value="RODACOP - RIN8H85">RODACOP - RIN8H85</option>
                 <option value="RODACOP - OLH2G94">RODACOP - OLH2G94</option>
+
+                <option value="KIA5I83">KIA5I83</option>
+                <option value="PRO5B99">PRO5B99</option>
+                <option value="RMB6C84">RMB6C84 - RMB6D04</option>
+
+
+
               </select>
             </div>
             <div class="form-group">
@@ -1243,22 +1572,35 @@
 
     // Dados dos veículos (mantidos iguais)
     const placaMap = {
+      "MSR - PQA8867 / JAE3D30": ["PQA8867", "JAE3D30"],
       "MSR - DRX8D24 / JAW3D30": ["DRX8D24", "JAW3D30"],
       "MSR - MXB3387 / MLO6F04": ["MXB3387", "MLO6F04"],
       "MSR - RBL4J23 / ONC3I65": ["RBL4J23", "ONC3I65"],
       "MSR - NWE5A88 / ONG5H07": ["NWE5A88", "ONG5H07"],
-      "MSR - KIA5I83": ["KIA5I83", ""],
+
       "RODACOP - TCK5H69 / HDE8J16": ["TCK5H69", "HDE8J16"],
       "RODACOP - FOF5B57 / RUK2H11": ["FOF5B57", "RUK2H11"],
-      "RODACOP - FTB1F75 / RUKJ2J60": ["FTB1F75", "RUKJ2J60"],
-      "RODACOP - RVB2C09": ["RVB2C09", ""],
-      "RODACOP - OQG8012": ["OQG8012", ""],
-      "RODACOP - RFR7E89": ["RFR7E89", ""],
-      "RODACOP - OLM1I23": ["OLM1I23", ""],
-      "RODACOP - QKA6J98": ["QKA6J98", ""],
-      "RODACOP - RSE9F12": ["RSE9F12", ""],
-      "RODACOP - RIN8H85": ["RIN8H85", ""],
-      "RODACOP - OLH2G94": ["OLH2G94", ""]
+      "RODACOP - FTB1F75 / RUK2J60": ["FTB1F75", "RUK2J60"],
+
+      "RODACOP - RVB1J25": ["", "RVB1J25"],
+      "RODACOP - OFC7H98": ["", "OFC7H98"],
+      "RODACOP - PVB0G08": ["", "PVB0G08"],
+      "RODACOP - RUK9J07": ["", "RUK9J07"],
+
+      "RODACOP - RVB2C09": ["", "RVB2C09"],
+      "RODACOP - OQG8012": ["", "OQG8012"],
+      "RODACOP - RFR7E89": ["", "RFR7E89"],
+      "RODACOP - OLM1I23": ["", "OLM1I23"],
+      "RODACOP - QKA6J98": ["", "QKA6J98"],
+      "RODACOP - RSE9F12": ["", "RSE9F12"],
+      "RODACOP - RIN8H85": ["", "RIN8H85"],
+      "RODACOP - OLH2G94": ["", "OLH2G94"],
+
+
+      "KIA5I83": ["", "KIA5I83"],
+      "PRO5B99": ["", "PRO5B99"],
+      "RMB6C84 - RMB6D04": ["RMB6C84", "RMB6D04"]
+
     };
 
     // Dados dos motoristas (mantidos iguais)
@@ -1291,7 +1633,13 @@
       { nome: "Juan de Souza Ribeiro", cpf: "070.732.651-74", telefone: "63992817191" },
       { nome: "Bismael Rodrigues de Sousa Oliveira", cpf: "050.908.111-80", telefone: "63992446420" },
       { nome: "Wesley Gonçalves Rodrigues", cpf: "590.682.721-68", telefone: "63984014369" },
-      { nome: "Odair José de Sousa", cpf: "989.477.611-68", telefone: "63984826152" }
+      { nome: "Odair José de Sousa", cpf: "989.477.611-68", telefone: "63984826152" },
+      { nome: "Luís Eduardo Sales", cpf: "", telefone: "" },
+      { nome: "Bruno Sobrinho", cpf: "", telefone: "" },
+      { nome: "Rayllan Ribeiro", cpf: "", telefone: "" },
+      { nome: "Kaique Ribeiro", cpf: "", telefone: "" },
+      { nome: "Matheus Gomes", cpf: "", telefone: "" },
+      { nome: "Alessandro Noleto", cpf: "", telefone: "" }
     ];
 
     // Campos para gerenciar
@@ -2286,6 +2634,391 @@ function listarTodasSessoes() {
   
   console.log('📋 === FIM DA LISTAGEM ===');
 }
+
+// ========== SISTEMA DE LOGIN PIN ==========
+
+// Configuração do PIN (altere aqui para mudar o PIN)
+const PIN_CORRETO = '0175'; // ⚠️ ALTERE ESTE PIN PARA SUA SEGURANÇA!
+const TEMPO_SESSAO = 8 * 60 * 60 * 1000; // 8 horas em milissegundos
+
+// Elementos da interface de login
+const loginOverlay = document.getElementById('loginOverlay');
+const pinInputs = document.querySelectorAll('.pin-digit');
+const btnEntrar = document.getElementById('btnEntrar');
+const btnLimpar = document.getElementById('btnLimpar');
+const errorMessage = document.getElementById('errorMessage');
+
+// Variáveis de controle
+let tentativasErradas = 0;
+const MAX_TENTATIVAS = 3;
+let bloqueado = false;
+
+// Inicialização do sistema de login
+function inicializarLogin() {
+  // Verifica se já está autenticado
+  if (verificarAutenticacao()) {
+    ocultarLogin();
+  } else {
+    mostrarLogin();
+  }
+  
+  // Configura eventos dos inputs PIN
+  configurarEventosPIN();
+  
+  // Configura botões
+  btnEntrar.addEventListener('click', tentarLogin);
+  btnLimpar.addEventListener('click', limparPIN);
+  
+  // Foco automático no primeiro campo
+  setTimeout(() => {
+    if (loginOverlay.style.display !== 'none') {
+      pinInputs[0].focus();
+    }
+  }, 500);
+}
+
+// Configura eventos dos campos PIN
+function configurarEventosPIN() {
+  pinInputs.forEach((input, index) => {
+    // Permite apenas números
+    input.addEventListener('input', (e) => {
+      const valor = e.target.value.replace(/[^0-9]/g, '');
+      e.target.value = valor;
+      
+      // Atualiza aparência
+      if (valor) {
+        e.target.classList.add('filled');
+        // Move para próximo campo
+        if (index < pinInputs.length - 1) {
+          pinInputs[index + 1].focus();
+        }
+      } else {
+        e.target.classList.remove('filled');
+      }
+      
+      // Remove classes de erro
+      e.target.classList.remove('error');
+      esconderErro();
+      
+      // Verifica se pode habilitar botão
+      atualizarBotaoEntrar();
+    });
+    
+    // Navegação com teclas
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && !e.target.value && index > 0) {
+        pinInputs[index - 1].focus();
+        pinInputs[index - 1].value = '';
+        pinInputs[index - 1].classList.remove('filled');
+      }
+      
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (btnEntrar.disabled === false) {
+          tentarLogin();
+        }
+      }
+      
+      // Setas para navegação
+      if (e.key === 'ArrowLeft' && index > 0) {
+        pinInputs[index - 1].focus();
+      }
+      if (e.key === 'ArrowRight' && index < pinInputs.length - 1) {
+        pinInputs[index + 1].focus();
+      }
+    });
+    
+    // Seleciona tudo ao focar
+    input.addEventListener('focus', (e) => {
+      setTimeout(() => e.target.select(), 10);
+    });
+  });
+}
+
+// Verifica se todos os campos PIN estão preenchidos
+function todosCamposPreenchidos() {
+  return Array.from(pinInputs).every(input => input.value.length === 1);
+}
+
+// Atualiza estado do botão entrar
+function atualizarBotaoEntrar() {
+  btnEntrar.disabled = !todosCamposPreenchidos() || bloqueado;
+}
+
+// Obter PIN digitado
+function obterPINDigitado() {
+  return Array.from(pinInputs).map(input => input.value).join('');
+}
+
+// Limpar campos PIN
+function limparPIN() {
+  pinInputs.forEach(input => {
+    input.value = '';
+    input.classList.remove('filled', 'error');
+  });
+  pinInputs[0].focus();
+  esconderErro();
+  atualizarBotaoEntrar();
+}
+
+// Mostrar erro
+function mostrarErro(mensagem) {
+  errorMessage.textContent = mensagem;
+  errorMessage.classList.add('show');
+  
+  // Adiciona classe de erro aos campos
+  pinInputs.forEach(input => {
+    input.classList.add('error');
+  });
+}
+
+// Esconder erro
+function esconderErro() {
+  errorMessage.classList.remove('show');
+  pinInputs.forEach(input => {
+    input.classList.remove('error');
+  });
+}
+
+// Tentativa de login
+function tentarLogin() {
+  if (bloqueado) {
+    mostrarErro('🚫 Sistema temporariamente bloqueado!');
+    return;
+  }
+  
+  const pinDigitado = obterPINDigitado();
+  
+  if (pinDigitado === PIN_CORRETO) {
+    // Login bem-sucedido
+    autenticarUsuario();
+    ocultarLogin();
+    
+    // Feedback visual de sucesso
+    pinInputs.forEach(input => {
+      input.style.borderColor = '#28a745';
+      input.style.boxShadow = '0 0 15px rgba(40, 167, 69, 0.5)';
+    });
+    
+    setTimeout(() => {
+      limparPIN();
+    }, 1000);
+    
+  } else {
+    // Login incorreto
+    tentativasErradas++;
+    
+    if (tentativasErradas >= MAX_TENTATIVAS) {
+      bloquearSistema();
+    } else {
+      const tentativasRestantes = MAX_TENTATIVAS - tentativasErradas;
+      mostrarErro(`❌ PIN incorreto! ${tentativasRestantes} tentativa(s) restante(s).`);
+      
+      // Limpa PIN após erro
+      setTimeout(() => {
+        limparPIN();
+      }, 1500);
+    }
+  }
+}
+
+// Bloquear sistema temporariamente
+function bloquearSistema() {
+  bloqueado = true;
+  const TEMPO_BLOQUEIO = 5 * 60 * 1000; // 5 minutos
+  
+  mostrarErro('🚫 Muitas tentativas incorretas! Sistema bloqueado por 5 minutos.');
+  
+  // Desabilita todos os controles
+  pinInputs.forEach(input => {
+    input.disabled = true;
+    input.classList.add('error');
+  });
+  btnEntrar.disabled = true;
+  btnLimpar.disabled = true;
+  
+  // Reabilita após tempo de bloqueio
+  setTimeout(() => {
+    desbloquearSistema();
+  }, TEMPO_BLOQUEIO);
+}
+
+// Desbloquear sistema
+function desbloquearSistema() {
+  bloqueado = false;
+  tentativasErradas = 0;
+  
+  // Reabilita controles
+  pinInputs.forEach(input => {
+    input.disabled = false;
+    input.classList.remove('error');
+  });
+  btnLimpar.disabled = false;
+  
+  limparPIN();
+  esconderErro();
+  
+  // Mensagem de desbloqueio
+  setTimeout(() => {
+    pinInputs[0].focus();
+  }, 100);
+}
+
+// Autenticar usuário (salva no sessionStorage)
+function autenticarUsuario() {
+  const agora = new Date().getTime();
+  const dadosAutenticacao = {
+    autenticado: true,
+    timestamp: agora,
+    expira: agora + TEMPO_SESSAO
+  };
+  
+  sessionStorage.setItem('auth_carregamento_mm', JSON.stringify(dadosAutenticacao));
+  
+  // Reset das tentativas
+  tentativasErradas = 0;
+  
+  console.log('✅ Usuário autenticado com sucesso!');
+}
+
+// Verificar se usuário está autenticado
+function verificarAutenticacao() {
+  try {
+    const dados = sessionStorage.getItem('auth_carregamento_mm');
+    if (!dados) return false;
+    
+    const auth = JSON.parse(dados);
+    const agora = new Date().getTime();
+    
+    // Verifica se não expirou
+    if (auth.autenticado && agora < auth.expira) {
+      return true;
+    } else {
+      // Remove autenticação expirada
+      sessionStorage.removeItem('auth_carregamento_mm');
+      return false;
+    }
+  } catch (error) {
+    console.error('Erro ao verificar autenticação:', error);
+    return false;
+  }
+}
+
+// Mostrar tela de login
+function mostrarLogin() {
+  loginOverlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  
+  // Esconde o conteúdo principal
+  const container = document.querySelector('.container');
+  if (container) {
+    container.style.display = 'none';
+  }
+}
+
+// Ocultar tela de login
+function ocultarLogin() {
+  loginOverlay.style.display = 'none';
+  document.body.style.overflow = 'auto';
+  
+  // Mostra o conteúdo principal
+  const container = document.querySelector('.container');
+  if (container) {
+    container.style.display = 'block';
+  }
+}
+
+// Logout (função pública para usar em botões)
+function logout() {
+  if (confirm('🚪 Tem certeza que deseja sair do sistema?')) {
+    sessionStorage.removeItem('auth_carregamento_mm');
+    mostrarLogin();
+    limparPIN();
+    
+    // Opcional: limpar dados sensíveis
+    // sessionManager.saveCurrentSession(); // Salva antes de sair
+  }
+}
+
+// Verificação periódica da autenticação (a cada 5 minutos)
+setInterval(() => {
+  if (!verificarAutenticacao()) {
+    mostrarLogin();
+    alert('🕐 Sua sessão expirou. Faça login novamente.');
+  }
+}, 5 * 60 * 1000);
+
+// ========== INICIALIZAÇÃO ==========
+
+// Modifica a inicialização existente para incluir o login
+const inicializacaoOriginal = window.addEventListener;
+
+// Adiciona a inicialização do login junto com a original
+window.addEventListener("load", () => {
+  // Inicializa o sistema de login PRIMEIRO
+  inicializarLogin();
+  
+  // Só inicializa o sistema principal se estiver autenticado
+  if (verificarAutenticacao()) {
+    // Código de inicialização original aqui...
+    sessionManager = new SessionManager();
+    gerarCheckboxesRotas();
+    setupAutocomplete();
+    setupAutoSave();
+    console.log('Sistema inicializado. Sessão atual:', sessionManager.currentSessionId);
+  }
+});
+
+// ========== FUNÇÕES AUXILIARES ==========
+
+// Função para adicionar botão de logout (opcional)
+function adicionarBotaoLogout() {
+  const sessionControls = document.querySelector('.session-controls');
+  if (sessionControls) {
+    const logoutBtn = document.createElement('button');
+    logoutBtn.type = 'button';
+    logoutBtn.className = 'btn btn-danger btn-small';
+    logoutBtn.innerHTML = '<i class="bi bi-box-arrow-right"></i> Sair';
+    logoutBtn.onclick = logout;
+    sessionControls.appendChild(logoutBtn);
+  }
+}
+
+// Chama a função para adicionar botão de logout após carregar
+setTimeout(() => {
+  if (verificarAutenticacao()) {
+    adicionarBotaoLogout();
+  }
+}, 1000);
+
+// ========== CONFIGURAÇÕES DE SEGURANÇA ==========
+
+// Desabilita algumas funcionalidades quando não autenticado
+document.addEventListener('keydown', (e) => {
+  if (!verificarAutenticacao()) {
+    // Bloqueia F12, Ctrl+Shift+I, etc.
+    if (e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+        (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+        (e.ctrlKey && e.key === 'u')) {
+      e.preventDefault();
+      return false;
+    }
+  }
+});
+
+// Bloqueia clique direito quando não autenticado
+document.addEventListener('contextmenu', (e) => {
+  if (!verificarAutenticacao()) {
+    e.preventDefault();
+    return false;
+  }
+});
+
+console.log('🔐 Sistema de autenticação PIN carregado!');
+console.log('📱 PIN atual configurado para demonstração: 1234');
+console.log('⚠️  LEMBRE-SE DE ALTERAR O PIN_CORRETO na linha 304!');
+
   </script>
 
 
