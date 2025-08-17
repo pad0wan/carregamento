@@ -1412,10 +1412,9 @@
 
   // CORRIGIDO: Coleta rotas selecionadas com mais detalhes
   const rotasCheckboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
-  data.rotasCheckboxes = {};
-  rotasCheckboxes.forEach(cb => {
-    data.rotasCheckboxes[cb.id] = cb.checked;
-  });
+data.rotasCheckboxes = Array.from(rotasCheckboxes)
+  .filter(cb => cb.checked)
+  .map(cb => cb.value);
   
   // ADICIONADO: Debug para verificar o que está sendo salvo
   console.log('Dados sendo salvos:', {
@@ -1459,23 +1458,12 @@
     console.log('Carregando rotas:', sessionData.rotasCheckboxes); // Debug
     
     // Se é um objeto (novo formato)
-    if (typeof sessionData.rotasCheckboxes === 'object' && !Array.isArray(sessionData.rotasCheckboxes)) {
-      Object.entries(sessionData.rotasCheckboxes).forEach(([checkboxId, checked]) => {
-        const checkbox = document.getElementById(checkboxId);
-        if (checkbox) {
-          checkbox.checked = checked;
-        }
-      });
-    }
-    // Se é um array (formato antigo - compatibilidade)
-    else if (Array.isArray(sessionData.rotasCheckboxes)) {
-      const rotasCheckboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
-      rotasCheckboxes.forEach((cb, index) => {
-        if (sessionData.rotasCheckboxes[index] !== undefined) {
-          cb.checked = sessionData.rotasCheckboxes[index];
-        }
-      });
-    }
+    if (Array.isArray(sessionData.rotasCheckboxes)) {
+  const rotasCheckboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
+  rotasCheckboxes.forEach(cb => {
+    cb.checked = sessionData.rotasCheckboxes.includes(cb.value);
+  });
+}
   }
 }
 
