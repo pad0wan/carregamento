@@ -958,11 +958,11 @@
       <label class="form-label">Selecione a Rota</label>
       <select id="rotaReportConsolidado" class="form-select">
         <option value="">Selecione uma rota</option>
-        <option value="Araguaína">Araguaína (A)</option>
-        <option value="Gurupi">Gurupi (B)</option>
-        <option value="Guaraí">Guaraí (C)</option>
-        <option value="Luiz Eduardo Magalhães">Luiz Eduardo Magalhães (H)</option>
-        <option value="Barreiras">Barreiras (I)</option>
+        <option value="Araguaína">Araguaína</option>
+        <option value="Gurupi">Gurupi</option>
+        <option value="Guaraí">Guaraí</option>
+        <option value="Luiz Eduardo Magalhães">Luiz Eduardo Magalhães</option>
+        <option value="Barreiras">Barreiras</option>
       </select>
     </div>
     
@@ -1059,20 +1059,24 @@
                 <option value="manual">Inserir Manualmente</option>
                 <option value="MSR - PQA8867 / JAE3D30">MSR - PQA8867 / JAE3D30</option>
                 <option value="MSR - DRX8D24 / JAW3D30">MSR - DRX8D24 / JAW3D30</option>
-                <option value="MSR - RBL4J23 / ONC3I65">MSR - RBL4J23 / ONC3I65</option>
+                <option value="MSR - RBL4J23 / ONC3I65">MSR - TFM2F85 / ONC3I65</option>
                 <option value="MSR - MXB3387 / MLO6F04">MSR - MXB3387 (Dc 05) / MLO6F04</option>
                 <option value="MSR - NWE5A88 / ONG5H07">MSR - NWE5A88 (Dc 06) / ONG5H07</option>
 
+
+                <option value="RODACOP - GGD8F38 / RFC5H16">RODACOP - GGD8F38 / RFC5H16</option>
+                <option value="RODACOP - TEX6A56 / TWY8C73">RODACOP - TEX6A56 / TWY8C73</option>
                 <option value="RODACOP - TCK5H69 / HDE8J16">RODACOP - TCK5H69 / HDE8J16</option>
                 <option value="RODACOP - FOF5B57 / RUK2H11">RODACOP - FOF5B57 / RUK2H11</option>
-                <option value="RODACOP - FTB1F75 / RUKJ2J60">RODACOP - FTB1F75 / RUKJ2J60</option>
-                <option value="RODACOP - RVB2C09">RODACOP - RVB2C09</option>
+                <option value="RODACOP - FTB1F75 / RUK2J60">RODACOP - FTB1F75 / RUK2J60</option>
 
+                <option value="RODACOP - RTU3I99">RODACOP - RTU3I99</option>
+                <option value="RODACOP - TCL8D30">RODACOP - TCL8D30</option>
+                <option value="RODACOP - RVB2C09">RODACOP - RVB2C09</option>
                 <option value="RODACOP - RVB1J25">RODACOP - RVB1J25</option>
                 <option value="RODACOP - OFC7H98">RODACOP - OFC7H98</option>
                 <option value="RODACOP - PVB0G08">RODACOP - PVB0G08</option>
                 <option value="RODACOP - RUK9J07">RODACOP - RUK9J07</option>
-
                 <option value="RODACOP - OQG8012">RODACOP - OQG8012</option>
                 <option value="RODACOP - RFR7E89">RODACOP - RFR7E89</option>
                 <option value="RODACOP - OLM1I23">RODACOP - OLM1I23</option>
@@ -1081,6 +1085,7 @@
                 <option value="RODACOP - RIN8H85">RODACOP - RIN8H85</option>
                 <option value="RODACOP - OLH2G94">RODACOP - OLH2G94</option>
 
+                <option value="PHH8I55">PHH8I55</option>
                 <option value="KIA5I83">KIA5I83</option>
                 <option value="PRO5B99">PRO5B99</option>
                 <option value="RMB6C84">RMB6C84 - RMB6D04</option>
@@ -1563,18 +1568,23 @@ data.rotasCheckboxes = Array.from(rotasCheckboxes)
       "MSR - PQA8867 / JAE3D30": ["PQA8867", "JAE3D30"],
       "MSR - DRX8D24 / JAW3D30": ["DRX8D24", "JAW3D30"],
       "MSR - MXB3387 / MLO6F04": ["MXB3387", "MLO6F04"],
-      "MSR - RBL4J23 / ONC3I65": ["RBL4J23", "ONC3I65"],
+      "MSR - TFM2F85 / ONC3I65": ["TFM2F85", "ONC3I65"],
       "MSR - NWE5A88 / ONG5H07": ["NWE5A88", "ONG5H07"],
 
+
+      "RODACOP - GGD8F38 / RFC5H16": ["GGD8F38", "RFC5H16"],
+      "RODACOP - TEX6A56 / TWY8C73": ["TEX6A56", "TWY8C73"],
       "RODACOP - TCK5H69 / HDE8J16": ["TCK5H69", "HDE8J16"],
       "RODACOP - FOF5B57 / RUK2H11": ["FOF5B57", "RUK2H11"],
       "RODACOP - FTB1F75 / RUK2J60": ["FTB1F75", "RUK2J60"],
 
+
+      "RODACOP - RTU3I99": ["", "RTU3I99"],
+      "RODACOP - TCL8D30": ["", "TCL8D30"],
       "RODACOP - RVB1J25": ["", "RVB1J25"],
       "RODACOP - OFC7H98": ["", "OFC7H98"],
       "RODACOP - PVB0G08": ["", "PVB0G08"],
       "RODACOP - RUK9J07": ["", "RUK9J07"],
-
       "RODACOP - RVB2C09": ["", "RVB2C09"],
       "RODACOP - OQG8012": ["", "OQG8012"],
       "RODACOP - RFR7E89": ["", "RFR7E89"],
@@ -1587,6 +1597,7 @@ data.rotasCheckboxes = Array.from(rotasCheckboxes)
 
       "KIA5I83": ["", "KIA5I83"],
       "PRO5B99": ["", "PRO5B99"],
+      "PHH8I55": ["", "PHH8I55"],
       "RMB6C84 - RMB6D04": ["RMB6C84", "RMB6D04"]
 
     };
@@ -1623,11 +1634,16 @@ data.rotasCheckboxes = Array.from(rotasCheckboxes)
       { nome: "Wesley Gonçalves Rodrigues", cpf: "590.682.721-68", telefone: "63984014369" },
       { nome: "Odair José de Sousa", cpf: "989.477.611-68", telefone: "63984826152" },
       { nome: "Luís Eduardo Sales", cpf: "", telefone: "" },
-      { nome: "Bruno Sobrinho", cpf: "", telefone: "" },
-      { nome: "Rayllan Ribeiro", cpf: "", telefone: "" },
+      { nome: "Bruno Faustino Sobrinho", cpf: "", telefone: "" },
+      { nome: "Radson Galvao Rodrigues Junior", cpf: "", telefone: "" },
       { nome: "Kaique Ribeiro", cpf: "", telefone: "" },
       { nome: "Matheus Gomes", cpf: "", telefone: "" },
-      { nome: "Alessandro Noleto", cpf: "", telefone: "" }
+      { nome: "Alessandro Noleto Gonçalves", cpf: "", telefone: "" },
+      { nome: "Sergio Siruk", cpf: "", telefone: "" },
+      { nome: "Leonardo Gonçalves de Oliveira", cpf: "", telefone: "" },
+      { nome: "Leonardo Siriano da Silva", cpf: "", telefone: "" },
+      { nome: "Daniel Aniszewski da Silva", cpf: "", telefone: "" },
+      { nome: "Hellian Vieira Marques dos Santos", cpf: "", telefone: "" }
     ];
 
     // Campos para gerenciar
