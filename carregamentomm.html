@@ -4,645 +4,979 @@
   <meta charset="UTF-8">
   <title>Relatório de Carregamento MM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚛</text></svg>">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <style>
     :root {
-      --primary-cyan: #00ffff;
-      --primary-blue: #0066ff;
-      --secondary-purple: #9900ff;
-      --accent-pink: #ff0066;
-      --dark-bg: #0a0a0f;
-      --card-bg: rgba(16, 16, 32, 0.8);
-      --border-glow: rgba(0, 255, 255, 0.3);
-      --text-primary: #ffffff;
-      --text-secondary: #b3b3cc;
-      --gradient-primary: linear-gradient(135deg, var(--primary-cyan), var(--primary-blue));
-      --gradient-secondary: linear-gradient(135deg, var(--secondary-purple), var(--accent-pink));
+      --bg: #0d0f14;
+      --surface: #161923;
+      --surface2: #1e2433;
+      --border: rgba(99,179,237,0.15);
+      --border-hover: rgba(99,179,237,0.4);
+      --accent: #3b82f6;
+      --accent2: #06b6d4;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --purple: #8b5cf6;
+      --text: #e2e8f0;
+      --text-muted: #64748b;
+      --text-soft: #94a3b8;
+      --grad-blue: linear-gradient(135deg, #3b82f6, #06b6d4);
+      --grad-purple: linear-gradient(135deg, #8b5cf6, #ec4899);
+      --grad-green: linear-gradient(135deg, #10b981, #06b6d4);
+      --shadow-blue: 0 4px 24px rgba(59,130,246,0.25);
+      --radius: 14px;
+      --radius-sm: 10px;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Rajdhani', sans-serif;
-      background: var(--dark-bg);
-      background-image: 
-        radial-gradient(circle at 25% 25%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 75% 75%, rgba(153, 0, 255, 0.1) 0%, transparent 50%);
-      color: var(--text-primary);
+      font-family: 'Inter', 'Rajdhani', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
-      padding: 1rem;
-      position: relative;
+      padding: 0;
       overflow-x: hidden;
     }
 
+    /* Fundo animado sutil */
     body::before {
       content: '';
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        linear-gradient(45deg, transparent 49%, rgba(0, 255, 255, 0.03) 50%, transparent 51%),
-        linear-gradient(-45deg, transparent 49%, rgba(153, 0, 255, 0.03) 50%, transparent 51%);
-      background-size: 20px 20px;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 10%, rgba(59,130,246,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 80% 90%, rgba(139,92,246,0.06) 0%, transparent 60%);
       pointer-events: none;
-      z-index: -1;
+      z-index: 0;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      animation: slideInUp 0.8s ease;
+    /* ── HEADER ── */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,15,20,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 2rem;
-      position: relative;
+    .app-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-shrink: 0;
     }
 
-    .header h1 {
+    .app-logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--grad-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      box-shadow: var(--shadow-blue);
+    }
+
+    .app-logo-text {
       font-family: 'Orbitron', monospace;
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      font-weight: 900;
-      background: var(--gradient-primary);
+      font-size: 0.95rem;
+      font-weight: 800;
+      background: var(--grad-blue);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 0.5rem;
-      animation: glow 2s ease-in-out infinite alternate;
-    }
-
-    .header .subtitle {
-      font-size: 1.1rem;
-      color: var(--text-secondary);
-      font-weight: 300;
       letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
-    .session-info {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glow);
-      border-radius: 15px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
+    .session-badge {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .session-id {
+      gap: 0.4rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.78rem;
+      color: var(--accent2);
       font-family: 'Orbitron', monospace;
-      font-weight: 700;
-      color: var(--primary-cyan);
-      font-size: 1.1rem;
+      font-weight: 600;
+      white-space: nowrap;
     }
 
-    .session-controls {
+    .session-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .header-actions {
       display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
+      gap: 0.4rem;
     }
 
-    .form-container {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glow);
-      border-radius: 20px;
-      padding: 2rem;
-      box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    /* ── CONTAINER ── */
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 1.25rem 1rem 5rem;
       position: relative;
-      overflow: hidden;
+      z-index: 1;
     }
 
-    .form-container::before {
-      content: '';
-      position: absolute;
-      top: -2px;
-      left: -2px;
-      right: -2px;
-      bottom: -2px;
-      background: var(--gradient-primary);
-      border-radius: 20px;
-      z-index: -1;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .form-container:hover::before {
-      opacity: 0.1;
-    }
-
-    .section {
-      margin-bottom: 2rem;
-      position: relative;
-    }
-
-    .section-title {
-      font-family: 'Orbitron', monospace;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--primary-cyan);
+    /* ── CARDS / SECTIONS ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       margin-bottom: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .card:focus-within {
+      border-color: var(--border-hover);
+    }
+
+    .card-header {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
+      padding: 0.9rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .card-icon {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .icon-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    .icon-cyan { background: rgba(6,182,212,0.15); color: #22d3ee; }
+    .icon-green { background: rgba(16,185,129,0.15); color: #34d399; }
+    .icon-purple { background: rgba(139,92,246,0.15); color: #a78bfa; }
+    .icon-orange { background: rgba(245,158,11,0.15); color: #fbbf24; }
+
+    .card-title {
+      font-size: 0.85rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
+      color: var(--text-soft);
     }
 
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(to right, var(--primary-cyan), transparent);
+    .card-body {
+      padding: 1.1rem;
     }
 
+    /* ── FORM GRID ── */
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
     }
 
-    .form-group {
-      position: relative;
-    }
+    .form-grid.cols-1 { grid-template-columns: 1fr; }
+    .form-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+    .col-span-2 { grid-column: 1 / -1; }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
 
     .form-label {
-      display: block;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      margin-bottom: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
     }
 
     .form-input, .form-select {
       width: 100%;
-      padding: 1rem;
-      background: rgba(16, 16, 32, 0.6);
-      border: 1px solid rgba(0, 255, 255, 0.2);
-      border-radius: 12px;
-      color: var(--text-primary);
-      font-size: 1rem;
-      font-family: 'Rajdhani', sans-serif;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
+      padding: 0.7rem 0.9rem;
+      background: var(--bg);
+      border: 1px solid rgba(99,179,237,0.12);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
     }
 
     .form-input:focus, .form-select:focus {
       outline: none;
-      border-color: var(--primary-cyan);
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
     }
 
-    .form-input::placeholder {
-      color: rgba(179, 179, 204, 0.6);
+    .form-input::placeholder { color: var(--text-muted); opacity: 0.7; }
+    .form-input:disabled, .form-input[disabled] {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
-    .btn {
-      padding: 0.8rem 1.5rem;
-      border: none;
-      border-radius: 12px;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(10px);
+    /* Select custom arrow */
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      padding-right: 2.2rem;
     }
 
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s;
-    }
-
-    .btn:hover::before {
-      left: 100%;
-    }
-
-    .btn-primary {
-      background: var(--gradient-primary);
-      color: white;
-      box-shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 40px rgba(0, 102, 255, 0.4);
-    }
-
-    .btn-secondary {
-      background: var(--gradient-secondary);
-      color: white;
-      box-shadow: 0 10px 30px rgba(153, 0, 255, 0.3);
-    }
-
-    .btn-secondary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 40px rgba(153, 0, 255, 0.4);
-    }
-
-    .btn-danger {
-      background: linear-gradient(135deg, #ff0066, #ff3366);
-      color: white;
-      box-shadow: 0 10px 30px rgba(255, 0, 102, 0.3);
-    }
-
-    .btn-danger:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 40px rgba(255, 0, 102, 0.4);
-    }
-
-    .btn-info {
-      background: linear-gradient(135deg, #17a2b8, #20c997);
-      color: white;
-      box-shadow: 0 10px 30px rgba(23, 162, 184, 0.3);
-    }
-
-    .btn-info:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 40px rgba(23, 162, 184, 0.4);
-    }
-
-    .btn-small {
-      padding: 0.5rem 1rem;
-      font-size: 0.9rem;
-    }
-
-    .time-controls {
+    /* ── CONTROLES DE HORA ── */
+    .time-row {
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 0.5rem;
       align-items: end;
     }
 
-    .counter-controls {
+    /* ── CONTADOR ── */
+    .counter-wrap {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      background: rgba(16, 16, 32, 0.6);
-      border: 1px solid rgba(0, 255, 255, 0.2);
-      border-radius: 12px;
-      padding: 0.5rem;
-      backdrop-filter: blur(10px);
-    }
-
-    .counter-controls .form-input {
-      border: none;
-      background: transparent;
-      text-align: center;
-      width: 80px;
-      padding: 0.5rem;
+      gap: 0;
+      background: var(--bg);
+      border: 1px solid rgba(99,179,237,0.12);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
     }
 
     .counter-btn {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border: none;
-      border-radius: 8px;
-      background: var(--gradient-primary);
-      color: white;
-      font-size: 1.2rem;
-      font-weight: bold;
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 1.3rem;
+      font-weight: 300;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background 0.15s;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .counter-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
-    }
+    .counter-btn:active { background: rgba(59,130,246,0.2); }
 
-    .checkbox-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-
-    .checkbox-item {
-      position: relative;
-    }
-
-    .checkbox-item input[type="checkbox"] {
-      display: none;
-    }
-
-    .checkbox-item label {
-      display: block;
-      padding: 0.7rem 0.5rem;
-      background: rgba(16, 16, 32, 0.6);
-      border: 1px solid rgba(0, 255, 255, 0.2);
-      border-radius: 8px;
+    .counter-val {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 700;
       text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 500;
-      backdrop-filter: blur(10px);
+      font-family: 'Orbitron', monospace;
+      padding: 0;
+      min-width: 0;
     }
 
-    .checkbox-item input[type="checkbox"]:checked + label {
-      background: var(--gradient-primary);
-      border-color: var(--primary-cyan);
-      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
-      transform: translateY(-2px);
-    }
+    .counter-val:focus { outline: none; }
 
-    .seal-controls {
+    /* ── LACRE ── */
+    .seal-row {
       display: grid;
-      grid-template-columns: 1fr auto auto;
+      grid-template-columns: 1fr auto;
       gap: 0.5rem;
       align-items: end;
     }
 
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
-      z-index: 9999;
-      justify-content: center;
+    .seal-check {
+      display: flex;
       align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
     }
 
-    .modal-content {
-      background: var(--card-bg);
-      border: 1px solid var(--border-glow);
-      border-radius: 20px;
-      padding: 2rem;
-      position: relative;
-      max-width: 500px;
-      width: 90%;
-      backdrop-filter: blur(20px);
-      max-height: 80vh;
-      overflow-y: auto;
+    .seal-check input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: var(--accent);
     }
 
-    .modal-close {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: var(--gradient-secondary);
-      border: none;
-      border-radius: 8px;
-      color: white;
-      padding: 0.5rem;
+    .seal-check label {
+      font-size: 0.78rem;
+      color: var(--text-soft);
       cursor: pointer;
-      font-size: 1.2rem;
     }
 
-    .readonly-field {
-      background: rgba(16, 16, 32, 0.4) !important;
-      border-color: rgba(179, 179, 204, 0.2) !important;
-      color: var(--text-secondary) !important;
-    }
-
-    .actions {
+    /* ── CHECKBOX GRID (rotas XPT) ── */
+    .checkbox-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-top: 2rem;
+      grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+      gap: 0.4rem;
     }
 
-    .autocomplete-container {
-      position: relative;
+    .checkbox-item { position: relative; }
+    .checkbox-item input[type="checkbox"] { display: none; }
+
+    .checkbox-item label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
+      background: var(--bg);
+      border: 1px solid rgba(99,179,237,0.12);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
     }
+
+    .checkbox-item input:checked + label {
+      background: var(--grad-blue);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(59,130,246,0.35);
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.65rem 1.1rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-sm {
+      padding: 0.5rem 0.8rem;
+      font-size: 0.82rem;
+      border-radius: 8px;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.15s;
+    }
+
+    .btn:active::after { background: rgba(255,255,255,0.1); }
+
+    .btn-primary {
+      background: var(--grad-blue);
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(59,130,246,0.3);
+    }
+    .btn-primary:hover { box-shadow: 0 4px 20px rgba(59,130,246,0.45); transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: var(--grad-purple);
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(139,92,246,0.25);
+    }
+    .btn-secondary:hover { box-shadow: 0 4px 20px rgba(139,92,246,0.4); transform: translateY(-1px); }
+
+    .btn-success {
+      background: var(--grad-green);
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(16,185,129,0.25);
+    }
+    .btn-success:hover { box-shadow: 0 4px 20px rgba(16,185,129,0.4); transform: translateY(-1px); }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(239,68,68,0.25);
+    }
+    .btn-danger:hover { box-shadow: 0 4px 20px rgba(239,68,68,0.4); transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--text-soft);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--border-hover); color: var(--text); }
+
+    .btn-icon {
+      width: 40px; height: 40px;
+      padding: 0;
+      border-radius: 8px;
+    }
+
+    /* ── BOTTOM ACTION BAR (mobile) ── */
+    .action-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(13,15,20,0.97);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      padding: 0.75rem 1rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      z-index: 100;
+    }
+
+    .action-bar .btn {
+      flex-direction: column;
+      gap: 0.2rem;
+      padding: 0.5rem 0.3rem;
+      font-size: 0.68rem;
+      border-radius: 10px;
+    }
+
+    .action-bar .btn i { font-size: 1.1rem; }
+
+    /* ── AUTOCOMPLETE ── */
+    .autocomplete-container { position: relative; }
 
     .autocomplete-suggestions {
       position: absolute;
       top: 100%;
-      left: 0;
-      right: 0;
-      background: var(--card-bg);
-      border: 1px solid var(--border-glow);
-      border-radius: 12px;
+      left: 0; right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-sm);
       max-height: 200px;
       overflow-y: auto;
-      z-index: 1000;
-      backdrop-filter: blur(20px);
+      z-index: 200;
       display: none;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      margin-top: 2px;
     }
 
     .autocomplete-suggestion {
-      padding: 0.8rem 1rem;
+      padding: 0.65rem 0.9rem;
       cursor: pointer;
-      transition: all 0.2s ease;
-      border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
     }
 
+    .autocomplete-suggestion:last-child { border-bottom: none; }
     .autocomplete-suggestion:hover,
-    .autocomplete-suggestion.selected {
-      background: rgba(0, 255, 255, 0.1);
+    .autocomplete-suggestion.selected { background: rgba(59,130,246,0.12); }
+
+    /* ── STATUS BADGES ── */
+    .status-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    .status-new { background: var(--warning); }
+    .status-progress { background: var(--accent2); }
+    .status-completed { background: var(--success); }
+
+    /* ── MODALS ── */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: flex-end;
+      padding: 0;
     }
 
-    .autocomplete-suggestion:last-child {
-      border-bottom: none;
+    @media (min-width: 600px) {
+      .modal { align-items: center; padding: 1rem; }
+      .modal-content { border-radius: var(--radius) !important; max-width: 480px !important; }
     }
 
+    .modal-content {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px 20px 0 0;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      animation: slideUp 0.25s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-handle {
+      width: 36px; height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 0 auto 1.25rem;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-soft);
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .modal-title {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── SESSION LIST ── */
     .session-list {
-      display: grid;
+      display: flex;
+      flex-direction: column;
       gap: 0.5rem;
-      max-height: 300px;
+      max-height: 320px;
       overflow-y: auto;
     }
 
     .session-item {
-      background: rgba(16, 16, 32, 0.6);
-      border: 1px solid rgba(0, 255, 255, 0.2);
-      border-radius: 8px;
-      padding: 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s;
     }
 
-    .session-item:hover {
-      background: rgba(0, 255, 255, 0.1);
-      border-color: var(--primary-cyan);
-    }
+    .session-item:hover { border-color: var(--border-hover); }
 
     .session-item.active {
-      background: var(--gradient-primary);
-      border-color: var(--primary-cyan);
+      border-color: var(--accent);
+      background: rgba(59,130,246,0.07);
     }
 
     .session-item-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.35rem;
     }
 
     .session-item-id {
       font-family: 'Orbitron', monospace;
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-
-    .session-item-actions {
-      display: flex;
-      gap: 0.25rem;
-    }
-
-    .session-item-info {
       font-size: 0.8rem;
-      color: var(--text-secondary);
+      font-weight: 700;
+      color: var(--accent2);
     }
 
-    .status-indicator {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-right: 0.5rem;
+    .session-item-actions { display: flex; gap: 0.3rem; }
+    .session-item-info { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* ── SCANNING ANIMATION ── */
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.4); }
+      50% { box-shadow: 0 0 0 4px rgba(59,130,246,0); }
+    }
+    .scanning { animation: pulse-border 1s ease-in-out 2; }
+
+    /* ── MOBILE RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .container { padding: 1rem 0.75rem 5.5rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
     }
 
-    .status-new {
-      background: #ffc107;
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
 
-    .status-progress {
-      background: #17a2b8;
+    /* ── READONLY ── */
+    .form-input[readonly] {
+      background: var(--surface2);
+      color: var(--text-soft);
+      cursor: default;
     }
 
-    .status-completed {
-      background: #28a745;
+    /* ── MODAL ACTIONS ROW ── */
+    .modal-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 1rem;
     }
 
-    @keyframes slideInUp {
-      from {
-        opacity: 0;
-        transform: translateY(50px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+    /* ── QR READER ── */
+    #qr-reader { width: 100%; border-radius: var(--radius-sm); overflow: hidden; }
 
-    @keyframes glow {
-      from {
-        text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-      }
-      to {
-        text-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
-      }
-    }
-
-    @keyframes pulse {
-      0%, 100% {
-        box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-      }
-      50% {
-        box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
-      }
-    }
-
-    .scanning {
-      animation: pulse 1s infinite;
-    }
-
-    @media (max-width: 768px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .actions {
-        grid-template-columns: 1fr;
-      }
-
-      .checkbox-grid {
-        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-      }
-
-      .session-controls {
-        justify-content: center;
-        width: 100%;
-      }
-
-      .session-info {
-        flex-direction: column;
-        text-align: center;
-      }
-    }
   </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCU0q2_KDukAuub8Nh5a5q2_MSslmji7mU",
+      authDomain: "carregamento-mm.firebaseapp.com",
+      projectId: "carregamento-mm",
+      storageBucket: "carregamento-mm.firebasestorage.app",
+      messagingSenderId: "200334244803",
+      appId: "1:200334244803:web:a162e680188cce60711b76"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Expõe funções de storage no window para uso no código principal
+    window._fbCarregar = async function(chave) {
+      const snap = await getDoc(doc(db, 'cadastros', chave));
+      return snap.exists() ? snap.data().valor : null;
+    };
+    window._fbSalvar = async function(chave, valor) {
+      await setDoc(doc(db, 'cadastros', chave), { valor });
+    };
+
+    // Sinaliza que o Firebase está pronto
+    window._firebaseReady = true;
+    window.dispatchEvent(new Event('firebase-ready'));
+  </script>
 </head>
 <body>
+<header class="app-header">
+  <div class="app-logo">
+    <div class="app-logo-icon">🚛</div>
+    <span class="app-logo-text">MM Cargas</span>
+  </div>
+  <div class="session-badge">
+    <span class="session-dot"></span>
+    <span id="current-session">Carregando...</span>
+  </div>
+  <div class="header-actions">
+    <button type="button" onclick="gerenciarInstancias()" class="btn btn-ghost btn-icon btn-sm" title="Gerenciar Sessões">
+      <i class="bi bi-layers"></i>
+    </button>
+    <button type="button" onclick="novaInstancia()" class="btn btn-primary btn-icon btn-sm" title="Nova Sessão">
+      <i class="bi bi-plus-lg"></i>
+    </button>
+  </div>
+</header>
 
+<div class="container">
+  <form id="form-carregamento">
 
-
-  <div class="container">
-    <div class="header">
-      <h1><i class="bi bi-truck"></i> CARREGAMENTO MM</h1>
-    
+    <!-- Informações Básicas -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-blue"><i class="bi bi-calendar3"></i></div>
+        <span class="card-title">Informações Básicas</span>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Data</label>
+            <div class="time-row">
+              <input type="date" id="data" name="data" class="form-input">
+              <button type="button" onclick="inserirData()" class="btn btn-ghost btn-sm">Hoje</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Rota</label>
+            <select id="rota-select" class="form-select">
+              <option value="">Selecionar rota</option>
+              <option value="Araguaína">Araguaína</option>
+              <option value="Ananas">Ananas</option>
+              <option value="Gurupi">Gurupi</option>
+              <option value="Guaraí">Guaraí</option>
+              <option value="Luiz Eduardo Magalhães">Luiz Eduardo Magalhães</option>
+              <option value="Barreiras">Barreiras</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Doca</label>
+            <select id="doca" name="doca" class="form-select">
+              <option value="01">01</option><option value="02">02</option><option value="03">03</option>
+              <option value="04">04</option><option value="05">05</option><option value="06">06</option>
+            </select>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Informações da Sessão Atual -->
-    <div class="session-info">
-      <div class="session-id">
-        <i class="bi bi-layers"></i>
-        <span id="current-session">Sessão: Carregando...</span>
+    <!-- Dados do Veículo -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-cyan"><i class="bi bi-truck-front"></i></div>
+        <span class="card-title">Dados do Veículo</span>
+        <button type="button" onclick="abrirVeiculosModal()" class="btn btn-ghost btn-icon btn-sm" style="margin-left:auto;" title="Gerenciar Veículos">
+          <i class="bi bi-gear"></i>
+        </button>
       </div>
-      <div class="session-controls">
-        <button type="button" onclick="novaInstancia()" class="btn btn-info btn-small">
-          <i class="bi bi-plus-circle"></i> Nova sessão
-        </button>
-        <button type="button" onclick="gerenciarInstancias()" class="btn btn-secondary btn-small">
-          <i class="bi bi-list"></i> Gerenciar Sessões
-        </button>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group autocomplete-container">
+            <label class="form-label">Placa Veículo/Cavalo</label>
+            <input type="text" id="placaSecundaria" placeholder="Digite ou busque a placa..." class="form-input" autocomplete="off">
+            <div id="suggestionsPlacaVeiculo" class="autocomplete-suggestions"></div>
+          </div>
+          <div class="form-group autocomplete-container">
+            <label class="form-label">Placa Carreta/Secundária</label>
+            <input type="text" id="placaPrimaria" placeholder="Digite ou busque a placa..." class="form-input" autocomplete="off">
+            <div id="suggestionsPlacaBau" class="autocomplete-suggestions"></div>
+          </div>
+          <div class="form-group col-span-2">
+            <label class="form-label">Tipo do Veículo <span style="color:var(--text-muted); font-weight:400;">(definido automaticamente pela placa)</span></label>
+            <input type="text" id="tipoVeiculo" name="tipoVeiculo" class="form-input" readonly placeholder="—">
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- Dados do Motorista -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-purple"><i class="bi bi-person-badge"></i></div>
+        <span class="card-title">Motorista</span>
+        <button type="button" onclick="abrirMotoristasModal()" class="btn btn-ghost btn-icon btn-sm" style="margin-left:auto;" title="Gerenciar Motoristas">
+          <i class="bi bi-gear"></i>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="form-grid cols-1">
+          <div class="form-group autocomplete-container">
+            <label class="form-label">Nome do Motorista</label>
+            <input type="text" id="nomeMotorista" placeholder="Digite para buscar..." class="form-input" autocomplete="off">
+            <div id="suggestions" class="autocomplete-suggestions"></div>
+          </div>
+        </div>
+        <div class="form-grid" style="margin-top: 0.85rem;">
+          <div class="form-group">
+            <label class="form-label">Telefone</label>
+            <input type="tel" id="telefoneMotorista" placeholder="(63) 9xxxx-xxxx" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">CPF</label>
+            <input type="text" id="cpfMotorista" placeholder="000.000.000-00" class="form-input" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controle de Horários -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-orange"><i class="bi bi-clock"></i></div>
+        <span class="card-title">Controle de Horários</span>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Chegada Unidade</label>
+            <div class="time-row">
+              <input type="time" id="horaChegada" class="form-input">
+              <button type="button" onclick="registrarHoraComConfirmacao('horaChegada')" class="btn btn-primary btn-sm">Agora</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hora Doca</label>
+            <div class="time-row">
+              <input type="time" id="horaDoca" class="form-input">
+              <button type="button" onclick="registrarHoraComConfirmacao('horaDoca')" class="btn btn-primary btn-sm">Agora</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Início Carregamento</label>
+            <div class="time-row">
+              <input type="time" id="horaInicio" class="form-input">
+              <button type="button" onclick="registrarHoraComConfirmacao('horaInicio')" class="btn btn-primary btn-sm">Agora</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Término Carregamento</label>
+            <div class="time-row">
+              <input type="time" id="horaTermino" class="form-input">
+              <button type="button" onclick="confirmarFotoBauAberto()" class="btn btn-secondary btn-sm">Agora</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Saída</label>
+            <div class="time-row">
+              <input type="time" id="horaSaida" class="form-input">
+              <button type="button" onclick="registrarHoraComConfirmacao('horaSaida')" class="btn btn-primary btn-sm">Agora</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Previsão de Destino</label>
+            <input type="time" id="previsaoDestino" class="form-input">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controle de Lacres -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-green"><i class="bi bi-shield-lock"></i></div>
+        <span class="card-title">Controle de Lacres</span>
+      </div>
+      <div class="card-body">
+        <div class="form-grid cols-1">
+          <div class="form-group">
+            <label class="form-label">Lacre Baú</label>
+            <div class="seal-row">
+              <input type="text" id="lacreBau" class="form-input" inputmode="numeric" placeholder="Número do lacre">
+              <button type="button" onclick="scanQRCode('lacreBau')" class="btn btn-secondary btn-icon btn-sm" title="Escanear QR">
+                <i class="bi bi-qr-code-scan"></i>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lacre Lateral 1</label>
+            <div class="seal-row">
+              <input type="text" id="lacreLateral1" class="form-input" inputmode="numeric" placeholder="Número do lacre">
+              <button type="button" onclick="scanQRCode('lacreLateral1')" class="btn btn-secondary btn-icon btn-sm" title="Escanear QR">
+                <i class="bi bi-qr-code-scan"></i>
+              </button>
+            </div>
+            <div class="seal-check">
+              <input type="checkbox" id="lateral1NaoUsa">
+              <label for="lateral1NaoUsa">Não utiliza lateral 1</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lacre Lateral 2</label>
+            <div class="seal-row">
+              <input type="text" id="lacreLateral2" class="form-input" inputmode="numeric" placeholder="Número do lacre">
+              <button type="button" onclick="scanQRCode('lacreLateral2')" class="btn btn-secondary btn-icon btn-sm" title="Escanear QR">
+                <i class="bi bi-qr-code-scan"></i>
+              </button>
+            </div>
+            <div class="seal-check">
+              <input type="checkbox" id="lateral2NaoUsa">
+              <label for="lateral2NaoUsa">Não utiliza lateral 2</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controle de Cargas -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-cyan"><i class="bi bi-boxes"></i></div>
+        <span class="card-title">Controle de Cargas</span>
+      </div>
+      <div class="card-body">
+        <div class="form-grid cols-2">
+          <div class="form-group">
+            <label class="form-label" style="text-align:center;">Volumosos</label>
+            <div class="counter-wrap">
+              <button type="button" onclick="alterarContagem('volumoso', -1)" class="counter-btn">−</button>
+              <input type="number" id="volumoso" value="0" min="0" class="counter-val">
+              <button type="button" onclick="alterarContagem('volumoso', 1)" class="counter-btn">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="text-align:center;">Gaiolas</label>
+            <div class="counter-wrap">
+              <button type="button" onclick="alterarContagem('gaiola', -1)" class="counter-btn">−</button>
+              <input type="number" id="gaiola" value="0" min="0" class="counter-val">
+              <button type="button" onclick="alterarContagem('gaiola', 1)" class="counter-btn">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="text-align:center;">Manga Pallet</label>
+            <div class="counter-wrap">
+              <button type="button" onclick="alterarContagem('mangaPallet', -1)" class="counter-btn">−</button>
+              <input type="number" id="mangaPallet" value="0" min="0" class="counter-val">
+              <button type="button" onclick="alterarContagem('mangaPallet', 1)" class="counter-btn">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="text-align:center;">Qtd Rotas Embarcadas</label>
+            <div class="counter-wrap">
+              <button type="button" onclick="alterarContagem('qtdRotasEmbarcadas', -1)" class="counter-btn">−</button>
+              <input type="number" id="qtdRotasEmbarcadas" value="0" min="0" class="counter-val">
+              <button type="button" onclick="alterarContagem('qtdRotasEmbarcadas', 1)" class="counter-btn">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<!-- Barra de ações (fixada na base) -->
+<div class="action-bar">
+  <button type="button" onclick="gerarReport()" class="btn btn-primary">
+    <i class="bi bi-file-earmark-text"></i>
+    Copiar Relatório
+  </button>
+  <button type="button" onclick="gerarReportConsolidado()" class="btn btn-secondary">
+    <i class="bi bi-bar-chart"></i>
+    Copiar Report do dia
+  </button>
+</div>
+
+<!-- Modal Scanner QR -->
+<div id="qrScannerModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-handle"></div>
+    <button onclick="fecharScanner()" class="modal-close"><i class="bi bi-x-lg"></i></button>
+    <div class="modal-title"><i class="bi bi-qr-code-scan"></i> Scanner QR Code</div>
+    <div id="qr-reader"></div>
+  </div>
+</div>
+
+<!-- Modal Report Consolidado -->
 <div id="reportConsolidadoModal" class="modal">
   <div class="modal-content">
-    <button onclick="fecharReportConsolidado()" class="modal-close">
-      <i class="bi bi-x-lg"></i>
-    </button>
-    <div class="section-title" style="margin-bottom: 1rem;">
-      <i class="bi bi-bar-chart"></i>
-      Report Consolidado por Rota
-    </div>
-    
-    <div class="form-group" style="margin-bottom: 1rem;">
-      <label class="form-label">Selecione a Data</label>
+    <div class="modal-handle"></div>
+    <button onclick="fecharReportConsolidado()" class="modal-close"><i class="bi bi-x-lg"></i></button>
+    <div class="modal-title"><i class="bi bi-bar-chart"></i> Report Consolidado por Rota</div>
+    <div class="form-group" style="margin-bottom: 0.85rem;">
+      <label class="form-label">Data</label>
       <input type="date" id="dataReportConsolidado" class="form-input">
     </div>
-    
-    <div class="form-group" style="margin-bottom: 1rem;">
-      <label class="form-label">Selecione a Rota</label>
+    <div class="form-group" style="margin-bottom: 1.25rem;">
+      <label class="form-label">Rota</label>
       <select id="rotaReportConsolidado" class="form-select">
         <option value="">Selecione uma rota</option>
         <option value="Araguaína">Araguaína</option>
@@ -651,11 +985,9 @@
         <option value="Guaraí">Guaraí</option>
         <option value="Luiz Eduardo Magalhães">Luiz Eduardo Magalhães</option>
         <option value="Barreiras">Barreiras</option>
-        <option value="Ananas">Ananas</option>
       </select>
     </div>
-    
-    <div style="display: flex; gap: 1rem; justify-content: center;">
+    <div class="modal-actions">
       <button type="button" onclick="processarReportConsolidado()" class="btn btn-primary">
         <i class="bi bi-file-earmark-text"></i> Gerar Report
       </button>
@@ -663,331 +995,100 @@
   </div>
 </div>
 
-<!-- Modal para Gerenciar Instâncias -->
+<!-- Modal Gerenciar Motoristas -->
+<div id="motoristasModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-handle"></div>
+    <button onclick="fecharMotoristasModal()" class="modal-close"><i class="bi bi-x-lg"></i></button>
+    <div class="modal-title"><i class="bi bi-person-badge"></i> Gerenciar Motoristas</div>
+    <div id="motoristas-list" class="session-list"></div>
+    <div class="card" style="margin-top: 1rem; border-style: dashed;">
+      <div class="card-body">
+        <div class="form-grid cols-1">
+          <div class="form-group">
+            <label class="form-label">Nome do Motorista</label>
+            <input type="text" id="novoMotoristaNome" placeholder="Nome completo" class="form-input">
+          </div>
+        </div>
+        <div class="form-grid" style="margin-top: 0.85rem;">
+          <div class="form-group">
+            <label class="form-label">Telefone</label>
+            <input type="tel" id="novoMotoristaTelefone" placeholder="(63) 9xxxx-xxxx" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">CPF</label>
+            <input type="text" id="novoMotoristaCpf" placeholder="000.000.000-00" class="form-input" inputmode="numeric">
+          </div>
+        </div>
+        <button type="button" onclick="adicionarMotorista()" class="btn btn-primary btn-sm" style="margin-top: 0.85rem; width: 100%;">
+          <i class="bi bi-plus-lg"></i> Adicionar Motorista
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Gerenciar Veículos -->
+<div id="veiculosModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-handle"></div>
+    <button onclick="fecharVeiculosModal()" class="modal-close"><i class="bi bi-x-lg"></i></button>
+    <div class="modal-title"><i class="bi bi-truck-front"></i> Gerenciar Veículos</div>
+    <div id="veiculos-list" class="session-list"></div>
+    <div class="card" style="margin-top: 1rem; border-style: dashed;">
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Placa Veículo/Cavalo</label>
+            <input type="text" id="novoVeiculoCavalo" placeholder="Ex: ABC1D23" class="form-input" style="text-transform: uppercase;">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tipo do Veículo</label>
+            <select id="novoVeiculoTipo" class="form-select" onchange="alternarCampoNovaCarreta()">
+              <option value="Carreta">Carreta</option>
+              <option value="Truck">Truck</option>
+              <option value="Toco">Toco</option>
+              <option value="3/4">3/4</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid cols-1" id="grupoNovaCarreta" style="margin-top: 0.85rem;">
+          <div class="form-group">
+            <label class="form-label">Placa Carreta vinculada</label>
+            <input type="text" id="novoVeiculoCarreta" placeholder="Ex: PQA8867" class="form-input" style="text-transform: uppercase;">
+          </div>
+        </div>
+        <button type="button" onclick="adicionarVeiculo()" class="btn btn-primary btn-sm" style="margin-top: 0.85rem; width: 100%;">
+          <i class="bi bi-plus-lg"></i> Adicionar Veículo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Gerenciar Sessões -->
 <div id="gerenciarModal" class="modal">
   <div class="modal-content">
-    <button onclick="fecharGerenciar()" class="modal-close">
-      <i class="bi bi-x-lg"></i>
-    </button>
-    <div class="section-title" style="margin-bottom: 1rem;">
-      <i class="bi bi-list"></i>
-      Gerenciar Instâncias
-    </div>
+    <div class="modal-handle"></div>
+    <button onclick="fecharGerenciar()" class="modal-close"><i class="bi bi-x-lg"></i></button>
+    <div class="modal-title"><i class="bi bi-layers"></i> Sessões de Carregamento</div>
     <div id="session-list" class="session-list"></div>
-    <div style="margin-top: 1rem; text-align: center; display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
-      <button type="button" onclick="exportarTodas()" class="btn btn-info btn-small">
-        <i class="bi bi-download"></i> Exportar Todas
+    <div class="modal-actions" style="margin-top: 1rem;">
+      <button type="button" onclick="exportarTodas()" class="btn btn-ghost btn-sm">
+        <i class="bi bi-download"></i> Exportar
       </button>
-      <button type="button" onclick="importarSessoes()" class="btn btn-secondary btn-small">
+      <button type="button" onclick="importarSessoes()" class="btn btn-ghost btn-sm">
         <i class="bi bi-upload"></i> Importar
       </button>
-      <button type="button" onclick="excluirTodasSessoes()" class="btn btn-danger btn-small">
-        <i class="bi bi-trash"></i> Excluir Todas
+      <button type="button" onclick="excluirTodasSessoes()" class="btn btn-danger btn-sm">
+        <i class="bi bi-trash3"></i> Excluir Todas
       </button>
     </div>
     <input type="file" id="fileImport" accept=".json" style="display: none;" onchange="processarImportacao(this)">
   </div>
 </div>
 
-
-    <div class="form-container">
-      <form id="form-carregamento">
-        <!-- Seção de Informações Básicas -->
-        <div class="section">
-          <div class="section-title">
-            <i class="bi bi-calendar-event"></i>
-            Informações Básicas
-          </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">Data</label>
-              <div class="time-controls">
-                <input type="date" id="data" name="data" class="form-input">
-                <button type="button" onclick="inserirData()" class="btn btn-primary btn-small">Hoje</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Rota</label>
-              <select id="rota-select" class="form-select">
-                <option value="">Selecione uma rota</option>
-                <option value="Araguaína">Araguaína</option>
-                <option value="Ananas">Ananas</option>
-                <option value="Gurupi">Gurupi</option>
-                <option value="Guaraí">Guaraí</option>
-                <option value="Luiz Eduardo Magalhães">Luiz Eduardo Magalhães</option>
-                <option value="Barreiras">Barreiras</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Doca</label>
-              <select id="doca" name="doca" class="form-select">
-                <option value="01">01</option><option value="02">02</option><option value="03">03</option>
-                <option value="04">04</option><option value="05">05</option><option value="06">06</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Tipo do Veículo</label>
-              <select id="tipoVeiculo" name="tipoVeiculo" onchange="verificarTipoVeiculo()" class="form-select">
-                <option value="Carreta">Carreta</option><option value="Truck">Truck</option>
-                <option value="Toco">Toco</option><option value="3/4">3/4</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Seção de Veículo -->
-        <div class="section">
-          <div class="section-title">
-            <i class="bi bi-truck-front"></i>
-            Dados do Veículo
-          </div>
-          <div class="form-grid">
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label class="form-label">Selecione a placa do Veículo</label>
-              <select onchange="onSelectChange(this)" class="form-select">
-                <option value="">Selecione...</option>
-                <option value="manual">Inserir Manualmente</option>
-                <option value="MSR - PQA8867 / JAE3D30">MSR - PQA8867 / JAE3D30</option>
-                <option value="MSR - DRX8D24 / JAW3D30">MSR - DRX8D24 / JAW3D30</option>
-                <option value="MSR - TFM2F85 / ONC3I65">MSR - TFM2F85 / ONC3I65</option>
-                <option value="MSR - TFE5F86 / ONK8A77">MSR - TFE5F86 / ONK8A77</option>
-                <option value="MSR - NWE5A88 / ONG5H07">MSR - NWE5A88 (Dc 06) / ONG5H07</option>
-
-
-                <option value="RODACOP - GGD8F38 / RFC5H16">RODACOP - GGD8F38 / RFC5H16</option>
-                <option value="RODACOP - TEX6A56 / TWY8C73">RODACOP - TEX6A56 / TWY8C73</option>
-                <option value="RODACOP - TCK5H69 / HDE8J16">RODACOP - TCK5H69 / HDE8J16</option>
-                <option value="RODACOP - FOF5B57 / RUK2H11">RODACOP - FOF5B57 / RUK2H11</option>
-                <option value="RODACOP - FTB1F75 / RUK2J60">RODACOP - FTB1F75 / RUK2J60</option>
-
-                <option value="RODACOP - RTU3I99">RODACOP - RTU3I99</option>
-                <option value="RODACOP - TCL8D30">RODACOP - TCL8D30</option>
-                <option value="RODACOP - RVB2C09">RODACOP - RVB2C09</option>
-                <option value="RODACOP - RVB1J25">RODACOP - RVB1J25</option>
-                <option value="RODACOP - OFC7H98">RODACOP - OFC7H98</option>
-                <option value="RODACOP - PVB0G08">RODACOP - PVB0G08</option>
-                <option value="RODACOP - RUK9J07">RODACOP - RUK9J07</option>
-                <option value="RODACOP - OQG8012">RODACOP - OQG8012</option>
-                <option value="RODACOP - RFR7E89">RODACOP - RFR7E89</option>
-                <option value="RODACOP - OLM1I23">RODACOP - OLM1I23</option>
-                <option value="RODACOP - QKA6J98">RODACOP - QKA6J98</option>
-                <option value="RODACOP - RSE9F12">RODACOP - RSE9F12</option>
-                <option value="RODACOP - RIN8H85">RODACOP - RIN8H85</option>
-                <option value="RODACOP - OLH2G94">RODACOP - OLH2G94</option>
-
-                <option value="PHH8I55">PHH8I55</option>
-                <option value="KIA5I83">KIA5I83</option>
-                <option value="PRO5B99">PRO5B99</option>
-                <option value="RMB6C84">RMB6C84 - RMB6D04</option>
-
-
-
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Placa Baú</label>
-              <input type="text" id="placaPrimaria" placeholder="Placa Baú" class="form-input" disabled>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Placa Veículo</label>
-              <input type="text" id="placaSecundaria" placeholder="Placa Veículo ou Cavalo" class="form-input" disabled>
-            </div>
-          </div>
-        </div>
-
-        <!-- Seção de Motorista -->
-        <div class="section">
-          <div class="section-title">
-            <i class="bi bi-person-badge"></i>
-            Dados do Motorista
-          </div>
-          <div class="form-grid">
-            <div class="form-group autocomplete-container">
-              <label class="form-label">Nome do Motorista</label>
-              <input type="text" id="nomeMotorista" placeholder="Digite o nome do motorista" class="form-input" autocomplete="off">
-              <div id="suggestions" class="autocomplete-suggestions"></div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Telefone</label>
-              <input type="text" id="telefoneMotorista" placeholder="Digite o telefone" class="form-input">
-            </div>
-            <div class="form-group">
-              <label class="form-label">CPF</label>
-              <input type="text" id="cpfMotorista" placeholder="Digite o CPF" class="form-input">
-            </div>
-          </div>
-        </div>
-
-        <!-- Seção de Horários -->
-        <div class="section">
-          <div class="section-title">
-            <i class="bi bi-clock"></i>
-            Controle de Horários
-          </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">Chegada Unidade</label>
-              <div class="time-controls">
-                <input type="time" id="horaChegada" class="form-input">
-                <button type="button" onclick="registrarHoraComConfirmacao('horaChegada')" class="btn btn-primary btn-small">Registrar</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Hora Doca</label>
-              <div class="time-controls">
-                <input type="time" id="horaDoca" class="form-input">
-                <button type="button" onclick="registrarHoraComConfirmacao('horaDoca')" class="btn btn-primary btn-small">Registrar</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Início Carregamento</label>
-              <div class="time-controls">
-                <input type="time" id="horaInicio" class="form-input">
-                <button type="button" onclick="registrarHoraComConfirmacao('horaInicio')" class="btn btn-primary btn-small">Registrar</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Término Carregamento</label>
-              <div class="time-controls">
-                <input type="time" id="horaTermino" class="form-input">
-                <button type="button" onclick="confirmarFotoBauAberto()" class="btn btn-secondary btn-small">Registrar</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Saída</label>
-              <div class="time-controls">
-                <input type="time" id="horaSaida" class="form-input">
-                <button type="button" onclick="registrarHoraComConfirmacao('horaSaida')" class="btn btn-primary btn-small">Registrar</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Previsão de Destino</label>
-              <input type="time" id="previsaoDestino" placeholder="Digite a previsão de destino" class="form-input">
-            </div>
-          </div>
-        </div>
-
-        <!-- Seção de Lacres -->
-        <div class="section">
-          <div class="section-title">
-            <i class="bi bi-shield-lock"></i>
-            Controle de Lacres
-          </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">Lacre Baú</label>
-              <div class="seal-controls">
-                <input type="text" id="lacreBau" class="form-input" inputmode="numeric">
-                <button type="button" onclick="scanQRCode('lacreBau')" class="btn btn-secondary btn-small">
-                  <i class="bi bi-qr-code-scan"></i>
-                </button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Lacre Lateral 1</label>
-              <div class="seal-controls">
-                <input type="text" id="lacreLateral1" class="form-input" inputmode="numeric">
-                <button type="button" onclick="scanQRCode('lacreLateral1')" class="btn btn-secondary btn-small">
-                  <i class="bi bi-qr-code-scan"></i>
-                </button>
-                <label style="display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; margin: 0;">
-                  <input type="checkbox" id="lateral1NaoUsa"> Não utiliza
-                </label>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Lacre Lateral 2</label>
-              <div class="seal-controls">
-                <input type="text" id="lacreLateral2" class="form-input" inputmode="numeric">
-                <button type="button" onclick="scanQRCode('lacreLateral2')" class="btn btn-secondary btn-small">
-                  <i class="bi bi-qr-code-scan"></i>
-                </button>
-                <label style="display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; margin: 0;">
-                  <input type="checkbox" id="lateral2NaoUsa"> 
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Seção de Cargas -->
-        <div class="section">
-          <div class="section-title">
-            <i class="bi bi-boxes"></i>
-            Controle de Cargas
-          </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">Volumosos</label>
-              <div class="counter-controls">
-                <button type="button" onclick="alterarContagem('volumoso', -1)" class="counter-btn">-</button>
-                <input type="number" id="volumoso" value="0" min="0" class="form-input">
-                <button type="button" onclick="alterarContagem('volumoso', 1)" class="counter-btn">+</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Gaiolas</label>
-              <div class="counter-controls">
-                <button type="button" onclick="alterarContagem('gaiola', -1)" class="counter-btn">-</button>
-                <input type="number" id="gaiola" value="0" min="0" class="form-input">
-                <button type="button" onclick="alterarContagem('gaiola', 1)" class="counter-btn">+</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Manga Pallets</label>
-              <div class="counter-controls">
-                <button type="button" onclick="alterarContagem('mangaPallet', -1)" class="counter-btn">-</button>
-                <input type="number" id="mangaPallet" value="0" min="0" class="form-input">
-                <button type="button" onclick="alterarContagem('mangaPallet', 1)" class="counter-btn">+</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Seção de Rotas XPT -->
-        <div class="section">
-          <div class="section-title">
-            <i class="bi bi-geo-alt"></i>
-            Rotas XPT
-          </div>
-          <div class="checkbox-grid" id="rotasCheckboxes"></div>
-        </div>
-
-        <!-- Ações -->
-        <div class="actions">
-          <button type="button" onclick="gerarReport()" class="btn btn-primary">
-            <i class="bi bi-file-earmark-pdf"></i> Gerar Relatório
-          </button>
-          <button type="button" onclick="salvarInstancia()" class="btn btn-info">
-            <i class="bi bi-save"></i> Salvar Sessão
-          </button>
-          <button type="button" onclick="limparFormulario()" class="btn btn-danger">
-            <i class="bi bi-trash"></i> Limpar Tudo
-          </button>
-          <button type="button" onclick="gerarReportConsolidado()" class="btn btn-info">
-           <i class="bi bi-bar-chart"></i> Gerar Report Consolidado
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal para Scanner QR -->
-  <div id="qrScannerModal" class="modal">
-    <div class="modal-content">
-      <button onclick="fecharScanner()" class="modal-close">
-        <i class="bi bi-x-lg"></i>
-      </button>
-      <div class="section-title" style="margin-bottom: 1rem;">
-        <i class="bi bi-qr-code-scan"></i>
-        Scanner QR Code
-      </div>
-      <div id="qr-reader" style="width: 100%; max-width: 300px;"></div>
-    </div>
-  </div>
-
-  
-  <script>
+<script>
     // Sistema de Gerenciamento de Múltiplas Instâncias
     class SessionManager {
       constructor() {
@@ -1105,19 +1206,6 @@
   data.lateral1NaoUsa = document.getElementById('lateral1NaoUsa')?.checked || false;
   data.lateral2NaoUsa = document.getElementById('lateral2NaoUsa')?.checked || false;
 
-  // CORRIGIDO: Coleta rotas selecionadas com mais detalhes
-  const rotasCheckboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
-data.rotasCheckboxes = Array.from(rotasCheckboxes)
-  .filter(cb => cb.checked)
-  .map(cb => cb.value);
-  
-  // ADICIONADO: Debug para verificar o que está sendo salvo
-  console.log('Dados sendo salvos:', {
-    nomeMotorista: data.nomeMotorista,
-    rotasCount: Object.keys(data.rotasCheckboxes).length,
-    rotasSelecionadas: Object.entries(data.rotasCheckboxes).filter(([id, checked]) => checked)
-  });
-
   return data;
 }
 
@@ -1146,19 +1234,6 @@ data.rotasCheckboxes = Array.from(rotasCheckboxes)
   }
   if (sessionData.lateral2NaoUsa !== undefined) {
     document.getElementById('lateral2NaoUsa').checked = sessionData.lateral2NaoUsa;
-  }
-
-  // CORRIGIDO: Carrega rotas com verificação mais robusta
-  if (sessionData.rotasCheckboxes) {
-    console.log('Carregando rotas:', sessionData.rotasCheckboxes); // Debug
-    
-    // Se é um objeto (novo formato)
-    if (Array.isArray(sessionData.rotasCheckboxes)) {
-  const rotasCheckboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
-  rotasCheckboxes.forEach(cb => {
-    cb.checked = sessionData.rotasCheckboxes.includes(cb.value);
-  });
-}
   }
 }
 
@@ -1253,47 +1328,88 @@ data.rotasCheckboxes = Array.from(rotasCheckboxes)
     // Instância global do gerenciador
     let sessionManager;
 
-    // Dados dos veículos (mantidos iguais)
-    const placaMap = {
-      "MSR - PQA8867 / JAE3D30": ["PQA8867", "JAE3D30"],
-      "MSR - DRX8D24 / JAW3D30": ["DRX8D24", "JAW3D30"],
-      "MSR - TFE5F86 / ONK8A77": ["TFE5F86", "ONK8A77"],
-      "MSR - TFM2F85 / ONC3I65": ["TFM2F85", "ONC3I65"],
-      "MSR - NWE5A88 / ONG5H07": ["NWE5A88", "ONG5H07"],
+    // Dados padrão dos veículos (usados na primeira execução)
+    // Cada item representa um cavalo/veículo, com seu tipo e, se houver, a carreta vinculada
+    const veiculosDefault = [
+      { cavalo: "JAE3D30", tipo: "Carreta", carreta: "PQA8867" },
+      { cavalo: "JAW3D30", tipo: "Carreta", carreta: "DRX8D24" },
+      { cavalo: "ONC3I65", tipo: "Carreta", carreta: "TFM2F85" },
+      { cavalo: "ONK8A77", tipo: "Carreta", carreta: "TFE5F86" },
+      { cavalo: "ONG5H07", tipo: "Carreta", carreta: "NWE5A88" },
+      { cavalo: "RFC5H16", tipo: "Carreta", carreta: "GGD8F38" },
+      { cavalo: "TWY8C73", tipo: "Carreta", carreta: "TEX6A56" },
+      { cavalo: "HDE8J16", tipo: "Carreta", carreta: "TCK5H69" },
+      { cavalo: "RUK2H11", tipo: "Carreta", carreta: "FOF5B57" },
+      { cavalo: "RUK2J60", tipo: "Carreta", carreta: "FTB1F75" },
+      { cavalo: "RMB6D04", tipo: "Carreta", carreta: "RMB6C84" },
+      { cavalo: "RTU3I99", tipo: "Truck", carreta: "" },
+      { cavalo: "TCL8D30", tipo: "Truck", carreta: "" },
+      { cavalo: "RVB1J25", tipo: "Truck", carreta: "" },
+      { cavalo: "OFC7H98", tipo: "Truck", carreta: "" },
+      { cavalo: "PVB0G08", tipo: "Truck", carreta: "" },
+      { cavalo: "RUK9J07", tipo: "Truck", carreta: "" },
+      { cavalo: "RVB2C09", tipo: "Truck", carreta: "" },
+      { cavalo: "OQG8012", tipo: "Truck", carreta: "" },
+      { cavalo: "RFR7E89", tipo: "Truck", carreta: "" },
+      { cavalo: "OLM1I23", tipo: "Truck", carreta: "" },
+      { cavalo: "QKA6J98", tipo: "Truck", carreta: "" },
+      { cavalo: "RSE9F12", tipo: "Truck", carreta: "" },
+      { cavalo: "RIN8H85", tipo: "Truck", carreta: "" },
+      { cavalo: "OLH2G94", tipo: "Truck", carreta: "" },
+      { cavalo: "KIA5I83", tipo: "Truck", carreta: "" },
+      { cavalo: "PRO5B99", tipo: "Truck", carreta: "" },
+      { cavalo: "PHH8I55", tipo: "Truck", carreta: "" }
+    ];
 
+    // ── STORAGE COMPARTILHADO (Artifact Storage) ──
+    // Motoristas e veículos são armazenados de forma compartilhada entre todos os dispositivos.
+    // Sessões de carregamento continuam no localStorage (por operador/dispositivo).
 
-      "RODACOP - GGD8F38 / RFC5H16": ["GGD8F38", "RFC5H16"],
-      "RODACOP - TEX6A56 / TWY8C73": ["TEX6A56", "TWY8C73"],
-      "RODACOP - TCK5H69 / HDE8J16": ["TCK5H69", "HDE8J16"],
-      "RODACOP - FOF5B57 / RUK2H11": ["FOF5B57", "RUK2H11"],
-      "RODACOP - FTB1F75 / RUK2J60": ["FTB1F75", "RUK2J60"],
+    async function carregarVeiculosStorage() {
+      try {
+        const valor = await window._fbCarregar('mm_veiculos_custom');
+        if (valor) return JSON.parse(valor);
+      } catch (e) { console.warn('Erro ao carregar veículos do Firebase:', e); }
+      return veiculosDefault.slice();
+    }
 
+    async function salvarVeiculosStorage() {
+      try {
+        await window._fbSalvar('mm_veiculos_custom', JSON.stringify(veiculosCadastrados));
+      } catch (e) { console.error('Erro ao salvar veículos no Firebase:', e); }
+    }
 
-      "RODACOP - RTU3I99": ["", "RTU3I99"],
-      "RODACOP - TCL8D30": ["", "TCL8D30"],
-      "RODACOP - RVB1J25": ["", "RVB1J25"],
-      "RODACOP - OFC7H98": ["", "OFC7H98"],
-      "RODACOP - PVB0G08": ["", "PVB0G08"],
-      "RODACOP - RUK9J07": ["", "RUK9J07"],
-      "RODACOP - RVB2C09": ["", "RVB2C09"],
-      "RODACOP - OQG8012": ["", "OQG8012"],
-      "RODACOP - RFR7E89": ["", "RFR7E89"],
-      "RODACOP - OLM1I23": ["", "OLM1I23"],
-      "RODACOP - QKA6J98": ["", "QKA6J98"],
-      "RODACOP - RSE9F12": ["", "RSE9F12"],
-      "RODACOP - RIN8H85": ["", "RIN8H85"],
-      "RODACOP - OLH2G94": ["", "OLH2G94"],
+    function salvarVeiculos() { salvarVeiculosStorage(); }
 
+    let veiculosCadastrados = veiculosDefault.slice(); // valor inicial; substituído no init
 
-      "KIA5I83": ["", "KIA5I83"],
-      "PRO5B99": ["", "PRO5B99"],
-      "PHH8I55": ["", "PHH8I55"],
-      "RMB6C84 - RMB6D04": ["RMB6C84", "RMB6D04"]
+    // Listas/derivados calculados dinamicamente a partir de veiculosCadastrados
+    function getPlacasVeiculoList() {
+      return veiculosCadastrados.map(v => v.cavalo);
+    }
 
-    };
+    function getPlacasCarretaList() {
+      return veiculosCadastrados.filter(v => v.carreta).map(v => v.carreta);
+    }
 
-    // Dados dos motoristas (mantidos iguais)
-    const motoristas = [
+    function getPlacasVinculadas() {
+      const map = {};
+      veiculosCadastrados.forEach(v => {
+        if (v.carreta) {
+          map[v.cavalo] = v.carreta;
+          map[v.carreta] = v.cavalo;
+        }
+      });
+      return map;
+    }
+
+    function getTipoPorPlaca(placa) {
+      const v = veiculosCadastrados.find(v => v.cavalo === placa || v.carreta === placa);
+      return v ? v.tipo : '';
+    }
+
+    // Dados padrão dos motoristas (usados na primeira execução)
+    const motoristasDefault = [
       { nome: "Evaldo de Queiroz", cpf: "950.351.335-61", telefone: "63992640497" },
       { nome: "Raimundo Nonato", cpf: "", telefone: "63992754794" },
       { nome: "Hebert Carvalho de Lima", cpf: "017.636.151-03", telefone: "63992009983" },
@@ -1336,13 +1452,31 @@ data.rotasCheckboxes = Array.from(rotasCheckboxes)
       { nome: "Hellian Vieira Marques dos Santos", cpf: "", telefone: "" }
     ];
 
+    async function carregarMotoristasStorage() {
+      try {
+        const valor = await window._fbCarregar('mm_motoristas_custom');
+        if (valor) return JSON.parse(valor);
+      } catch (e) { console.warn('Erro ao carregar motoristas do Firebase:', e); }
+      return motoristasDefault.slice();
+    }
+
+    async function salvarMotoristasStorage() {
+      try {
+        await window._fbSalvar('mm_motoristas_custom', JSON.stringify(motoristas));
+      } catch (e) { console.error('Erro ao salvar motoristas no Firebase:', e); }
+    }
+
+    function salvarMotoristas() { salvarMotoristasStorage(); }
+
+    let motoristas = motoristasDefault.slice(); // valor inicial; substituído no init
+
     // Campos para gerenciar
     const camposParaSalvar = [
       "data", "rota-select", "doca", "tipoVeiculo", "placaPrimaria", "placaSecundaria",
       "nomeMotorista", "telefoneMotorista", "cpfMotorista", "horaChegada", "horaDoca", 
       "horaInicio", "horaTermino", "horaSaida", "previsaoDestino", 
       "lacreBau", "lacreLateral1", "lacreLateral2", 
-      "volumoso", "gaiola", "mangaPallet"
+      "volumoso", "gaiola", "mangaPallet", "qtdRotasEmbarcadas"
     ];
 
     // Variáveis globais para scanner
@@ -1374,21 +1508,6 @@ data.rotasCheckboxes = Array.from(rotasCheckboxes)
   
   mostrarGerenciador();
 }
-
-    function salvarInstancia() {
-      sessionManager.saveCurrentSession();
-      
-      // Feedback visual
-      const btn = event.target;
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<i class="bi bi-check-circle"></i> Salvo!';
-      btn.disabled = true;
-      
-      setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-      }, 2000);
-    }
 
     function mostrarGerenciador() {
   const modal = document.getElementById('gerenciarModal');
@@ -1488,6 +1607,181 @@ data.rotasCheckboxes = Array.from(rotasCheckboxes)
 
     function fecharGerenciar() {
       document.getElementById('gerenciarModal').style.display = 'none';
+    }
+
+    // ===== Gerenciamento de Motoristas =====
+    function abrirMotoristasModal() {
+      renderMotoristasList();
+      document.getElementById('motoristasModal').style.display = 'flex';
+    }
+
+    function fecharMotoristasModal() {
+      document.getElementById('motoristasModal').style.display = 'none';
+    }
+
+    function renderMotoristasList() {
+      const container = document.getElementById('motoristas-list');
+      container.innerHTML = '';
+
+      if (motoristas.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem; padding:0.5rem 0;">Nenhum motorista cadastrado.</p>';
+        return;
+      }
+
+      motoristas
+        .map((m, idx) => ({ m, idx }))
+        .sort((a, b) => a.m.nome.localeCompare(b.m.nome, 'pt-BR'))
+        .forEach(({ m, idx }) => {
+          const div = document.createElement('div');
+          div.className = 'session-item';
+          div.innerHTML = `
+            <div class="session-item-header">
+              <span class="session-item-id" style="font-family: inherit;">${m.nome}</span>
+              <div class="session-item-actions">
+                <button type="button" class="btn btn-danger btn-sm btn-icon" title="Remover">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            </div>
+            <div class="session-item-info">${m.cpf ? 'CPF: ' + m.cpf : 'CPF não informado'}${m.telefone ? ' · Tel: ' + m.telefone : ''}</div>
+          `;
+          div.querySelector('.btn-danger').addEventListener('click', () => removerMotorista(idx));
+          container.appendChild(div);
+        });
+    }
+
+    function adicionarMotorista() {
+      const nomeInput = document.getElementById('novoMotoristaNome');
+      const cpfInput = document.getElementById('novoMotoristaCpf');
+      const telefoneInput = document.getElementById('novoMotoristaTelefone');
+
+      const nome = nomeInput.value.trim();
+      const cpf = cpfInput.value.trim();
+      const telefone = telefoneInput.value.trim();
+
+      if (!nome) {
+        alert('Informe o nome do motorista.');
+        return;
+      }
+      if (motoristas.some(m => m.nome.toLowerCase() === nome.toLowerCase())) {
+        alert('Já existe um motorista cadastrado com esse nome.');
+        return;
+      }
+
+      motoristas.push({ nome, cpf, telefone });
+      salvarMotoristas();
+
+      nomeInput.value = '';
+      cpfInput.value = '';
+      telefoneInput.value = '';
+
+      renderMotoristasList();
+    }
+
+    function removerMotorista(idx) {
+      const motorista = motoristas[idx];
+      if (!motorista) return;
+      if (!confirm(`Remover o motorista "${motorista.nome}"?`)) return;
+
+      motoristas.splice(idx, 1);
+      salvarMotoristas();
+      renderMotoristasList();
+    }
+
+    // ===== Gerenciamento de Veículos =====
+    function abrirVeiculosModal() {
+      alternarCampoNovaCarreta();
+      renderVeiculosList();
+      document.getElementById('veiculosModal').style.display = 'flex';
+    }
+
+    function fecharVeiculosModal() {
+      document.getElementById('veiculosModal').style.display = 'none';
+    }
+
+    function alternarCampoNovaCarreta() {
+      const tipo = document.getElementById('novoVeiculoTipo').value;
+      const grupo = document.getElementById('grupoNovaCarreta');
+      grupo.style.display = (tipo === 'Carreta') ? '' : 'none';
+    }
+
+    function renderVeiculosList() {
+      const container = document.getElementById('veiculos-list');
+      container.innerHTML = '';
+
+      if (veiculosCadastrados.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem; padding:0.5rem 0;">Nenhum veículo cadastrado.</p>';
+        return;
+      }
+
+      veiculosCadastrados
+        .map((v, idx) => ({ v, idx }))
+        .sort((a, b) => a.v.cavalo.localeCompare(b.v.cavalo))
+        .forEach(({ v, idx }) => {
+          const div = document.createElement('div');
+          div.className = 'session-item';
+          div.innerHTML = `
+            <div class="session-item-header">
+              <span class="session-item-id" style="font-family: inherit;">${v.cavalo}</span>
+              <div class="session-item-actions">
+                <button type="button" class="btn btn-danger btn-sm btn-icon" title="Remover">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            </div>
+            <div class="session-item-info">Tipo: ${v.tipo}${v.carreta ? ' · Carreta: ' + v.carreta : ''}</div>
+          `;
+          div.querySelector('.btn-danger').addEventListener('click', () => removerVeiculo(idx));
+          container.appendChild(div);
+        });
+    }
+
+    function adicionarVeiculo() {
+      const cavaloInput = document.getElementById('novoVeiculoCavalo');
+      const tipoInput = document.getElementById('novoVeiculoTipo');
+      const carretaInput = document.getElementById('novoVeiculoCarreta');
+
+      const cavalo = cavaloInput.value.trim().toUpperCase();
+      const tipo = tipoInput.value;
+      const carreta = tipo === 'Carreta' ? carretaInput.value.trim().toUpperCase() : '';
+
+      if (!cavalo) {
+        alert('Informe a placa do veículo/cavalo.');
+        return;
+      }
+      if (veiculosCadastrados.some(v => v.cavalo === cavalo)) {
+        alert('Já existe um veículo cadastrado com essa placa.');
+        return;
+      }
+      if (tipo === 'Carreta' && !carreta) {
+        alert('Informe a placa da carreta vinculada, ou selecione outro tipo de veículo.');
+        return;
+      }
+      if (carreta && veiculosCadastrados.some(v => v.carreta === carreta)) {
+        alert('Já existe um veículo cadastrado com essa placa de carreta.');
+        return;
+      }
+
+      veiculosCadastrados.push({ cavalo, tipo, carreta });
+      salvarVeiculos();
+
+      cavaloInput.value = '';
+      carretaInput.value = '';
+      tipoInput.value = 'Carreta';
+      alternarCampoNovaCarreta();
+
+      renderVeiculosList();
+    }
+
+    function removerVeiculo(idx) {
+      const veiculo = veiculosCadastrados[idx];
+      if (!veiculo) return;
+      const descricao = veiculo.carreta ? `${veiculo.cavalo} (carreta ${veiculo.carreta})` : veiculo.cavalo;
+      if (!confirm(`Remover o veículo "${descricao}"?`)) return;
+
+      veiculosCadastrados.splice(idx, 1);
+      salvarVeiculos();
+      renderVeiculosList();
     }
 
     function exportarTodas() {
@@ -1601,28 +1895,128 @@ function limparSessoesInvalidas() {
       sessionManager.saveCurrentSession();
     }
 
-    function verificarTipoVeiculo() {
-      const tipo = document.getElementById('tipoVeiculo').value;
-      sessionManager.saveCurrentSession();
+    let selectedSuggestionIndexBau = -1;
+    let selectedSuggestionIndexVeiculo = -1;
+
+    // Aplica o tipo de veículo automaticamente com base na placa selecionada/digitada
+    function aplicarTipoAutomatico(placa) {
+      const tipo = getTipoPorPlaca(placa);
+      const campoTipo = document.getElementById('tipoVeiculo');
+      if (tipo && campoTipo) {
+        campoTipo.value = tipo;
+      }
     }
 
-    function onSelectChange(select) {
-      const selected = select.value;
-      const manual = selected === "manual";
+    // Configura busca/autocomplete para um campo de placa, mantendo o que foi digitado caso não encontre
+    function setupAutocompletePlaca(inputId, suggestionsId, listaFn, indexGetter, indexSetter, otherInputId) {
+      const input = document.getElementById(inputId);
+      const suggestionsDiv = document.getElementById(suggestionsId);
 
-      document.getElementById("placaPrimaria").disabled = !manual;
-      document.getElementById("placaSecundaria").disabled = !manual;
-
-      if (!manual && placaMap[selected]) {
-        const [primaria, secundaria] = placaMap[selected];
-        document.getElementById("placaPrimaria").value = primaria;
-        document.getElementById("placaSecundaria").value = secundaria;
-      } else {
-        document.getElementById("placaPrimaria").value = "";
-        document.getElementById("placaSecundaria").value = "";
+      function preencherVinculada(placa) {
+        aplicarTipoAutomatico(placa);
+        if (!otherInputId) return;
+        const vinculada = getPlacasVinculadas()[placa];
+        if (vinculada) {
+          const otherInput = document.getElementById(otherInputId);
+          if (otherInput) otherInput.value = vinculada;
+        }
       }
-      
-      sessionManager.saveCurrentSession();
+
+      input.addEventListener('input', function() {
+        const value = this.value.toUpperCase();
+        this.value = value;
+        const lista = listaFn();
+        const filtradas = lista.filter(placa => placa.includes(value));
+
+        // Se o valor digitado corresponde exatamente a uma placa conhecida, vincula automaticamente
+        if (lista.includes(value)) {
+          preencherVinculada(value);
+        }
+
+        sessionManager.saveCurrentSession();
+
+        if (value === '' || filtradas.length === 0) {
+          suggestionsDiv.style.display = 'none';
+          indexSetter(-1);
+          return;
+        }
+
+        suggestionsDiv.innerHTML = '';
+        filtradas.forEach(placa => {
+          const div = document.createElement('div');
+          div.className = 'autocomplete-suggestion';
+          div.textContent = placa;
+          div.addEventListener('click', () => {
+            input.value = placa;
+            suggestionsDiv.style.display = 'none';
+            indexSetter(-1);
+            preencherVinculada(placa);
+            sessionManager.saveCurrentSession();
+          });
+          suggestionsDiv.appendChild(div);
+        });
+
+        suggestionsDiv.style.display = 'block';
+        indexSetter(-1);
+      });
+
+      input.addEventListener('blur', function() {
+        setTimeout(() => {
+          sessionManager.saveCurrentSession();
+        }, 300); // Delay para permitir clique nas sugestões
+      });
+
+      input.addEventListener('keydown', function(e) {
+        const suggestions = suggestionsDiv.querySelectorAll('.autocomplete-suggestion');
+        let index = indexGetter();
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          index = Math.min(index + 1, suggestions.length - 1);
+          indexSetter(index);
+          updateSelectedSuggestion(suggestions, index);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          index = Math.max(index - 1, -1);
+          indexSetter(index);
+          updateSelectedSuggestion(suggestions, index);
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (index >= 0 && suggestions[index]) {
+            const placa = suggestions[index].textContent;
+            input.value = placa;
+            suggestionsDiv.style.display = 'none';
+            indexSetter(-1);
+            preencherVinculada(placa);
+            sessionManager.saveCurrentSession();
+          }
+        } else if (e.key === 'Escape') {
+          suggestionsDiv.style.display = 'none';
+          indexSetter(-1);
+        }
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+          suggestionsDiv.style.display = 'none';
+          indexSetter(-1);
+        }
+      });
+    }
+
+    function setupAutocompletePlacas() {
+      setupAutocompletePlaca(
+        'placaPrimaria', 'suggestionsPlacaBau', getPlacasCarretaList,
+        () => selectedSuggestionIndexBau,
+        (v) => { selectedSuggestionIndexBau = v; },
+        'placaSecundaria'
+      );
+      setupAutocompletePlaca(
+        'placaSecundaria', 'suggestionsPlacaVeiculo', getPlacasVeiculoList,
+        () => selectedSuggestionIndexVeiculo,
+        (v) => { selectedSuggestionIndexVeiculo = v; },
+        'placaPrimaria'
+      );
     }
 
     // Função de autocomplete adaptada
@@ -1697,9 +2091,9 @@ function limparSessoesInvalidas() {
   });
 }
     
-    function updateSelectedSuggestion(suggestions) {
-      suggestions.forEach((suggestion, index) => {
-        suggestion.classList.toggle('selected', index === selectedSuggestionIndex);
+    function updateSelectedSuggestion(suggestions, index = selectedSuggestionIndex) {
+      suggestions.forEach((suggestion, i) => {
+        suggestion.classList.toggle('selected', i === index);
       });
     }
     
@@ -1750,28 +2144,6 @@ function limparSessoesInvalidas() {
         sessionManager.saveCurrentSession();
       }
     }
-
-    function gerarCheckboxesRotas() {
-  const container = document.getElementById('rotasCheckboxes');
-  for (let i = 1; i <= 80; i++) {
-    const div = document.createElement('div');
-    div.className = 'checkbox-item';
-    div.innerHTML = `
-      <input type="checkbox" id="rota${i}" value="${i.toString().padStart(2, '0')}">
-      <label for="rota${i}">${i.toString().padStart(2, '0')}</label>
-    `;
-    container.appendChild(div);
-  }
-  
-  // CORRIGIDO: Adiciona eventos imediatamente após criar os checkboxes
-  const checkboxes = document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]');
-  checkboxes.forEach(cb => {
-    cb.addEventListener('change', () => {
-      console.log('Checkbox rota alterado:', cb.id, cb.checked); // Debug
-      sessionManager.saveCurrentSession();
-    });
-  });
-}
 
     function scanQRCode(campoId) {
       campoAtivo = document.getElementById(campoId);
@@ -1865,9 +2237,7 @@ function limparSessoesInvalidas() {
   const volumoso = document.getElementById('volumoso')?.value;
   const gaiola = document.getElementById('gaiola')?.value;
   const mangaPallet = document.getElementById('mangaPallet')?.value;
-  const rotasSelecionadas = Array.from(document.querySelectorAll('#rotasCheckboxes input[type="checkbox"]:checked'))
-    .map(cb => cb.value)
-    .join(', ');
+  const qtdRotasEmbarcadas = document.getElementById('qtdRotasEmbarcadas')?.value;
 
   const shortId = sessionManager.currentSessionId.split('_')[2] || sessionManager.currentSessionId.substr(-5);
 
@@ -1875,8 +2245,8 @@ function limparSessoesInvalidas() {
 Data: ${data}
 Doca: ${doca}
 ${tipoVeiculo}: ${rota}
-Placa: ${placaSecundaria}
-Placa Cavalo: ${placaPrimaria}
+Placa Veículo/Cavalo: ${placaSecundaria}
+Placa Carreta/Secundária: ${placaPrimaria}
 Motorista: ${motorista}
 CPF: ${cpf}
 Tel: ${telefone}
@@ -1887,7 +2257,7 @@ Término do carregamento: ${horaTermino}
 Saída Liberada: ${horaSaida}
 Previsão do Destino: ${previsaoDestino}
 Gaiolas: ${gaiola}
-Rotas embarcadas: ${rotasSelecionadas}
+Rotas embarcadas: ${qtdRotasEmbarcadas}
 Lacre Baú: ${lacreBau}
 Lacres Laterais: ${lacreLateral1} || ${lacreLateral2}
 Manga Pallet com sacolas: ${mangaPallet}
@@ -1905,21 +2275,16 @@ Yms saída ok`;
     });
 }
 
-    function limparFormulario() {
-      if (!confirm("Tem certeza que deseja limpar todos os dados da sessão atual?")) return;
-      limparFormularioSemConfirmacao();
-    }
-
     function limparFormularioSemConfirmacao() {
       document.getElementById("form-carregamento").reset();
 
-      ["placaPrimaria", "placaSecundaria", "nomeMotorista", "telefoneMotorista", "cpfMotorista", "previsaoDestino"].forEach(id => {
+      ["placaPrimaria", "placaSecundaria", "tipoVeiculo", "nomeMotorista", "telefoneMotorista", "cpfMotorista", "previsaoDestino"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = "";
       });
 
       document.querySelectorAll("input[type='checkbox']").forEach(cb => cb.checked = false);
-      ["volumoso", "gaiola", "mangaPallet"].forEach(id => {
+      ["volumoso", "gaiola", "mangaPallet", "qtdRotasEmbarcadas"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = 0;
       });
@@ -1963,17 +2328,37 @@ Yms saída ok`;
     });
 
     // Inicialização
-    window.addEventListener("load", () => {
+    async function inicializarSistema() {
+  // Aguarda o Firebase estar pronto (módulo ES pode carregar levemente depois do load)
+  if (!window._firebaseReady) {
+    await new Promise(resolve => window.addEventListener('firebase-ready', resolve, { once: true }));
+  }
+
+  // Carrega motoristas e veículos do Firestore (compartilhado entre todos os dispositivos)
+  try {
+    [motoristas, veiculosCadastrados] = await Promise.all([
+      carregarMotoristasStorage(),
+      carregarVeiculosStorage()
+    ]);
+    console.log('✅ Firebase: ' + motoristas.length + ' motoristas, ' + veiculosCadastrados.length + ' veículos carregados.');
+  } catch (e) {
+    console.warn('⚠️ Falha ao carregar do Firebase, usando dados padrão.', e);
+    motoristas = motoristasDefault.slice();
+    veiculosCadastrados = veiculosDefault.slice();
+  }
+
   // Inicializa o gerenciador de sessões
   sessionManager = new SessionManager();
-  
+
   // Configura a interface
-  gerarCheckboxesRotas(); // Gera os checkboxes PRIMEIRO
   setupAutocomplete();
+  setupAutocompletePlacas();
   setupAutoSave();
-  
+
   console.log('Sistema inicializado. Sessão atual:', sessionManager.currentSessionId);
-});
+}
+
+    window.addEventListener("load", inicializarSistema);
 
     // Teclas de atalho
     document.addEventListener('keydown', (e) => {
@@ -1981,12 +2366,6 @@ Yms saída ok`;
       if (e.ctrlKey && e.key === 'n') {
         e.preventDefault();
         novaInstancia();
-      }
-      
-      // Ctrl + S: Salvar
-      if (e.ctrlKey && e.key === 's') {
-        e.preventDefault();
-        salvarInstancia();
       }
       
       // Ctrl + G: Gerenciar
@@ -2166,6 +2545,7 @@ function gerarDadosReportConsolidado(data, rota) {
   let totalVolumosoItens = 0;
   let totalGaiolaItens = 0;
   let totalMangaPalletItens = 0;
+  let totalQtdRotasEmbarcadas = 0;
   
   console.log('🧮 Calculando totais para', sessoesEncontradas.length, 'sessões:');
   
@@ -2175,24 +2555,28 @@ function gerarDadosReportConsolidado(data, rota) {
     const volumoso = parseInt(dados.volumoso) || 0;
     const gaiola = parseInt(dados.gaiola) || 0;
     const mangaPallet = parseInt(dados.mangaPallet) || 0;
+    const qtdRotasEmbarcadas = parseInt(dados.qtdRotasEmbarcadas) || 0;
     
     console.log(`  📦 Sessão ${index + 1}:`, {
       volumoso: volumoso,
       gaiola: gaiola,
       mangaPallet: mangaPallet,
+      qtdRotasEmbarcadas: qtdRotasEmbarcadas,
       motorista: dados.nomeMotorista || 'N/I'
     });
     
     totalVolumosoItens += volumoso;
     totalGaiolaItens += gaiola;
     totalMangaPalletItens += mangaPallet;
+    totalQtdRotasEmbarcadas += qtdRotasEmbarcadas;
   });
   
   console.log('📈 Totais finais:', {
     carros: totalCarros,
     volumosos: totalVolumosoItens,
     gaiolas: totalGaiolaItens,
-    mangaPallet: totalMangaPalletItens
+    mangaPallet: totalMangaPalletItens,
+    qtdRotasEmbarcadas: totalQtdRotasEmbarcadas
   });
   
   // Gera o código XPT
@@ -2208,7 +2592,8 @@ ${codigoXPT} ${rota} - ${dataExibicao}
 Quantidade de Carros: ${totalCarros.toString().padStart(2, '0')}
 Quantidade de Volumoso: ${totalVolumosoItens.toString().padStart(2, '0')}
 Quantidade de Gaiolas: ${totalGaiolaItens.toString().padStart(2, '0')}
-Quantidade de manga de sacola: ${totalMangaPalletItens.toString().padStart(2, '0')}`;
+Quantidade de manga de sacola: ${totalMangaPalletItens.toString().padStart(2, '0')}
+Quantidade de Rotas Embarcadas: ${totalQtdRotasEmbarcadas.toString().padStart(2, '0')}`;
   
   const resumo = `📊 Resumo: ${totalCarros} carros processados para ${rota} em ${dataExibicao}`;
   
@@ -2314,6 +2699,7 @@ function listarTodasSessoes() {
 }
 
 </script>
+
 
 </body>
 </html>
