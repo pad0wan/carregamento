@@ -703,6 +703,163 @@
   </script>
 </head>
 <body>
+
+<!-- ── TELA DE CAPTCHA (bloqueia o acesso até validar) ── -->
+<div id="captchaOverlay" style="
+  position: fixed; inset: 0; z-index: 9999;
+  background: #0d0f14;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.25rem;
+">
+  <div style="
+    width: 100%; max-width: 360px;
+    background: #161923;
+    border: 1px solid rgba(99,179,237,0.15);
+    border-radius: 14px;
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  ">
+    <div style="font-size:2rem; margin-bottom:0.5rem;">🚛</div>
+    <h2 style="font-family:'Orbitron',monospace; font-size:1rem; letter-spacing:1px; color:#e2e8f0; margin-bottom:0.4rem; text-transform:uppercase;">
+      Verificação de Acesso
+    </h2>
+    <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:1.1rem;">
+      Digite o código abaixo para continuar
+    </p>
+
+    <canvas id="captchaCanvas" width="220" height="70" style="
+      display:block; margin: 0 auto 0.9rem;
+      border-radius: 10px;
+      border: 1px solid rgba(99,179,237,0.2);
+      background:#0d0f14;
+    "></canvas>
+
+    <button type="button" id="captchaRefreshBtn" style="
+      background:none; border:none; color:#22d3ee; font-size:0.78rem;
+      cursor:pointer; margin-bottom:1rem; text-decoration:underline;
+      font-family:inherit;
+    ">↻ Gerar novo código</button>
+
+    <input id="captchaInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+      placeholder="Digite o código"
+      style="
+        width:100%; padding:0.7rem 0.9rem; margin-bottom:0.85rem;
+        background:#0d0f14; border:1px solid rgba(99,179,237,0.25);
+        border-radius:10px; color:#e2e8f0; font-size:1rem;
+        text-align:center; letter-spacing:2px; font-family:inherit;
+        box-sizing:border-box;
+      ">
+
+    <div id="captchaError" style="
+      color:#ef4444; font-size:0.8rem; min-height:1.1rem; margin-bottom:0.6rem;
+    "></div>
+
+    <button type="button" id="captchaSubmitBtn" style="
+      width:100%; padding:0.75rem; border:none; border-radius:10px;
+      background: linear-gradient(135deg,#3b82f6,#06b6d4);
+      color:#fff; font-weight:700; font-size:0.9rem; cursor:pointer;
+      font-family:inherit; letter-spacing:0.4px;
+    ">Confirmar</button>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var CAPTCHA_LENGTH = 5;
+    var CAPTCHA_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sem 0/O/1/I para evitar ambiguidade
+    var currentCaptchaText = '';
+
+    function gerarTextoCaptcha() {
+      var txt = '';
+      for (var i = 0; i < CAPTCHA_LENGTH; i++) {
+        txt += CAPTCHA_CHARS.charAt(Math.floor(Math.random() * CAPTCHA_CHARS.length));
+      }
+      return txt;
+    }
+
+    function desenharCaptcha() {
+      currentCaptchaText = gerarTextoCaptcha();
+      var canvas = document.getElementById('captchaCanvas');
+      var ctx = canvas.getContext('2d');
+      var w = canvas.width, h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Fundo com ruído
+      ctx.fillStyle = '#0d0f14';
+      ctx.fillRect(0, 0, w, h);
+      for (var i = 0; i < 6; i++) {
+        ctx.strokeStyle = 'rgba(99,179,237,' + (0.15 + Math.random() * 0.2) + ')';
+        ctx.beginPath();
+        ctx.moveTo(Math.random() * w, Math.random() * h);
+        ctx.lineTo(Math.random() * w, Math.random() * h);
+        ctx.stroke();
+      }
+      for (var p = 0; p < 60; p++) {
+        ctx.fillStyle = 'rgba(148,163,184,' + (0.1 + Math.random() * 0.25) + ')';
+        ctx.fillRect(Math.random() * w, Math.random() * h, 1.5, 1.5);
+      }
+
+      // Texto distorcido, caractere por caractere
+      var charSpacing = w / (currentCaptchaText.length + 1);
+      for (var c = 0; c < currentCaptchaText.length; c++) {
+        var ch = currentCaptchaText.charAt(c);
+        var x = charSpacing * (c + 1);
+        var y = h / 2 + (Math.random() * 14 - 7);
+        var angle = (Math.random() * 30 - 15) * Math.PI / 180;
+        var size = 26 + Math.random() * 8;
+
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.font = '700 ' + size + 'px Orbitron, monospace';
+        ctx.fillStyle = ['#60a5fa', '#22d3ee', '#a78bfa', '#34d399'][c % 4];
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(ch, 0, 0);
+        ctx.restore();
+      }
+
+      // Esconde o texto anterior e reseta input/erro
+      var input = document.getElementById('captchaInput');
+      var erro = document.getElementById('captchaError');
+      if (input) input.value = '';
+      if (erro) erro.textContent = '';
+    }
+
+    function validarCaptcha() {
+      var input = document.getElementById('captchaInput');
+      var erro = document.getElementById('captchaError');
+      var valor = (input.value || '').trim().toUpperCase();
+
+      if (valor === currentCaptchaText) {
+        var overlay = document.getElementById('captchaOverlay');
+        if (overlay) overlay.remove();
+        window._captchaVerificado = true;
+        window.dispatchEvent(new Event('captcha-verificado'));
+      } else {
+        erro.textContent = 'Código incorreto. Tente novamente.';
+        desenharCaptcha();
+        input.focus();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      desenharCaptcha();
+      document.getElementById('captchaRefreshBtn').addEventListener('click', desenharCaptcha);
+      document.getElementById('captchaSubmitBtn').addEventListener('click', validarCaptcha);
+      document.getElementById('captchaInput').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          validarCaptcha();
+        }
+      });
+      document.getElementById('captchaInput').focus();
+    });
+  })();
+</script>
+
 <header class="app-header">
   <div class="app-logo">
     <div class="app-logo-icon">🚛</div>
@@ -1411,38 +1568,9 @@
     // Instância global do gerenciador
     let sessionManager;
 
-    // Dados padrão dos veículos (usados na primeira execução)
-    // Cada item representa um cavalo/veículo, com seu tipo e, se houver, a carreta vinculada
-    const veiculosDefault = [
-      { cavalo: "JAE3D30", tipo: "Carreta", carreta: "PQA8867" },
-      { cavalo: "JAW3D30", tipo: "Carreta", carreta: "DRX8D24" },
-      { cavalo: "ONC3I65", tipo: "Carreta", carreta: "TFM2F85" },
-      { cavalo: "ONK8A77", tipo: "Carreta", carreta: "TFE5F86" },
-      { cavalo: "ONG5H07", tipo: "Carreta", carreta: "NWE5A88" },
-      { cavalo: "RFC5H16", tipo: "Carreta", carreta: "GGD8F38" },
-      { cavalo: "TWY8C73", tipo: "Carreta", carreta: "TEX6A56" },
-      { cavalo: "HDE8J16", tipo: "Carreta", carreta: "TCK5H69" },
-      { cavalo: "RUK2H11", tipo: "Carreta", carreta: "FOF5B57" },
-      { cavalo: "RUK2J60", tipo: "Carreta", carreta: "FTB1F75" },
-      { cavalo: "RMB6D04", tipo: "Carreta", carreta: "RMB6C84" },
-      { cavalo: "RTU3I99", tipo: "Truck", carreta: "" },
-      { cavalo: "TCL8D30", tipo: "Truck", carreta: "" },
-      { cavalo: "RVB1J25", tipo: "Truck", carreta: "" },
-      { cavalo: "OFC7H98", tipo: "Truck", carreta: "" },
-      { cavalo: "PVB0G08", tipo: "Truck", carreta: "" },
-      { cavalo: "RUK9J07", tipo: "Truck", carreta: "" },
-      { cavalo: "RVB2C09", tipo: "Truck", carreta: "" },
-      { cavalo: "OQG8012", tipo: "Truck", carreta: "" },
-      { cavalo: "RFR7E89", tipo: "Truck", carreta: "" },
-      { cavalo: "OLM1I23", tipo: "Truck", carreta: "" },
-      { cavalo: "QKA6J98", tipo: "Truck", carreta: "" },
-      { cavalo: "RSE9F12", tipo: "Truck", carreta: "" },
-      { cavalo: "RIN8H85", tipo: "Truck", carreta: "" },
-      { cavalo: "OLH2G94", tipo: "Truck", carreta: "" },
-      { cavalo: "KIA5I83", tipo: "Truck", carreta: "" },
-      { cavalo: "PRO5B99", tipo: "Truck", carreta: "" },
-      { cavalo: "PHH8I55", tipo: "Truck", carreta: "" }
-    ];
+    // Dados padrão dos veículos (usados apenas se o Firebase estiver vazio/inacessível)
+    // Lista limpa propositalmente — os dados reais são carregados do Firestore.
+    const veiculosDefault = [];
 
     // ── STORAGE COMPARTILHADO (Artifact Storage) ──
     // Motoristas e veículos são armazenados de forma compartilhada entre todos os dispositivos.
@@ -1491,49 +1619,9 @@
       return v ? v.tipo : '';
     }
 
-    // Dados padrão dos motoristas (usados na primeira execução)
-    const motoristasDefault = [
-      { nome: "Evaldo de Queiroz", cpf: "950.351.335-61", telefone: "63992640497" },
-      { nome: "Raimundo Nonato", cpf: "", telefone: "63992754794" },
-      { nome: "Hebert Carvalho de Lima", cpf: "017.636.151-03", telefone: "63992009983" },
-      { nome: "Cleuton Macêdo", cpf: "813.243.161-87", telefone: "63981439951" },
-      { nome: "Tallysson Magno dos Santos", cpf: "", telefone: "63991169026" },
-      { nome: "Marcos Vinicius Oliveira", cpf: "", telefone: "63992500932" },
-      { nome: "Wanderson Oliveira Magalhães", cpf: "062.133.781-11", telefone: "" },
-      { nome: "Lucas Nascimento Noleto", cpf: "053.257.531-85", telefone: "63992200657" },
-      { nome: "Flacilde Fagundes", cpf: "010.746.931-67", telefone: "62981881286" },
-      { nome: "Flavio Fagundes", cpf: "", telefone: "62992749714" },
-      { nome: "Wellington Pereira da Silva", cpf: "", telefone: "63991279809" },
-      { nome: "Gabriel Lopes Soares", cpf: "082.629.441-35", telefone: "63981588214" },
-      { nome: "Air Otávio Cândido", cpf: "", telefone: "63999150105" },
-      { nome: "Ronielton Alves de Oliveira", cpf: "026.150.421-57", telefone: "63984208575" },
-      { nome: "Idamilton Andrade Silva", cpf: "023.474.221-62", telefone: "63981211457" },
-      { nome: "Francis Aniszewski da Silva Gomes", cpf: "026.385.201-60", telefone: "63981013325" },
-      { nome: "Savio de Souza Santos", cpf: "077.250.851-81", telefone: "63992735270" },
-      { nome: "Dalvan dos Santos", cpf: "042.027.111-22", telefone: "63992363023" },
-      { nome: "Geovanne Alex da Silva", cpf: "057.442.151-31", telefone: "" },
-      { nome: "Divino Alves Guida", cpf: "027.865.341-35", telefone: "63999456665" },
-      { nome: "Diego Alexandre Padovan", cpf: "", telefone: "11951442749" },
-      { nome: "Railan Pereira Coelho dos Santos", cpf: "066.304.091-40", telefone: "63991223145" },
-      { nome: "Romario Aleixo Lima", cpf: "040.701.101-35", telefone: "63992531915" },
-      { nome: "Raul Monteiro de Sousa", cpf: "059.668.101-17", telefone: "63991091677" },
-      { nome: "Caio Vinicius Oliveira da Silva", cpf: "603.210.033-22", telefone: "63992541607" },
-      { nome: "Juan de Souza Ribeiro", cpf: "070.732.651-74", telefone: "63992817191" },
-      { nome: "Bismael Rodrigues de Sousa Oliveira", cpf: "050.908.111-80", telefone: "63992446420" },
-      { nome: "Wesley Gonçalves Rodrigues", cpf: "590.682.721-68", telefone: "63984014369" },
-      { nome: "Odair José de Sousa", cpf: "989.477.611-68", telefone: "63984826152" },
-      { nome: "Luís Eduardo Sales", cpf: "", telefone: "" },
-      { nome: "Bruno Faustino Sobrinho", cpf: "", telefone: "" },
-      { nome: "Radson Galvao Rodrigues Junior", cpf: "", telefone: "" },
-      { nome: "Kaique Ribeiro", cpf: "", telefone: "" },
-      { nome: "Matheus Gomes", cpf: "", telefone: "" },
-      { nome: "Alessandro Noleto Gonçalves", cpf: "", telefone: "" },
-      { nome: "Sergio Siruk", cpf: "", telefone: "" },
-      { nome: "Leonardo Gonçalves de Oliveira", cpf: "", telefone: "" },
-      { nome: "Leonardo Siriano da Silva", cpf: "", telefone: "" },
-      { nome: "Daniel Aniszewski da Silva", cpf: "", telefone: "" },
-      { nome: "Hellian Vieira Marques dos Santos", cpf: "", telefone: "" }
-    ];
+    // Dados padrão dos motoristas (usados apenas se o Firebase estiver vazio/inacessível)
+    // Lista limpa propositalmente — os dados reais são carregados do Firestore.
+    const motoristasDefault = [];
 
     async function carregarMotoristasStorage() {
       try {
@@ -2662,6 +2750,11 @@ Yms saída ok`;
 
     // Inicialização
     async function inicializarSistema() {
+  // Aguarda a verificação do captcha antes de liberar qualquer carregamento de dados
+  if (!window._captchaVerificado) {
+    await new Promise(resolve => window.addEventListener('captcha-verificado', resolve, { once: true }));
+  }
+
   // Aguarda o Firebase estar pronto (módulo ES pode carregar levemente depois do load)
   if (!window._firebaseReady) {
     await new Promise(resolve => window.addEventListener('firebase-ready', resolve, { once: true }));
