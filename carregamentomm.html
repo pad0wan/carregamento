@@ -713,6 +713,9 @@
     <span id="current-session">Carregando...</span>
   </div>
   <div class="header-actions">
+    <button type="button" onclick="abrirProgramacaoModal()" class="btn btn-ghost btn-icon btn-sm" title="Programação">
+      <span class="svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 0A.5.5 0 0 1 6.5 6h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1A.5.5 0 0 1 6 7.5v-1zm-5 0A.5.5 0 0 1 1.5 6h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1A.5.5 0 0 1 1 7.5v-1zm10 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 0A.5.5 0 0 1 1.5 10h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1A.5.5 0 0 1 1 11.5v-1z"/><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V4H1z"/></svg></span>
+    </button>
     <button type="button" onclick="gerenciarInstancias()" class="btn btn-ghost btn-icon btn-sm" title="Gerenciar Sessões">
       <span class="svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8.235 1.559a.5.5 0 0 0-.47 0l-7.5 4a.5.5 0 0 0 0 .882L3.188 8 .264 9.559a.5.5 0 0 0 0 .882l7.5 4a.5.5 0 0 0 .47 0l7.5-4a.5.5 0 0 0 0-.882L12.813 8l2.922-1.559a.5.5 0 0 0 0-.882l-7.5-4zM8 9.433 1.562 6 8 2.567 14.438 6 8 9.433zm0 2.718L1.562 8.736 3.75 7.555l4.014 2.141a.5.5 0 0 0 .47 0l4.014-2.14 2.189 1.178L8 12.151z"/></svg></span>
     </button>
@@ -1112,6 +1115,62 @@
   </div>
 </div>
 
+<!-- Modal Programação -->
+<div id="programacaoModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-handle"></div>
+    <button onclick="fecharProgramacaoModal()" class="modal-close"><span class="svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854z"/></svg></span></button>
+    <div class="modal-title"><span class="svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V4H1z"/></svg></span> Programação de Carregamentos</div>
+
+    <div id="programacao-list" class="session-list"></div>
+
+    <div class="card" style="margin-top: 1rem; border-style: dashed;">
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Data</label>
+            <input type="date" id="progData" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Rota</label>
+            <select id="progRota" class="form-select">
+              <option value="">Selecionar rota</option>
+              <option value="Araguaína">Araguaína</option>
+              <option value="Ananas">Ananas</option>
+              <option value="Gurupi">Gurupi</option>
+              <option value="Guaraí">Guaraí</option>
+              <option value="Luiz Eduardo Magalhães">Luiz Eduardo Magalhães</option>
+              <option value="Barreiras">Barreiras</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid" style="margin-top: 0.85rem;">
+          <div class="form-group autocomplete-container">
+            <label class="form-label">Placa Veículo/Cavalo</label>
+            <input type="text" id="progPlacaCavalo" placeholder="Digite ou busque a placa..." class="form-input" autocomplete="off" style="text-transform: uppercase;">
+            <div id="suggestionsProgCavalo" class="autocomplete-suggestions"></div>
+          </div>
+          <div class="form-group autocomplete-container">
+            <label class="form-label">Placa Carreta</label>
+            <input type="text" id="progPlacaCarreta" placeholder="Digite ou busque a placa..." class="form-input" autocomplete="off" style="text-transform: uppercase;">
+            <div id="suggestionsProgCarreta" class="autocomplete-suggestions"></div>
+          </div>
+        </div>
+        <div class="form-grid cols-1" style="margin-top: 0.85rem;">
+          <div class="form-group autocomplete-container">
+            <label class="form-label">Motorista</label>
+            <input type="text" id="progMotorista" placeholder="Digite para buscar..." class="form-input" autocomplete="off">
+            <div id="suggestionsProgMotorista" class="autocomplete-suggestions"></div>
+          </div>
+        </div>
+        <button type="button" onclick="adicionarProgramacao()" class="btn btn-primary btn-sm" style="margin-top: 0.85rem; width: 100%;">
+          <span class="svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2z"/></svg></span> Adicionar à Programação
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
     // Sistema de Gerenciamento de Múltiplas Instâncias
     class SessionManager {
@@ -1494,6 +1553,27 @@
 
     let motoristas = motoristasDefault.slice(); // valor inicial; substituído no init
 
+    // ── PROGRAMAÇÃO DE CARREGAMENTOS (Firebase) ──
+    // Lista de veículos/motoristas programados para carregamento, salva de forma
+    // compartilhada (mesmo armazenamento seguro usado para motoristas e veículos).
+    async function carregarProgramacaoStorage() {
+      try {
+        const valor = await window._fbCarregar('mm_programacao_custom');
+        if (valor) return JSON.parse(valor);
+      } catch (e) { console.warn('Erro ao carregar programação do Firebase:', e); }
+      return [];
+    }
+
+    async function salvarProgramacaoStorage() {
+      try {
+        await window._fbSalvar('mm_programacao_custom', JSON.stringify(programacao));
+      } catch (e) { console.error('Erro ao salvar programação no Firebase:', e); }
+    }
+
+    function salvarProgramacao() { salvarProgramacaoStorage(); }
+
+    let programacao = []; // valor inicial; substituído no init
+
     // Campos para gerenciar
     const camposParaSalvar = [
       "data", "rota-select", "doca", "tipoVeiculo", "placaPrimaria", "placaSecundaria",
@@ -1808,6 +1888,140 @@
       renderVeiculosList();
     }
 
+    // ===== Programação de Carregamentos =====
+    function abrirProgramacaoModal() {
+      document.getElementById('progData').value = document.getElementById('progData').value || new Date().toISOString().split('T')[0];
+      renderProgramacaoList();
+      document.getElementById('programacaoModal').style.display = 'flex';
+    }
+
+    function fecharProgramacaoModal() {
+      document.getElementById('programacaoModal').style.display = 'none';
+    }
+
+    function renderProgramacaoList() {
+      const container = document.getElementById('programacao-list');
+      container.innerHTML = '';
+
+      if (programacao.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.85rem; padding:0.5rem 0;">Nenhum carregamento programado.</p>';
+        return;
+      }
+
+      programacao
+        .map((p, idx) => ({ p, idx }))
+        .sort((a, b) => (a.p.data || '').localeCompare(b.p.data || ''))
+        .forEach(({ p, idx }) => {
+          const div = document.createElement('div');
+          div.className = 'session-item';
+
+          const dataFormatada = p.data ? p.data.split('-').reverse().join('/') : 'Sem data';
+          const placaInfo = p.placaCarreta ? `${p.placaCavalo} / ${p.placaCarreta}` : (p.placaCavalo || 'Sem placa');
+
+          div.innerHTML = `
+            <div class="session-item-header">
+              <span class="session-item-id" style="font-family: inherit;">${placaInfo}</span>
+              <div class="session-item-actions">
+                <button type="button" class="btn btn-success btn-sm" title="Iniciar Carregamento">
+                  <span class="svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg></span>
+                  Iniciar
+                </button>
+                <button type="button" class="btn btn-danger btn-sm btn-icon" title="Remover">
+                  <span class="svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5z"/></svg></span>
+                </button>
+              </div>
+            </div>
+            <div class="session-item-info">
+              <div>Data: ${dataFormatada}${p.rota ? ' • Rota: ' + p.rota : ''}</div>
+              <div>Motorista: ${p.motorista || 'Não informado'}</div>
+            </div>
+          `;
+          div.querySelector('.btn-success').addEventListener('click', () => iniciarCarregamentoProgramado(idx));
+          div.querySelector('.btn-danger').addEventListener('click', () => removerProgramacao(idx));
+          container.appendChild(div);
+        });
+    }
+
+    function adicionarProgramacao() {
+      const dataInput = document.getElementById('progData');
+      const rotaInput = document.getElementById('progRota');
+      const cavaloInput = document.getElementById('progPlacaCavalo');
+      const carretaInput = document.getElementById('progPlacaCarreta');
+      const motoristaInput = document.getElementById('progMotorista');
+
+      const data = dataInput.value;
+      const rota = rotaInput.value;
+      const placaCavalo = cavaloInput.value.trim().toUpperCase();
+      const placaCarreta = carretaInput.value.trim().toUpperCase();
+      const motorista = motoristaInput.value.trim();
+
+      if (!placaCavalo && !motorista) {
+        alert('Informe ao menos a placa do veículo ou o nome do motorista.');
+        return;
+      }
+
+      programacao.push({
+        id: 'PROG_' + Date.now().toString(36).toUpperCase(),
+        data, rota, placaCavalo, placaCarreta, motorista
+      });
+      salvarProgramacao();
+
+      cavaloInput.value = '';
+      carretaInput.value = '';
+      motoristaInput.value = '';
+
+      renderProgramacaoList();
+    }
+
+    function removerProgramacao(idx) {
+      const item = programacao[idx];
+      if (!item) return;
+      const descricao = item.placaCavalo || item.motorista || 'item';
+      if (!confirm(`Remover "${descricao}" da programação?`)) return;
+
+      programacao.splice(idx, 1);
+      salvarProgramacao();
+      renderProgramacaoList();
+    }
+
+    function iniciarCarregamentoProgramado(idx) {
+      const item = programacao[idx];
+      if (!item) return;
+
+      if (!confirm(`Iniciar nova sessão de carregamento para ${item.placaCavalo || item.motorista}?`)) return;
+
+      // Cria uma nova sessão já com os dados programados pré-preenchidos
+      const newId = sessionManager.createNewSession();
+      limparFormularioSemConfirmacao();
+
+      if (item.data) document.getElementById('data').value = item.data;
+      if (item.rota) document.getElementById('rota-select').value = item.rota;
+      if (item.placaCavalo) document.getElementById('placaSecundaria').value = item.placaCavalo;
+      if (item.placaCarreta) document.getElementById('placaPrimaria').value = item.placaCarreta;
+      if (item.motorista) {
+        document.getElementById('nomeMotorista').value = item.motorista;
+        // Preenche telefone/cpf automaticamente se o motorista já estiver cadastrado
+        const motoristaCadastrado = motoristas.find(m => m.nome === item.motorista);
+        if (motoristaCadastrado) {
+          document.getElementById('telefoneMotorista').value = motoristaCadastrado.telefone || '';
+          document.getElementById('cpfMotorista').value = motoristaCadastrado.cpf || '';
+        }
+      }
+      // Atualiza tipo de veículo com base na placa informada
+      if (item.placaCavalo && typeof aplicarTipoAutomatico === 'function') {
+        aplicarTipoAutomatico(item.placaCavalo);
+      }
+
+      sessionManager.saveCurrentSession();
+
+      // Remove da programação após iniciar, já que o carregamento começou
+      programacao.splice(idx, 1);
+      salvarProgramacao();
+
+      fecharProgramacaoModal();
+      alert('Sessão de carregamento iniciada com os dados programados!');
+    }
+
     function exportarTodas() {
       sessionManager.exportAllSessions();
     }
@@ -2041,6 +2255,101 @@ function limparSessoesInvalidas() {
         (v) => { selectedSuggestionIndexVeiculo = v; },
         'placaPrimaria'
       );
+    }
+
+    // ===== Autocomplete simples para o modal de Programação (sem auto-save de sessão) =====
+    function setupAutocompleteSimplesPlaca(inputId, suggestionsId, listaFn, otherInputId) {
+      const input = document.getElementById(inputId);
+      const suggestionsDiv = document.getElementById(suggestionsId);
+      if (!input || !suggestionsDiv) return;
+
+      function selecionar(placa) {
+        input.value = placa;
+        suggestionsDiv.style.display = 'none';
+        if (otherInputId) {
+          const vinculada = getPlacasVinculadas()[placa];
+          if (vinculada) {
+            const otherInput = document.getElementById(otherInputId);
+            if (otherInput) otherInput.value = vinculada;
+          }
+        }
+      }
+
+      input.addEventListener('input', function() {
+        const value = this.value.toUpperCase();
+        this.value = value;
+        const filtradas = listaFn().filter(placa => placa.includes(value));
+
+        if (value === '' || filtradas.length === 0) {
+          suggestionsDiv.style.display = 'none';
+          return;
+        }
+
+        suggestionsDiv.innerHTML = '';
+        filtradas.forEach(placa => {
+          const div = document.createElement('div');
+          div.className = 'autocomplete-suggestion';
+          div.textContent = placa;
+          div.addEventListener('click', () => selecionar(placa));
+          suggestionsDiv.appendChild(div);
+        });
+        suggestionsDiv.style.display = 'block';
+      });
+
+      input.addEventListener('blur', function() {
+        setTimeout(() => { suggestionsDiv.style.display = 'none'; }, 200);
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+          suggestionsDiv.style.display = 'none';
+        }
+      });
+    }
+
+    function setupAutocompleteSimplesMotorista(inputId, suggestionsId) {
+      const input = document.getElementById(inputId);
+      const suggestionsDiv = document.getElementById(suggestionsId);
+      if (!input || !suggestionsDiv) return;
+
+      input.addEventListener('input', function() {
+        const value = this.value.toLowerCase();
+        const filtrados = motoristas.filter(m => m.nome.toLowerCase().includes(value));
+
+        if (value === '' || filtrados.length === 0) {
+          suggestionsDiv.style.display = 'none';
+          return;
+        }
+
+        suggestionsDiv.innerHTML = '';
+        filtrados.forEach(m => {
+          const div = document.createElement('div');
+          div.className = 'autocomplete-suggestion';
+          div.textContent = m.nome;
+          div.addEventListener('click', () => {
+            input.value = m.nome;
+            suggestionsDiv.style.display = 'none';
+          });
+          suggestionsDiv.appendChild(div);
+        });
+        suggestionsDiv.style.display = 'block';
+      });
+
+      input.addEventListener('blur', function() {
+        setTimeout(() => { suggestionsDiv.style.display = 'none'; }, 200);
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+          suggestionsDiv.style.display = 'none';
+        }
+      });
+    }
+
+    function setupAutocompleteProgramacao() {
+      setupAutocompleteSimplesPlaca('progPlacaCavalo', 'suggestionsProgCavalo', getPlacasVeiculoList, 'progPlacaCarreta');
+      setupAutocompleteSimplesPlaca('progPlacaCarreta', 'suggestionsProgCarreta', getPlacasCarretaList, 'progPlacaCavalo');
+      setupAutocompleteSimplesMotorista('progMotorista', 'suggestionsProgMotorista');
     }
 
     // Função de autocomplete adaptada
@@ -2360,15 +2669,17 @@ Yms saída ok`;
 
   // Carrega motoristas e veículos do Firestore (compartilhado entre todos os dispositivos)
   try {
-    [motoristas, veiculosCadastrados] = await Promise.all([
+    [motoristas, veiculosCadastrados, programacao] = await Promise.all([
       carregarMotoristasStorage(),
-      carregarVeiculosStorage()
+      carregarVeiculosStorage(),
+      carregarProgramacaoStorage()
     ]);
-    console.log('✅ Firebase: ' + motoristas.length + ' motoristas, ' + veiculosCadastrados.length + ' veículos carregados.');
+    console.log('✅ Firebase: ' + motoristas.length + ' motoristas, ' + veiculosCadastrados.length + ' veículos, ' + programacao.length + ' programações carregadas.');
   } catch (e) {
     console.warn('⚠️ Falha ao carregar do Firebase, usando dados padrão.', e);
     motoristas = motoristasDefault.slice();
     veiculosCadastrados = veiculosDefault.slice();
+    programacao = [];
   }
 
   // Inicializa o gerenciador de sessões
@@ -2377,6 +2688,7 @@ Yms saída ok`;
   // Configura a interface
   setupAutocomplete();
   setupAutocompletePlacas();
+  setupAutocompleteProgramacao();
   setupAutoSave();
 
   console.log('Sistema inicializado. Sessão atual:', sessionManager.currentSessionId);
