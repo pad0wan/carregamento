@@ -510,6 +510,13 @@
     }
     .btn-danger:hover { box-shadow: 0 4px 20px rgba(251,91,91,0.4); transform: translateY(-1px); }
 
+    .btn-warning {
+      background: linear-gradient(135deg, #ffb74d, #f59e0b);
+      color: #2b1a00;
+      box-shadow: 0 2px 12px rgba(245,158,11,0.25);
+    }
+    .btn-warning:hover { box-shadow: 0 4px 20px rgba(245,158,11,0.4); transform: translateY(-1px); }
+
     .btn-ghost {
       background: var(--surface2);
       color: var(--text-soft);
@@ -2147,6 +2154,9 @@
                   <span class="svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg></span>
                   Iniciar
                 </button>
+                <button type="button" class="btn btn-warning btn-sm" title="Copiar mensagem de Não Utilizado">
+                  N/U
+                </button>
                 <button type="button" class="btn btn-danger btn-sm btn-icon" title="Remover">
                   <span class="svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5z"/></svg></span>
                 </button>
@@ -2158,6 +2168,7 @@
             </div>
           `;
           div.querySelector('.btn-success').addEventListener('click', () => iniciarCarregamentoProgramado(idx));
+          div.querySelector('.btn-warning').addEventListener('click', () => copiarNaoUtilizado(idx));
           div.querySelector('.btn-danger').addEventListener('click', () => removerProgramacao(idx));
           container.appendChild(div);
         });
@@ -2254,6 +2265,41 @@
 
       fecharProgramacaoModal();
       alert('Sessão de carregamento iniciada com os dados programados!');
+    }
+
+    function copiarNaoUtilizado(idx) {
+      const item = programacao[idx];
+      if (!item) return;
+
+      const tipo = (item.placaCavalo && getTipoPorPlaca(item.placaCavalo)) || 'Veículo';
+      const rota = item.rota || '';
+      const codigoXPT = rota
+        ? (codigosXPT[rota] || `XPT ${rota.substring(0, 3).toUpperCase()}`)
+        : 'XPT';
+      const placa = item.placaCarreta || item.placaCavalo || 'Não informada';
+
+      const texto = `${tipo} de ${codigoXPT} não foi utilizado\nPlaca: ${placa}`;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto)
+          .then(() => alert('Mensagem copiada para a área de transferência!'))
+          .catch(() => alert('Não foi possível copiar automaticamente. Texto:\n\n' + texto));
+      } else {
+        // Fallback para navegadores sem suporte à API Clipboard
+        const textarea = document.createElement('textarea');
+        textarea.value = texto;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          alert('Mensagem copiada para a área de transferência!');
+        } catch (e) {
+          alert('Não foi possível copiar automaticamente. Texto:\n\n' + texto);
+        }
+        document.body.removeChild(textarea);
+      }
     }
 
     function exportarTodas() {
@@ -2970,12 +3016,12 @@ Yms saída ok`;
 // FUNÇÃO DE GERAR O REPORT CONSOLIDADO DO DIA
 
 const codigosXPT = {
-  "Araguaína": "XPT ETO2",
-  "Ananas": "XPT ETO9",
-  "Gurupi": "XPT ETO1", 
-  "Guaraí": "XPT ETO3",
-  "Luiz Eduardo Magalhães": "XPT EBA24",
-  "Barreiras": "XPT EBA8"
+  "Araguaína": "ETO2",
+  "Ananas": "ETO9",
+  "Gurupi": "ETO1", 
+  "Guaraí": "ETO3",
+  "Luiz Eduardo Magalhães": "EBA24",
+  "Barreiras": "EBA8"
 };
 
 function gerarReportConsolidado() {
